@@ -1,0 +1,321 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Employment</div> 
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewReports] ? 'generate' : 'disable-generate'"><p-button [label]="'WORKERSLIST.GENERATEREPORTBUTTON' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex' *ngIf="empLoaded">
+        <div [ngClass]="authorisedFunctionList.Function[eFunctions.AddEmployment] ? 'add-employment mt-3' : 'disable-add-employment mt-3'"><p-button label="Add New Employment" (onClick)="addNewEmployees()"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div >
+
+<div class="mt-3" *ngIf="empLoaded">
+    <p-tabView >
+        <p-tabPanel header="Current">
+            <div style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+                <p-table #dt [value]="employments"  [paginator]="true" [rows]="10" responsiveLayout="scroll" [totalRecords]="totalCount"
+                [rowHover]="true" dataKey="id" [rowsPerPageOptions]="[10,20,30]"
+               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+               <ng-template pTemplate="header">
+                   <tr>
+                        <th class="table-expand-column"></th>
+                        <th>Job Name</th>
+                        <th class="table-date-column"> JobFit Score</th>
+                        <th class="table-date-column" pSortableColumn="startDate"> Start</th>
+                        <th class="table-date-column"> Stop</th>
+                        <th class="table-icon-column"> Flag</th>
+                        <th class="table-icon-column"> JobFit</th>
+                        <th class="table-icon-column"> Employ</th>
+                        <th class="table-icon-column"></th>
+                   </tr>
+               </ng-template>
+               <ng-template pTemplate="body" let-employees let-expanded="expanded">
+                   <tr>
+                        <td class="table-expand-column">
+                            <button type="button" pButton pRipple [pRowToggler]="employees" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td ><a [routerLink]="" (click)="goToJobsDetails(employees)">{{employees?.job.name}}</a></td>
+                        <td class="table-date-column">{{employees?.jobFitSummaryScore?.jobFitScore ? employees?.jobFitSummaryScore?.jobFitScore.name : 'None'}}</td>
+                        <td class="table-date-column">{{employees.startDate | date: 'dd-MMM-yyyy'}}</td>
+                        <td class="table-date-column">{{employees.stopDate | date: 'dd-MMM-yyyy'}}</td>
+                        <td class="table-icon-column">{{employees?.flags}}</td>
+                        <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewJobFit] ? 'employ' : 'disable-jobfit'"><p-button label="JobFit" class='f-r' (onClick)="goToJobFit(employees.jobId,employees.workerId)"></p-button></div></td>
+                        <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.EditEmployment] ? 'employ' : 'disable-jobfit'" *ngIf="employees.employmentTypeId === 2"><p-button label="Employ" class='f-r' (onClick)="employ(employees.id)"></p-button></div></td>
+                        <td class="table-icon-column"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="viewEditEmployment(employees.id)"></p-button></div></td>
+                   </tr>
+               </ng-template>
+               <ng-template pTemplate="rowexpansion" let-employees>
+                <tr>
+                    <td colspan="10">
+                            <div class='row'>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Roster</span><br>
+                                            <span>{{employees?.roster?.label}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Result</span><br>
+                                            <span>{{employees?.jobFitResult.result ?? 'None'}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Department</span><br>
+                                            <span>{{employees?.departmentName}}</span>
+                                        </td>
+                                    </div>
+                            </div>
+                    </td>
+                </tr>
+            </ng-template>
+               </p-table>
+
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Future">
+            <div style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+                <p-table #dt [value]="futureEmployments"  [paginator]="true" [rows]="10"
+                [rowsPerPageOptions]="[10,20,30]"
+               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" responsiveLayout="scroll"
+                [rowHover]="true" dataKey="id">
+               <ng-template pTemplate="header">
+                   <tr>
+                        <th class="table-expand-column"></th>
+                        <th class="table-name-column">Job Name</th>
+                        <th class="table-date-column"> JobFit Score</th>
+                        <th class="table-date-column" pSortableColumn="startDate"> Start</th>
+                        <th class="table-date-column"> Stop</th>
+                        <th class="table-icon-column"> Flag</th>
+                        <th class="table-icon-column"> JobFit</th>
+                        <th class="table-icon-column"> Employ</th>
+                        <th class="table-icon-column"></th>
+                   </tr>
+               </ng-template>
+               <ng-template pTemplate="body" let-employees let-expanded="expanded">
+                <tr>
+                    <td class="table-expand-column">
+                        <button   type="button" pButton pRipple [pRowToggler]="employees" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    </td>
+                    <td class="table-name-column"><a [routerLink]="" (click)="goToJobsDetails(employees)">{{employees?.job.name}}</a></td>
+                    <td class="table-date-column">{{employees?.jobFitSummaryScore?.jobFitScore ? employees?.jobFitSummaryScore?.jobFitScore.name : 'None'}}</td>
+                    <td class="table-date-column">{{employees.startDate | date: 'dd-MMM-yyyy'}}</td>
+                    <td class="table-date-column">{{employees.stopDate | date: 'dd-MMM-yyyy'}}</td>
+                    <td class="table-icon-column">{{employees?.flags}}</td>
+                    <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewJobFit] ? 'employ' : 'disable-jobfit'"><p-button label="JobFit" class='f-r' (onClick)="goToJobFit(employees.jobId,employees.workerId)"></p-button></div></td>
+                    <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.EditEmployment] ? 'employ' : 'disable-jobfit'" *ngIf="employees.employmentTypeId === 2"><p-button label="Employ" class='f-r' (onClick)="employ(employees.id)"></p-button></div></td>
+                    <td class="table-icon-column"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="viewEditEmployment(employees.id)"></p-button></div></td>
+               </tr>
+               </ng-template>
+               <ng-template pTemplate="rowexpansion" let-employees>
+                <tr>
+                    <td colspan="10">
+                            <div class='row'>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Roster</span><br>
+                                            <span>{{employees?.roster?.label}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Result</span><br>
+                                            <span>{{employees?.jobFitResult.result ?? 'None'}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Department</span><br>
+                                            <span>{{employees?.departmentName}}</span>
+                                        </td>
+                                    </div>
+                            </div>
+                    </td>
+                </tr>
+            </ng-template>
+               </p-table>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="History">
+            <div style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+                <p-table #dt [value]="historyEmployments"  
+                [paginator]="true" [rows]="10"
+                [rowsPerPageOptions]="[10,20,30]"
+               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" responsiveLayout="scroll"
+                [rowHover]="true" dataKey="id"
+               >
+               <ng-template pTemplate="header">
+                   <tr>
+                    <th class="table-expand-column"></th>
+                        <th class="table-name-column">Job Name</th>
+                        <th class="table-date-column"> JobFit Score</th>
+                        <th class="table-date-column" pSortableColumn="startDate"> Start</th>
+                        <th class="table-date-column"> Stop</th>
+                        <th class="table-icon-column"> Flag</th>
+                        <th class="table-icon-column"> JobFit</th>
+                        <th class="table-icon-column"> Employ</th>
+                        <th class="table-icon-column"></th>
+                   </tr>
+               </ng-template>
+               <ng-template pTemplate="body" let-employees let-expanded="expanded">
+                <tr>
+                    <td class="table-expand-column">
+                        <button   type="button" pButton pRipple [pRowToggler]="employees" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    </td>
+                    <td class="table-name-column"><a [routerLink]="" (click)="goToJobsDetails(employees)">{{employees?.job.name}}</a></td>
+                    <td class="table-date-column">{{employees?.jobFitSummaryScore?.jobFitScore ? employees?.jobFitSummaryScore?.jobFitScore.name : 'None'}}</td>
+                    <td class="table-date-column">{{employees.startDate | date: 'dd-MMM-yyyy'}}</td>
+                    <td class="table-date-column">{{employees.stopDate | date: 'dd-MMM-yyyy'}}</td>
+                    <td class="table-icon-column">{{employees?.flags}}</td>
+                    <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewJobFit] ? 'employ' : 'disable-jobfit'"><p-button label="JobFit" class='f-r' (onClick)="goToJobFit(employees.jobId,employees.workerId)"></p-button></div></td>
+                    <td class="table-icon-column"><div [ngClass]="authorisedFunctionList.Function[eFunctions.EditEmployment] ? 'employ' : 'disable-jobfit'" *ngIf="employees.employmentTypeId === 2"><p-button label="Employ" class='f-r' (onClick)="employ(employees.id)"></p-button></div></td>
+                    <td class="table-icon-column"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="viewEditEmployment(employees.id)"></p-button></div></td>
+                </tr>
+               </ng-template>
+               <ng-template pTemplate="rowexpansion" let-employees>
+                <tr>
+                    <td colspan="10">
+                            <div class='row'>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Roster</span><br>
+                                            <span>{{employees?.roster?.label}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Result</span><br>
+                                            <span>{{employees?.jobFitResult.result ?? 'None'}}</span>
+                                        </td>
+                                    </div>
+                                    <div class="col">
+                                        <td style="width:10rem">
+                                            <span class='expand-title' style="font-weight:bold">Department</span><br>
+                                            <span>{{employees?.departmentName}}</span>
+                                        </td>
+                                    </div>
+                            </div>
+                    </td>
+                </tr>
+            </ng-template>
+               </p-table>
+           </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-dialog [header]="(employee.id > 0 && !editMode) ? 'View Employment': (employee.id > 0 && editMode) ? 'Edit Employment' : 'Add Employment'" [(visible)]="addEditEmp" [modal]="true">
+    <div class="job-modal">
+        <div>
+            <span>Job *</span><br>
+            <p-dropdown [disabled]="!editMode" [options]="jobList" class='job-list' optionLabel="name"  appendTo="body" optionValue="id" [filter]="true" filterBy="name" placeholder="Select Job" (onChange)="setJob($event)" [(ngModel)]="employee.jobId" ></p-dropdown>
+        </div>
+        <div>
+            <span>Department *</span><br>
+            <div *ngIf="isLoading" class='saveloader'>
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+                <p-tree *ngIf="!isLoading" [value]='selectedDeptTree' selectionMode="single">
+                <ng-template pTemplate="default" let-dept>
+                    <p-checkbox [disabled]="!editMode" *ngIf="dept.typeId == 8 && dept.selectable == true" [binary]="true"  (onChange)="selectedDeptChange($event , dept)" [value]="dept.partialSelected" [(ngModel)]="dept.partialSelected"></p-checkbox>
+                    <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>
+                    {{dept.label}}
+                </ng-template>
+            </p-tree>
+        </div>
+        <div class='mt-3 w-100'>
+            <div class="row">
+                <div class="col">
+                    <span>Roster</span><br>
+                    <p-dropdown [disabled]="!editMode" [options]="roster" class='roster' optionLabel="label" optionValue="id" [filter]="true" filterBy="label" placeholder="Select Roster" appendTo="body" [(ngModel)]="employee.rosterId" ></p-dropdown>
+                </div>
+                <div class="col">
+                    <span>Type</span><br>
+                    <p-dropdown [disabled]="!editMode" [options]="type" class='job-list' optionLabel="name" optionValue="id"  [filter]="true" filterBy="name"  [(ngModel)]="employee.employmentTypeId" appendTo="body" ></p-dropdown>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span class="mr-2">Start Date *</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                    <p-calendar [disabled]="!editMode" placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" [(ngModel)]="employee.startDate" appendTo="body" [showIcon]="true"></p-calendar>
+                </div>
+                <div class="col">
+                    <span class="mr-2">Stop Date</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                    <p-calendar [disabled]="!editMode" placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" [(ngModel)]="employee.stopDate" appendTo="body" [showIcon]="true"></p-calendar>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span>JobFit Score</span><br>
+                    <p-dropdown [disabled]="!editMode" [options]="jobFitScores" placeholder="Select JobFit Score" (onChange)="setJobScore($event)" class='job-list' appendTo="body" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"  [(ngModel)]="employee.jobFitScoreId" ></p-dropdown>
+                </div>
+                <div class="col">
+                    <span>Result</span><br>
+                    <p-dropdown [disabled]="!editMode" [options]="jobFitResults" placeholder="Select Result" class='job-list' optionLabel="result" optionValue="id" appendTo="body" [(ngModel)]="employee.jobFitResultId" [filter]="true" filterBy="result"   ></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class='mt-3'>
+            <span>JobFit Score Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  [readonly]="!editMode" name="comments" [(ngModel)]="employee.comments" class='text-editor-height' appendTo="body">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelViewEdit()"></p-button></div>
+            <!--View Mode-->
+            <div *ngIf="!editMode" [ngClass]="authorisedFunctionList.Function[eFunctions.EditEmployment] ? 'edit ml-2' : 'disabled-btn ml-2'"><p-button label="Edit" (onClick)="editEmployment()"></p-button></div>
+            <!--View Mode-->
+
+            <!--Edit Mode -->
+            <div *ngIf="employee.id > 0 && editMode" [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteEmployment] ? 'edit ml-2' : 'disabled-btn ml-2'"><p-button label="Archive" (onClick)="showArchive()"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job' *ngIf="editMode"><p-button label="Submit" (onClick)="saveEmployment()"></p-button></div>
+            <!--Edit Mode-->
+
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='saveloader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-employment ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-employment'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Archive Employment" [(visible)]="showArchiveEmployment" [modal]="true">
+    <p>Are you sure you want to archive this employment?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-job ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchiveEmployment = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" class='actions' (onClick)="archiveEmployment()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!empLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

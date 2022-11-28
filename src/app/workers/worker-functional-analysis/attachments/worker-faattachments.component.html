@@ -1,0 +1,139 @@
+<div class="w-100" *ngIf="editMode">
+    <div class='d-flex'>
+        <div class='add-attachment ml-4 mt-4'><p-button label="Add Attachment" (onClick)="addNew()"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div>
+<div>
+    <div>
+        <div class='mt-5' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+            <p-table #dt [value]='attachments' [rows]="10" [paginator]="false" responsiveLayout="scroll" class='mt-5'
+            [rowHover]="true" dataKey="id"
+           [showCurrentPageReport]="true">
+           <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 5rem;"></th>
+                <th style="width: 10rem;" pSortableColumn="entryDate">Entry Date</th>
+                <th  pSortableColumn="displayFileName">File Name</th>
+                <th> Comment</th>
+                <th style="width: 10rem;" pSortableColumn="addedBy.fullName">Added By</th>
+                <th style="width: 10rem;" pSortableColumn="fileType">File Type</th>
+                <th style="width: 10rem;" pSortableColumn="fileSize">File Size</th>
+                <th style="width: 10rem;"></th>
+               </tr>
+           </ng-template>
+           <ng-template pTemplate="body" let-attachments>
+               <tr>
+                   <td><img src='../../../assets/png.png'/></td>
+                   <td>{{attachments?.entryDate | date: 'dd-MMM-yyyy'}}</td>
+                   <td style="width: 10rem;"><a [routerLink]="" (click)="downloadAttachment(attachments?.id, attachments?.contentType)"><span>{{attachments?.displayFileName}}</span></a></td>
+                   <td><span class="comments-list" [innerHTML]="attachments?.comment"></span></td>
+                   <td style="width: 10rem;">{{attachments.addedBy?.fullName}}</td>
+                   <td style="width: 10rem;">{{attachments?.fileType}}</td>
+                   <td style="width: 10rem;">{{attachments?.fileSize / 1000}} kb</td>
+                   <td><div class='actions' *ngIf="editMode"><p-button label="Edit" class='f-r' (onClick)="editAttachment(attachments)"></p-button></div></td>
+               </tr>
+           </ng-template>
+           </p-table>
+           <div class="d-flex" style="justify-content: center;">
+            <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+            </p-paginator>
+            <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2"></p-dropdown>
+           </div>
+        </div>
+    </div>
+</div>
+<p-dialog header="Add Attachment" [(visible)]="addAttachBox" [modal]="true">
+    <div class="notes-modal">
+        <div>
+            <span>File Name *</span><br>
+            <input name="fileName" type="text" class='w-100' [(ngModel)]="attachment.displayFileName" pInputText ngDefaultControl />
+            <p-fileUpload
+                [files]="uploadedFiles"
+                name="myfile"
+                [customUpload]="true" [showUploadButton]="false"
+                [showCancelButton]="false"
+                (onSelect)="onSelectFile($event)"
+                (onRemove)="onRemoveImage($event)"
+                [maxFileSize]="10485760"
+                ngDefaultControl
+            >
+            </p-fileUpload>
+
+        </div>
+        <div class='mt-5'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+            <p-editor   name="comments" [(ngModel)]="attachment.comment" class='text-editor-height'>
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                        <button type="button" class="ql-strike" aria-label="Strike"></button>
+                        <button type="button" class="ql-link" aria-label="Strike"></button>
+                        <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                        <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                    </span>
+                </ng-template>
+            </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel ml-2'><p-button label="Cancel" (onClick)="addAttachBox = false"></p-button></div>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="Submit" (onClick)="saveAttachment()" [disabled]="attachmentSubmitDisabled"></p-button></div>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Edit Attachment" [(visible)]="editAttachBox" [modal]="true">
+    <div class="notes-modal">
+        <div>
+            <span>File Name *</span><br>
+            <input name="fileName" type="text" class='w-100' [(ngModel)]="attachment.displayFileName" pInputText ngDefaultControl  />
+        </div>
+        <div class='mt-5'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  name="comments" [(ngModel)]="attachment.comment" class='text-editor-height'>
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel ml-2'><p-button label="Cancel" (onClick)="editAttachBox = false"></p-button></div>
+            <div class='actions ml-2'><p-button label="Archive" (onClick)="showArchiveAttachment = true"></p-button></div>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="Submit" (onClick)="updateAttachment()"></p-button></div>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Archive Attachment" [(visible)]="showArchiveAttachment" [modal]="true">
+    <p>Are you sure you want to archive this attachment?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showArchiveAttachment = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='save'><p-button label="Confirm" (onClick)="archiveAttachment(attachment.originalRevisionId ?? attachment.id)"></p-button></div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-worker ml-2'></div>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+

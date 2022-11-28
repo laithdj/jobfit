@@ -1,0 +1,18 @@
+
+   <div >
+    <span  *ngIf="isAuthenticated | async" class="d-flex flex-column">
+      <!--
+      <a  [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
+      -->
+      &nbsp;
+      <a  [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">Logout</a>
+    </span>
+    <span  *ngIf="!(isAuthenticated | async)">
+      <a  [routerLink]='["/authentication/register"]'>Register</a>
+      &nbsp;
+      <a  [routerLink]='["/authentication/login"]'>Login</a>
+    </span>
+   </div>
+
+  
+

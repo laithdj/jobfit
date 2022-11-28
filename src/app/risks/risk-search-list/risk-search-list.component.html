@@ -1,0 +1,258 @@
+<div class="d-flex w-100 mb-2">
+    <div class="heading mr-auto">{{'RISKS.MAINHEADING' | translate}}</div>
+    <div class="w-80"></div>
+    <div [class]="authorisedFunctionList.Function[eFunctions.AddRisk] ? 'new mr-2':'disable-new mr-2'"><p-button [label]="'RISKS.ADDNEW' | translate" (onClick)="addNew()"></p-button></div>   
+    <div [class]="authorisedFunctionList.Function[eFunctions.SearchRisks] ? 'edit':'disabled'"><p-button [label]="'Refresh' | translate" (onClick)="refresh()"></p-button></div>
+ </div>
+
+<div style='padding-bottom:10px;height: calc(100vh - 285px);' *ngIf="risksSearchResult">
+    <p-table #dt [first]="first"  [rows]="5"  [value]='risksSearchList' responsiveLayout="scroll"
+        [rowHover]="true" dataKey="riskSearchId"
+        [(selection)]="selectedRisks"
+        [scrollable]="true" scrollHeight="flex"
+        [showCurrentPageReport]="false">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 30rem" pSortableColumn="name">{{'RISKSLIST.NAMEHEADER' | translate}} </th>
+                <th style="width: 5rem" pSortableColumn="typeName">{{'RISKSLIST.TYPEHEADER' | translate}} </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-risk let-expanded="expanded">
+            <tr>
+                <td style="width: 30rem">{{risk.name}}</td>
+                <td style="width: 5rem">{{risk.typeName}}</td>
+                <td >
+                    <p-button class='edit mr-2' (onClick)="edit(risk)">{{'RISKSLIST.EDIT' | translate}}</p-button> 
+                    <p-button [class]="authorisedFunctionList.Function[eFunctions.RunRisk] ? 'perform':'disable-perform'" (onClick)="performRiskSearch(risk)">{{'RISKSLIST.PERFORMRISKSEARCHLINK' | translate}}</p-button>
+                </td>
+            </tr>
+        </ng-template>
+   </p-table>
+   <div class="d-flex" style="justify-content: center;">
+    <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+    </p-paginator>
+    <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+   </div>
+
+</div>
+<p-dialog [header]="(selectedRisksSearch.riskSearchId > 0 && !editMode) ? 'View Risk Search': (selectedRisksSearch.riskSearchId > 0 && editMode) ? 'Edit Risk Search' : 'Add Risk Search'" [(visible)]="addNewRiskSearchBox" [modal]="true" [closable]="true"  [responsive]="true" [baseZIndex]="100000">
+    <div class="risk-search-modal">
+        <div class='mt-3'>
+            <span>{{'ADDRISKSEARCH.NAMEHEADER' | translate}} *</span>
+            <br>
+            <input [disabled]="!editMode" type="text" class='name' [(ngModel)]="selectedRisksSearch.name" pInputText="pInputText"/>
+        </div>
+        <div class='mt-3'>
+            <span>{{'ADDRISKSEARCH.TYPEHEADER' | translate}} *</span>
+            <br>
+            <span class="p-float-label">
+                <p-dropdown [disabled]="!editMode" [options]="types" class='type-list' [(ngModel)]="selectedRisksSearch.typeId"  appendTo="body" placeholder="Select Type" optionLabel="typeName" optionValue="id"></p-dropdown>
+            </span>
+        </div>
+        <div class='mt-3'>
+            <p-checkbox [disabled]="!editMode" [binary]="true" inputId="binary" [(ngModel)]="selectedRisksSearch.isPublic"></p-checkbox>  
+            <span class='ml-2'>{{'ADDRISKSEARCH.ISPUBLIC' | translate}} *</span>
+        </div>
+        <div class='d-flex mt-5'>
+            <div [ngClass]="editMode ? 'add-rsc' : 'disable-add-rsc'"><p-button label="Add Risk Search Criteria" (onClick)="addRiskSearchCriteria()"></p-button>
+            </div>
+        </div>
+        <div class='mt-2'>
+            <p-table #dt [first]="first"  [rows]="5"  [value]='selectedRisksSearch.riskSearchCriteriaView' responsiveLayout="scroll"
+                [rowHover]="true" dataKey="riskSearchCriteriaViewId"
+                [(selection)]="selectedRiskSearchCriteriaViews"
+                [showCurrentPageReport]="false">
+                <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="joinedBy"  style="width: 8rem">{{'ADDRISKSEARCH.JOIN' | translate}}</th>
+                            <th pSortableColumn="criteriaTypeName">{{'ADDRISKSEARCH.CRITERIATYPE' | translate}}</th>
+                            <th pSortableColumn="entitiesString" style="width: 20rem">{{'ADDRISKSEARCH.ITEMS' | translate}}</th>
+                            <th pSortableColumn="operatorName" style="width: 10rem">{{'ADDRISKSEARCH.OPERATOR' | translate}}</th>
+                            <th pSortableColumn="valuesString">{{'ADDRISKSEARCH.VALUE' | translate}}</th>
+                            <th style="width: 15rem;"></th>
+                        </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-risk let-expanded="expanded">
+                    <tr>
+                        <td>{{risk.joinedBy}}</td>
+                        <td>{{risk.criteriaTypeName}}</td>
+                        <td>{{risk.entitiesString}}</td>
+                        <td>{{risk.operatorName}}</td>
+                        <td>{{risk.valuesString}}</td>
+                        <td><div class='edit'>
+                            <p-button [ngClass]="editMode ? 'edit mr-2' : 'disabled mr-2'" (onClick)="editCriteria(risk)">{{'Edit' | translate}}</p-button>
+                            <p-button [ngClass]="editMode ? 'edit' : 'disabled'" (onClick)="archiveCriteria(risk)">{{'RISKSLIST.ARCHIVE' | translate}}</p-button>
+                        </div></td>
+                    </tr>
+                </ng-template>
+           </p-table>
+        </div>
+        <br/>
+        <div class='d-flex bottom-buttons'>
+            <div class='cancel mr-2'><p-button label="Cancel" (onClick)="cancelViewEdit()"></p-button></div>
+            <div *ngIf="!editMode" [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteRisk] ? 'edit-risk' : 'disabled-btn'"><p-button label="Edit Risk Search" (onClick)="editRisk()"></p-button></div>
+            <div *ngIf="editMode && selectedRisksSearch.riskSearchId > 0" [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteRisk] ? 'archive' : 'disabled-archive'"><button icon="pi" pButton [label]="'RISKS.ARCHIVE' | translate" (click)="archiveRisk()"></button></div>
+            <div class='w-100'></div>
+            <div class='create' *ngIf="editMode"><p-button label="Submit" (onClick)="saveRiskSearch(selectedRisksSearch)"></p-button></div>
+        </div>
+    </div>
+    <div id="myNav" class="overlay w-100" *ngIf="!riskSaved || dataLoading" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!riskSaved"> Saving...</span>
+            <span class="saved" *ngIf="dataLoading"> Loading...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog [header]="selectedRiskSearchCriteriaView.riskSearchCriteriaViewId > 0 ? 'Edit Risk Search Criteria Details' : 'Add New Risk Search Criteria Details'"  [modal]="true" [(visible)]="addNewRiskSearchCriteriaBox" [closable]="true"  >
+    <div class="risk-search-criteria-window">
+        <div class='row'>
+            <div class='col-6'>
+                <span>{{'ADDRISKSEARCH.JOIN' | translate}}</span>
+                <br>
+                <span class="p-float-label">
+                    <p-dropdown [options]="joinList" class='type-list'  (onChange)="onChangeJoinedBy($event)" [(ngModel)]="selectedRiskSearchCriteriaView.joinedBy" appendTo="body" optionLabel="name" optionValue="value"></p-dropdown>
+                </span>
+            </div>
+            <div class='col-6'>
+                <span>{{'ADDRISKSEARCH.TYPEHEADER' | translate}}</span>
+                <br>
+                <span class="p-float-label">
+                    <p-dropdown [options]="criteriaTypes" (onChange)="onChangeCriteriaType($event)" appendTo="body" class='type-list' [(ngModel)]="selectedRiskSearchCriteriaView.criteriaTypeId"  placeholder="Select Type" optionLabel="riskSearchCriteriaTypeName" optionValue="riskSearchCriteriaTypeId"></p-dropdown>
+                </span>
+            </div>
+        </div>
+        <div class='mt-3'>
+            <span>{{'ADDRISKSEARCH.MEASURES' | translate}} *</span>
+            <br>
+            <span class="p-float-label">
+                <p-dropdown *ngIf="selectedCriteriaType == 4" optionLabel="label" optionValue="value" appendTo="body" (onChange)="onChangeMeasures($event)" [options]="criteriaEntitiesPerType && criteriaEntitiesPerType.length > 0 ? criteriaEntitiesPerType[0].items : []" class='measure-list' [(ngModel)]="selectedMeasureId" placeholder="Select here">
+                </p-dropdown>
+                <p-dropdown *ngIf="selectedCriteriaType == 3" optionLabel="label" optionValue="value" appendTo="body" (onChange)="onChangeMeasures($event)" [options]="criteriaEntitiesPerType" class='measure-list' [(ngModel)]="selectedMeasureId" [group]="true" placeholder="Select here">
+                    <ng-template let-group pTemplate="group">
+                        <div class="flex align-items-center">
+                            <span>{{group.groupLabel}}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <p-multiSelect *ngIf="selectedCriteriaType == 1 || selectedCriteriaType == 2" optionLabel="label" optionValue="value" class='measure-list' appendTo="body" (onChange)="onChangeMeasures($event)" [options]="criteriaEntitiesPerType" [group]="true" [(ngModel)]="selectedMeasureIds" defaultLabel="Select here" scrollHeight="250px" display="chip">
+                    <ng-template let-group pTemplate="group">
+                        <div class="flex align-items-center">
+                            <span>{{group.groupLabel}}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>{{'ADDRISKSEARCH.CRITERIA' | translate}} *</span>
+            <br>
+            <span class="p-float-label">
+                <p-dropdown [options]="operators" (onChange)="onChangeOperator($event)"  class='type-list' [(ngModel)]="selectedRiskSearchCriteriaView.operatorId"  placeholder="Select Criteria" optionLabel="name" optionValue="operatorId"></p-dropdown>
+            </span>
+        </div>
+        <div class='mt-3' *ngIf="selectedCriteriaType != 3">
+            <span>{{'ADDRISKSEARCH.VALUE' | translate}} *</span>
+            <br>
+            <span class="p-float-label" *ngIf="(selectedCriteriaType == 1 && isBetween == false)">
+                <p-dropdown [options]="criteriaSelectionValueList" class='type-list' [(ngModel)]="selectedValue1"  appendTo="body" placeholder=" " optionLabel="label" optionValue="value"></p-dropdown>
+            </span>
+            <span class="display-flex" *ngIf="selectedCriteriaType == 1 && isBetween == true">
+                <p-dropdown [options]="criteriaSelectionValueList" class='type-list' [(ngModel)]="selectedValue1"  appendTo="body" placeholder=" " optionLabel="label" optionValue="value"></p-dropdown>
+                <div class="mr-2 ml-2 mt-2">and</div>
+                <p-dropdown [options]="criteriaSelectionValueList" class='type-list' [(ngModel)]="selectedValue2"  appendTo="body" placeholder=" " optionLabel="label" optionValue="value"></p-dropdown>
+            </span>
+            <span class="p-float-label" *ngIf="(selectedCriteriaType == 2 && isBetween == false)">
+                <p-inputNumber mode="decimal" [(ngModel)]="selectedValue1" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+            </span>
+            <span class="p-float-label" *ngIf="selectedCriteriaType == 2 && isBetween == true">
+                <p-inputNumber mode="decimal" [(ngModel)]="selectedValue1" class="inputNumber" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber> 
+                <span class="mr-2 ml-2">and</span>
+                <p-inputNumber mode="decimal" [(ngModel)]="selectedValue2" class="inputNumber" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+            </span>
+            <span class="p-float-label" *ngIf="(selectedCriteriaType == 4 && isBetween == false)">
+                <input type="number" [(ngModel)]="selectedValue1" pInputText class="w-25" [min]="MIN_VALUE" [max]="MAX_VALUE"> 
+            </span>
+            <span class="p-float-label" *ngIf="selectedCriteriaType == 4 && isBetween == true">
+                <input type="number" [(ngModel)]="selectedValue1" pInputText class="w-25" [min]="MIN_VALUE" [max]="MAX_VALUE"> 
+                <span class="mr-2 ml-2">and</span>
+                <input type="number" [(ngModel)]="selectedValue2" pInputText class="w-25" [min]="MIN_VALUE" [max]="MAX_VALUE"> 
+            </span>
+        </div>
+        <div class='mt-3' *ngIf="(selectedCriteriaType == 3 && (selectedMeasureId != '0' && selectedMeasureId != '') && criteriaHHItemType != 'Yes/No')">
+            <span>{{'ADDRISKSEARCH.VALUE' | translate}} *</span>
+            <br>
+            <span class="p-float-label" *ngIf="isBetween == false">
+                <p-multiSelect *ngIf="criteriaHHItemType =='Selection'" class="selectedHHValue" appendTo="body" [options]="criteriaSelectionValueList" [(ngModel)]="selectedValues" defaultLabel="Select..." optionLabel="label" optionValue="value"></p-multiSelect>
+                <input *ngIf="criteriaHHItemType =='Text' || criteriaHHItemType == 'Comments'" type="text" class='name' [(ngModel)]="selectedValue1" pInputText="pInputText"/>
+                <input *ngIf="criteriaHHItemType =='Whole Number'" type="number" [(ngModel)]="selectedValue1" pInputText class="w-25"> 
+                <p-calendar placeholder="DD-MMM-YYYY" *ngIf="criteriaHHItemType =='Date'"  [showIcon]="true" [inputStyle]="{'width':'150px'}" appendTo="body"  inputId="basic" dateFormat="dd-M-yy" [(ngModel)]="selectedValue1"></p-calendar>
+                <p-inputNumber *ngIf="criteriaHHItemType =='Decimal Number'" mode="decimal" [(ngModel)]="selectedValue1" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+            </span>
+            <span class="p-float-label" *ngIf="criteriaHHItemType =='Whole Number' && isBetween == true">
+                <input type="number" [(ngModel)]="selectedValue1" pInputText class="w-25"> 
+                <span class="mr-2 ml-2">and</span>
+                <input type="number" [(ngModel)]="selectedValue2" pInputText class="w-25"> 
+            </span>
+            <span class="p-float-label" *ngIf="criteriaHHItemType =='Date' && isBetween == true">
+                <p-calendar placeholder="DD-MMM-YYYY" inputId="basic" dateFormat="dd-M-yy" [showIcon]="true" [inputStyle]="{'width':'150px'}" appendTo="body" [(ngModel)]="selectedValue1"></p-calendar>
+                <span class="mr-2 ml-2">and</span>
+                <p-calendar placeholder="DD-MMM-YYYY" inputId="basic" dateFormat="dd-M-yy" [showIcon]="true" [inputStyle]="{'width':'150px'}" appendTo="body" [(ngModel)]="selectedValue2"></p-calendar>
+            </span>
+            <span class="p-float-label" *ngIf="criteriaHHItemType =='Decimal Number' && isBetween == true">
+                <p-inputNumber mode="decimal" [(ngModel)]="selectedValue1" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+                <span class="mr-2 ml-2">and</span>
+                <p-inputNumber mode="decimal" [(ngModel)]="selectedValue2" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+            </span>
+        </div>
+        <div class='d-flex mt-5'>
+            <div class='cancel' style="width:150px;"><p-button label="Cancel" (onClick)="addNewRiskSearchCriteriaBox = false"></p-button>
+            </div>
+            <div class='w-100'></div>
+            <div class='submit-rsc' ><p-button label="Submit" (onClick)="saveRiskSearchCriteria()"></p-button>
+            </div>
+        </div>
+    </div>
+    <div id="myNav" class="overlay w-100" *ngIf="!riskSaved || dataLoading" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!riskSaved"> Saving...</span>
+            <span class="saved" *ngIf="dataLoading"> Loading...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-worker ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-risk'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Archive Risk" [(visible)]="showArchive"  [modal]="true">
+    <p>Are you sure you want to archive this risk?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showArchive = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-risk'><p-button label="Confirm"  (onClick)="archive()"></p-button></div>
+    </div>
+</p-dialog>
+<p-dialog header="Archive Risk Search Criteria" [(visible)]="showArchiveCriteria" [style]="{width: '450px'}" [modal]="true">
+    <p>Are you sure you want to archive this Risk Search Criteria?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel"  (onClick)='showArchiveCriteria = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-risk'><p-button label="Confirm"  (onClick)="archiveRiskSearchCriteria()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="isLoading" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

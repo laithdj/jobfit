@@ -1,0 +1,74 @@
+.heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+:host ::ng-deep .items .p-component {
+    width:20rem;
+}
+:host ::ng-deep .provider .p-component {
+    width:100%;
+}
+.heading-sm{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-color: #20BCD3;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
+    color: #20BCD3;
+}
+
+:host ::ng-deep .accordion .p-component {
+    font-family: "BentonSans-Regular";
+    font-size: 100%;
+}
+::ng-deep .p-sidebar-mask.p-component-overlay {
+    background: unset;
+    height:1px;
+}
+:host ::ng-deep .info .p-button {
+    color: #ffffff;
+    background: #20BCD3;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .add-attachment .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+
+:host ::ng-deep .actions .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 75px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.hh-modal {
+    width:550px;
+}
+.expand-title-name {
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    color: #20BCD3;
+}

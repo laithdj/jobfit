@@ -1,0 +1,65 @@
+<div>
+    <div class="row">
+        <div class="col-5 d-flex">
+            <label class="mt-2">Job/Tasks</label>
+            <span class="p-float-label ml-3 w-75 ">
+                <p-dropdown class="job-score" [options]="groupOptions" optionLabel="name" [group]="true" (onChange)="getMaterialHandling($event)" [(ngModel)]="selectedJobFitSummary"></p-dropdown>
+            </span>
+        </div>
+        <div class="col-5 d-flex">
+            <label class="mt-2">Show Items</label>
+            <span class="p-float-label ml-3 w-75">
+                <p-dropdown class="job-score" [options]="filterOptions" optionValue="id" optionLabel="label" (onChange)="filterFit($event)"></p-dropdown>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5" *ngIf="jobFitItemsGroups.length > 0 && optionSelected">
+    <p-table [value]="jobFitItemsGroups" dataKey="groupName" responsiveLayout="scroll" [expandedRowKeys]="expandedRows">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem"><p-button type="button" class="p-mr-2 info"  (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button></th>
+                <th pSortableColumn="name">Name   </th>
+                <th>Task Requirement (kg)</th>
+                <th>Worker Score (kg)</th>
+                <th>Fit</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-jobFitItem let-expanded="expanded">
+            <tr>
+                <td>
+                    <button type="button" pButton pRipple [pRowToggler]="jobFitItem" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+                <td><span class="header-label">{{jobFitItem.groupName}}</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-group>
+            <tr *ngFor="let items of findGroup(jobFitItems,group.groupName)">
+                <td></td>
+                <td>{{items.name}}</td>
+                <td>{{items.requirement}}</td>
+                <td>{{items.score}}</td>
+                <td>
+                    <i *ngIf="items.fit" class="pi pi-check green"></i>
+                    <i *ngIf="items.fit == false && items.score !== null" class="pi pi-times red"></i>
+                    <i *ngIf="items.fit == null" class="pi pi-circle-on" style="color:orange"></i>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false' [style]="{height:'10em'}">
+    <span class="legend mr-5">NT - Not Tested</span>
+    <span class='legend mr-5'><i class="pi pi-check green"></i> - Jobfit Match</span>
+    <span class='legend mr-5'><i class="pi pi-times red"></i> - Jobfit Mismatch</span>
+    <span class='legend mr-5'><i class="pi pi-circle-on orange"></i> - Not Tested</span>
+</p-sidebar>
+<div class="overlay w-100" *ngIf="!loaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

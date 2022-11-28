@@ -1,0 +1,6 @@
+<p-dialog [header]="title" [(visible)]="showError" [modal]="true" [closable]="false" class="pop-up">
+    <p>{{errorMessage}}</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='close-btn'><p-button label="Close" class='actions' (onClick)='showError = false'></p-button></div>
+    </div>
+</p-dialog>

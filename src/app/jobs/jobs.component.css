@@ -1,0 +1,31 @@
+:host ::ng-deep .p-breadcrumb {
+    background: unset;
+    border: unset;
+    padding-left: 0;
+}
+:host ::ng-deep .p-component {
+    font-family: "Inter-Regular";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    color: #212529;
+}
+@media screen and (max-width: 1100px){ /* scale 150% */
+  ::ng-deep .p-menubar.p-menubar-mobile-active .p-menubar-root-list {
+    display: flex !important;
+    flex-direction: column !important;
+    top: 100% !important;
+    right: 50% !important;
+    left: unset !important;
+    z-index: 1 !important;
+ }
+ ::ng-deep .p-menubar .p-menubar-root-list {
+  position: absolute !important;
+  display: none !important;
+  padding: 0.25rem 0 !important;
+  background: #222e50 !important;
+  border: 0 none !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%) !important;
+  width: 50% !important;
+ }
+}

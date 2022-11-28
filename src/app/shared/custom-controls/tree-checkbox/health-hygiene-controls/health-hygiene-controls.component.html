@@ -1,0 +1,63 @@
+<div *ngIf="typeId === 1">
+    <input type="text" [disabled]="disabled" (change)="onValueChange()" [(ngModel)]="value" pInputText [style]="{'width':'400px'}"> 
+</div>
+<div *ngIf="typeId === 2 && !criteria" >
+  <p-multiSelect [disabled]="disabled" [options]="listItem" appendTo="body" [selectionLimit]="selectionLimit" [(ngModel)]="value" selectedItemsLabel="{0} items selected" placeholder="Please select..." optionLabel="name" optionValue="id" class='mr-2' (onChange)="onValueChange()"></p-multiSelect>
+</div>
+<div *ngIf="typeId === 2 && criteria" >
+    <p-multiSelect [disabled]="disabled" [options]="listItem" appendTo="body" [(ngModel)]="value" selectedItemsLabel="{0} items selected" placeholder="Please select..." optionLabel="name" optionValue="name" class='mr-2' (onChange)="onValueChange()"></p-multiSelect>
+</div>
+<div *ngIf="typeId === 3">
+    <p-inputNumber  [disabled]="disabled" inputId="minmaxfraction" mode="decimal" [(ngModel)]="value" (onBlur)="onValueChange()" [minFractionDigits]="2" [maxFractionDigits]="5">
+    </p-inputNumber>
+</div>
+<div *ngIf="typeId === 4">
+    <p-inputNumber [disabled]="disabled" inputId="decrangefrom" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" (onBlur)="onValueChange(true)" [(ngModel)]="value"></p-inputNumber>
+    <span class='ml-1 mr-1'> To </span>
+    <p-inputNumber  [disabled]="disabled" inputId="decrangeto" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" (onBlur)="onValueChange(true)" [(ngModel)]="value2"></p-inputNumber>
+</div>
+<div *ngIf="typeId === 5">
+    <input type="number" [disabled]="disabled" (change)="onValueChange()" [(ngModel)]="value" pInputText class="w-25"> 
+</div>
+<div *ngIf="typeId === 6">
+    <input type="number" [disabled]="disabled" (change)="onValueChange(true)" [(ngModel)]="value" pInputText class="w-25"> 
+    <span class='ml-1 mr-1'> To </span>
+    <input type="number" [disabled]="disabled" (change)="onValueChange(true)" [(ngModel)]="value2" pInputText class="w-25"> 
+</div>
+<div *ngIf="typeId === 7">
+    <p-calendar [disabled]="disabled" placeholder="DD-MMM-YYYY" [(ngModel)]="value" (onSelect)="onValueChange()" appendTo="body" dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
+</div>
+<div *ngIf="typeId === 8">
+    <p-calendar [disabled]="disabled" placeholder="DD-MMM-YYYY" (onSelect)="onValueChange(true)" [(ngModel)]="value" dateFormat="dd-M-yy" appendTo="body" [showIcon]="true"></p-calendar >
+    <span class='ml-1 mr-1'> To </span>
+     <p-calendar [disabled]="disabled" placeholder="DD-MMM-YYYY" (onSelect)="onValueChange(true)" [(ngModel)]="value2" dateFormat="dd-M-yy" appendTo="body" [showIcon]="true"></p-calendar>
+</div>
+<div *ngIf="typeId === 11">
+    <p-editor [readonly]="disabled" name="comments" [(ngModel)]="value" (onTextChange)="onValueChange()" class='text-editor-height' [style]="{'height':'120px'}">
+        <ng-template pTemplate="header">
+            <span class="ql-formats">
+                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button type="button" class="ql-strike" aria-label="Strike"></button>
+                <button type="button" class="ql-link" aria-label="Strike"></button>
+                <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+            </span>
+        </ng-template>
+    </p-editor>
+</div>
+<div *ngIf="typeId === 9">
+    <div class='d-flex'>
+        <div class="p-field-radiobutton mr-2">
+            <p-radioButton [disabled]="disabled" name="yesNo" value="Yes" (onClick)="onValueChange()" [(ngModel)]="value" label="Yes"></p-radioButton>
+        </div>
+        <div class="p-field-radiobutton mr-2">
+            <p-radioButton [disabled]="disabled" name="yesNo" value="No" [(ngModel)]="value" (onClick)="onValueChange()"  label="No"></p-radioButton>
+        </div>
+    </div>
+</div>
+
+<div  *ngIf="typeId === 10"> 
+    
+</div>

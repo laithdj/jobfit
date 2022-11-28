@@ -1,0 +1,171 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Health and Hygiene Criteria</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[0]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex' *ngIf="HHCLoaded">
+            <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,71) ? 'edit mt-3' : 'disable-btn mt-3'"  style="width:180px;height:40px"><p-button label="Add H&H Criteria"  (onClick)="addNewHHC(71)"></p-button></div>
+            <div class='w-100'></div>
+        </div>
+</div >
+
+<div class='main mt-3'>
+    <div style='padding-bottom:10px;padding-left:15px;padding-right:15px;' *ngIf="HHCLoaded">
+        <p-table #dt  [rows]="10" [paginator]="false" [value]='hhCriteria' responsiveLayout="scroll"
+        [rowHover]="true" dataKey="id"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+       <ng-template pTemplate="header">
+           <tr>
+               <th>Name</th>
+               <th class="center">Field</th>
+               <th class="center">Criteria</th>
+               <th class="center" style="width: 15rem;" pSortableColumn="req"> Values</th>
+               <th style="width: 5rem;"></th>
+           </tr>
+       </ng-template>
+       <ng-template pTemplate="body" let-hhc>
+           <tr>
+               <td>{{hhc?.healthHygieneItem?.healthHygiene?.name}}</td>
+               <td class="center">{{hhc?.healthHygieneItem?.name}}</td>
+               <td class="center">{{hhc?.operator?.name}}</td>
+               <td class="center">{{hhc?.valuesForDisplay}}</td>
+               <td><div class='edit'><p-button  label="View/Edit" class='f-r' (onClick)="viewEditHHC(hhc)"></p-button></div></td>
+           </tr>
+       </ng-template>
+       </p-table>
+       <div class="d-flex" style="justify-content: center;">
+        <p-paginator [rows]="rowCount" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+        </p-paginator>
+        <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-1"></p-dropdown>
+       </div> 
+    </div>
+</div>
+
+<p-dialog header="Add H & H Criteria Details" [(visible)]="newHHC" [modal]="true">
+    <div class="job-modal">
+        <div>
+            <span>Name *</span><br>
+            <p-dropdown [options]="healthHygienes" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name"  (onChange)="setHealthHygiene($event)"  [(ngModel)]="healthHygieneCriteria.healthHygieneItem.healthHygieneId"></p-dropdown>
+        </div>
+        <div>
+            <span>Field *</span><br>
+            <p-dropdown [options]="healthHygieneResults" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name" (onChange)="getInputItem($event)" [(ngModel)]="healthHygieneCriteria.healthHygieneItemId"></p-dropdown>
+        </div>
+        <div>
+            <span>Criteria *</span><br>
+            <p-dropdown [options]="operators" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [(ngModel)]="healthHygieneCriteria.operatorId"></p-dropdown>
+        </div>
+        <div>
+            <span>Select Values *</span><br>
+            <health-hygiene-controls [typeId]="selectedInputItem.type.id" [inputItem]="selectedInputItem" (valueChange)="getValue($event)" [criteria]="true"></health-hygiene-controls>
+        </div>
+        <div class='mt-3'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  [style]="{'height':'120px'}" name="comments"  class='text-editor-height' [(ngModel)]="healthHygieneCriteria.notes">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelViewAdd()"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="Submit" (onClick)="saveHealthHygieneCriteria()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="View/Edit H & H Criteria Details" [(visible)]="editHHCBox" [modal]="true">
+    <div class="job-modal">
+        <div>
+            <span>Name *</span><br>
+            <p-dropdown [disabled]="!editMode" [options]="healthHygienes" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name"  (onChange)="setHealthHygiene($event)"  [(ngModel)]="healthHygieneCriteria.healthHygieneItem.healthHygieneId"></p-dropdown>
+        </div>
+        <div>
+            <span>Field *</span><br>
+            <p-dropdown [disabled]="!editMode" [options]="healthHygieneResults" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name" (onChange)="getInputItem($event)" [(ngModel)]="healthHygieneCriteria.healthHygieneItemId"></p-dropdown>
+        </div>
+        <div>
+            <span>Criteria *</span><br>
+            <p-dropdown [disabled]="!editMode" [options]="operators" class='job-list' optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [(ngModel)]="healthHygieneCriteria.operatorId"></p-dropdown>
+        </div>
+        <div>
+            <span>Select Values *</span><br>
+            <health-hygiene-controls [disabled]="!editMode" [typeId]="selectedInputItem.type.id"  [criteria]="true" [inputItem]="selectedInputItem" (valueChange)="getValue($event)" [initialValue]="initialValue"></health-hygiene-controls>
+        </div>
+        <div class='mt-3'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  [readonly]="!editMode" [style]="{'height':'120px'}" name="comments"  class='text-editor-height' [(ngModel)]="healthHygieneCriteria.notes">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelViewEdit()"></p-button></div>
+            <div  *ngIf="editMode" [ngClass]="!isFunctionBtnValid(functionList$ | async ,59) ? 'archive-job ml-2' : 'disable-btn ml-2'" style="width:120px;height:40px"><p-button label="Archive" (onClick)="archiveBtn(59)"></p-button></div>
+            <div *ngIf="!editMode"  [ngClass]="!isFunctionBtnValid(functionList$ | async ,58) ? 'edit ml-2' : 'disabled-btn ml-2'" class='edit ml-2'><p-button label="Edit" (onClick)="editHHC(63)"></p-button></div>
+
+            <div class='w-100'></div>
+            <div class='submit-job' *ngIf="editMode"><p-button label="Submit" (onClick)="saveHealthHygieneCriteria()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<!-- 
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job-association ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-job-association'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+-->
+<p-dialog header="Archive H & H Criteria" [(visible)]="showArchive" [modal]="true">
+    <p>Are you sure you want to archive this H & H Criteria?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-job ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchive = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" class='actions' (onClick)="archiveHHC()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!HHCLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

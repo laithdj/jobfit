@@ -1,0 +1,944 @@
+        <div >
+            <div class="row">
+                <div class="col-5 d-flex">
+                    <div class="top-main-heading mr-auto">JobFit Results</div>
+                </div>
+                <div class="col-7 d-flex top-buttons">
+                    <span class="task-opt-dropdown mr-2">
+                        <p-dropdown class="job-score" [options]="summaryFilterOptions" optionLabel="name" optionValue="id" (onChange)="this.getJobFitSummary(this.workerId,this.jobId, $event);"></p-dropdown>
+                    </span>
+                    <p-button class="action mr-2" label="Options" (onClick)="optionsBox = true"></p-button>
+                    <p-button  class="action mr-2" label="Task Filter" (onClick)="taskFilter = true"></p-button>
+                    <div class='print'><p-button  label="Generate Report" (onClick)="goToReport()"></p-button></div>
+                </div>
+            </div>
+        </div>
+       <div *ngIf="loaded">
+      
+        <p-accordion>
+            <p-accordionTab [selected]="true">
+                <p-header>
+                    <span class="mr-2">JobFit Summary</span>
+                    <p-button type="button" class="p-mr-2 info"  (onClick)="$event.stopPropagation(); visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+                </p-header>
+                <div class="row heading">
+                    <div class="col-3">
+                        <span class="bold-f">Key: </span><span class="essential">Essential</span>
+                    </div>
+                    <div class="col suitable">
+                        <span class="bold-f">Suitable</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Postural <br/> Tolerances</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Material <br/> Handling</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Grip <br/> Strength</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Health & <br/> Hygiene</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Human <br/> Factors</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">PPE</span>
+                    </div>
+                    <div class="col">
+                        <span class="bold-f">Environment</span>
+                    </div>
+                    </div>
+                    
+                    <div class="row heading primary-background">
+                        <div class="col-3">
+                            <span class="margin-t-7 heading-color bold-f">Name</span>
+                        </div>
+                        <div class="col suitable">
+                            <span></span>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col border-white">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span><i class="pi pi-check heading-color bold-f"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">X</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="heading-color bold-f">NT</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row heading-3 secondary-background ">
+                            <span class="bold-f">Job</span>
+                        </div>
+                        <div class="row heading" *ngFor="let jfs of jobFitSummaryJobs" >
+                            <div class="col-3">
+                                <span class="margin-t-7"><a [routerLink]="" (click)="goToJobDetails(jfs.id)">{{jfs?.name}}</a></span>
+                            </div>
+                            <div class="col">
+                                <span> <span><p-checkbox (onChange)="updateSuitableTask($event, jfs.id)"></p-checkbox></span>
+                            </span>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.posturalTolerances?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col ">
+                                        <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.id">{{jfs?.posturalTolerances?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.id">{{jfs?.posturalTolerances?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.id">{{jfs?.posturalTolerances?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.materialHandlings?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.id">{{jfs?.materialHandlings?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.id">{{jfs?.materialHandlings?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.id">{{jfs?.materialHandlings?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.gripStrength?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.id">{{jfs?.gripStrength?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.id">{{jfs?.gripStrength?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.id">{{jfs?.gripStrength?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.healthHygiene?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.id">{{jfs?.healthHygiene?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.id">{{jfs?.healthHygiene?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.id">{{jfs?.healthHygiene?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.humanFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.id">{{jfs?.humanFactors?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.id">{{jfs?.humanFactors?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.id">{{jfs?.humanFactors?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.ppe?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.id">{{jfs?.ppe?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.id">{{jfs?.ppe?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.id">{{jfs?.ppe?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div [ngClass]="jfs?.environmentalFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.id">{{jfs?.environmentalFactors?.pass}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.id">{{jfs?.environmentalFactors?.fail}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.id">{{jfs?.environmentalFactors?.notTested}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row heading-3 secondary-background ">
+                                <span class="bold-f">Included Task Associations</span>
+                            </div>
+                            <div class="row heading" *ngFor="let jfs of jobFitSummaryTasksIncluded">
+                                <div class="col-3">
+                                    <a [routerLink]="" (click)="goToTaskOverview(jfs?.id)" [class]="jfs?.required ? 'essential': ''">{{jfs?.name}}</a>
+                                </div>
+                                <div class="col">
+                                    <span><span><p-checkbox (onChange)="updateSuitableTask($event, jfs.id)"></p-checkbox></span>
+                                </span>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.posturalTolerances?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col ">
+                                            <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.materialHandlings?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.gripStrength?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.healthHygiene?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.humanFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.ppe?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div [ngClass]="jfs?.environmentalFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.pass}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.fail}}</a>
+                                        </div>
+                                        <div class="col">
+                                            <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.notTested}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="row heading-3 secondary-background ">
+                                    <span class="bold-f">Additional Task Associations
+                                    </span>
+                                </div>
+                                <div class="row heading" *ngFor="let jfs of jobFitSummaryTasksAdded">
+                                    <div class="col-3">
+                                        <a [routerLink]="" (click)="goToTaskOverview(jfs?.id)" [class]="jfs?.required ? 'essential': ''">{{jfs?.name}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <span><span><p-checkbox (onChange)="updateSuitableTask($event, jfs.id)"></p-checkbox></span>
+                                    </span>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.posturalTolerances?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col ">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.materialHandlings?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.gripStrength?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.healthHygiene?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.humanFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.ppe?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.environmentalFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                <div class="row heading-3 secondary-background ">
+                                    <span class="bold-f">Excluded Task Associations
+                                    </span>
+                                </div>
+                                <div class="row heading" *ngFor="let jfs of jobFitSummaryTasksExcluded">
+                                    <div class="col-3">
+                                        <a [routerLink]="" (click)="goToTaskOverview(jfs?.id)" [class]="jfs?.required ? 'essential': ''">{{jfs?.name}}</a>
+                                    </div>
+                                    <div class="col">
+                                        <span><span><p-checkbox (onChange)="updateSuitableTask($event, jfs.id)"></p-checkbox></span>
+                                    </span>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.posturalTolerances?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col ">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/postural-tolerances/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.posturalTolerances?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.materialHandlings?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/material-handling/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.materialHandlings?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.gripStrength?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/grip-strength/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.gripStrength?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.healthHygiene?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/health-hygiene/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.healthHygiene?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.humanFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/human-factors/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.humanFactors?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.ppe?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/ppe/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.ppe?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div [ngClass]="jfs?.environmentalFactors?.fail ? 'row orange-background' : 'row green-background'">
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.pass}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.fail}}</a>
+                                            </div>
+                                            <div class="col">
+                                                <a [routerLink]="'../../../../job-fitting/environmental/' + workerId + '/' + jfs.jobId + '/' + jfs.id">{{jfs?.environmentalFactors?.notTested}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                <span>! = The user does not have security access to this information</span>
+            </p-accordionTab>
+            <p-accordionTab header="JobFit Score">
+                <div class='save  mt-4'><p-button label="Submit" (onClick)="saveJobFitSummaryScore()" [disabled]="disableScore"></p-button></div><br />
+                <div class="row">
+                    <div class="col d-flex">
+                        <label class="mt-2">Date * <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                        <span class="p-float-label ml-3">
+                            <p-calendar placeholder="DD-MMM-YYYY" [(ngModel)]="jobFitSummaryScore.date" [disabled]="disableScore" [showIcon]="true"></p-calendar>
+                        </span>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <label class="mt-2">JobFit Score *</label>
+                        <span class="p-float-label ml-3 ">
+                            <p-dropdown class="job-score" [options]="jobFitScores" optionValue="id"  optionLabel="name" [disabled]="disableScore" [(ngModel)]="jobFitSummaryScore.jobFitScoreId"></p-dropdown>
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <span>Comments </span><br>
+                    <span class="p-float-label">
+                        <p-editor  name="comments" [(ngModel)]="jobFitSummaryScore.comments" [style]="{'height':'120px'}" [readonly]="disableScore">
+                            <ng-template pTemplate="header">
+                                <span class="ql-formats">
+                                    <button type="button" class="ql-bold" aria-label="Bold" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-italic" aria-label="Italic" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-underline" aria-label="Underline" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-strike" aria-label="Strike" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-link" aria-label="Strike" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-list" aria-label="Ordered List" value="ordered" [disabled]="disableScore"></button>
+                                    <button type="button" class="ql-list" aria-label="Unordered List" value="bullet" [disabled]="disableScore"></button>
+                                </span>
+                            </ng-template>
+                        </p-editor>
+                    </span>
+                </div>
+            </p-accordionTab>
+        </p-accordion>
+       </div>
+
+    <p-dialog [header]="'Options'" [(visible)]="optionsBox" [modal]="true">
+        <div class="options-modal">
+            <div class="heading-2">Should Functional Analysis Assumption Fitting be used?</div>
+            <div class="line"></div>
+            <p-message severity="info" text="Using assumption fitting involves assuming that if a value on the latest fit is not tested, then the software should look further into older 
+            records for that worker/task until it finds a value for that test" styleClass="p-mr-2" class='info'></p-message>
+            <div style="margin-top: 15px;">
+                <p-radioButton name="city" value="faaNo" [(ngModel)]="summaryOptions.FaAssumptionsFitting" inputId="city1"></p-radioButton>
+                <label for="city1" class='ml-1'>No - Only use current functional analysis records </label>
+                <div class="d-flex">
+                    <p-radioButton name="city"  value="faaYes" [(ngModel)]="summaryOptions.FaAssumptionsFitting" inputId="city1"></p-radioButton>
+                    <label for="city1" class='ml-1 mt-2'>Yes - Use records back to </label>
+                    <p-calendar placeholder="DD-MMM-YYYY" class="ml-1 mr-2" [disabled]="summaryOptions.FaAssumptionsFitting === 'faaNo'" dateFormat="dd-M-yy" [(ngModel)]="summaryOptions.FaAssumptionsFittingDate" appendTo="body" [showIcon]="true"></p-calendar>
+                    <label class="sample-dob sample-date">e.g. 01-Jul-2000</label>
+                </div>
+            </div>
+            <div class="heading-2">Which Functional Analysis records should be used?</div>
+            <div class="line"></div>
+            <div class="d-flex">
+                <p-checkbox name="city" value="NotSet" [(ngModel)]="summaryOptions.faRecords" inputId="city1"></p-checkbox>
+                <label for="city1" class='ml-1 mt-2'>Don't use records older than</label>
+                <p-calendar placeholder="DD-MMM-YYYY" class="ml-1 mr-2" [disabled]="!summaryOptions.faRecords"  dateFormat="dd-M-yy" [(ngModel)]="summaryOptions.faRecordsDate" appendTo="body" [showIcon]="true"></p-calendar>
+                <label class="sample-dob sample-date">e.g. 01-Jul-2000</label>
+            </div>
+
+            <div class='buttons-footer d-flex mt-5'>
+                <div class='cancel ml-2'><p-button label="Cancel" (onClick)="optionsBox = false"></p-button></div>
+                <div class='w-100'></div>
+                <div class='submit'><p-button label="Submit" (onClick)="saveOptions()"></p-button></div>
+            </div>
+        </div>
+    </p-dialog>
+    <p-dialog header="Add Task Association/s" [(visible)]="selectTask" [modal]="true">
+    <div class="mt-5 filter d-flex w-100">
+        <p-dropdown  optionLabel="name" optionValue="code" [options]="field" [(ngModel)]="quickSearch.field" [placeholder]="'TASKSLIST.NAMEDROPDOWN' | translate" class='name'></p-dropdown>
+        <p-dropdown  optionLabel="name" optionValue="code" [options]="type" [(ngModel)]="quickSearch.type" [placeholder]="'TASKSLIST.CONTAINSDROPDOWN' | translate" class='contains'></p-dropdown>
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input type="text" class='search-bar' [disabled]="isFunctionValid(functionList$ | async ,8)" (keyup.enter)="getTasks(1,10, true)"  [(ngModel)]="quickSearch.value" pInputText [placeholder]="'TASKSLIST.SEARCHBAR' | translate"  />
+        </span>
+            
+        <div class='toggle'>
+            <label class="switch">
+                <input type="checkbox" [checked]='advancedSearch' (click)='advancedSearchToggle()'>
+                <span class="slider round"></span>
+                </label>
+        </div>
+        <span class="mt-title">{{'TASKSLIST.ADVANCESEARCHTITLE' | translate}}</span>
+    </div>
+    <div class='advanced-search' *ngIf='advancedSearch'>
+        <p-tabView>
+            <p-tabPanel [header]="'TASKSLIST.DETAILSHEADER' | translate">
+                <p-message severity="info" [text]="'TASKSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+                <div class='d-flex  mt-4'>
+                    <span class="p-input-icon-left mr-2 w-100">
+                        <i class="pi pi-search"></i>
+                        <input type="text" class='search-bar-advanced' [(ngModel)]="quickSearch.value" pInputText [placeholder]="'TASKSLIST.SEARCHADVANCED' | translate"  />
+                    </span>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn mt-1'><p-button [label]="'TASKSLIST.SEARCHBUTTONLABEL' | translate" (onClick)="getTasks(1,10)"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.FLAGSHEADER' | translate">
+                <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.flagsOption" placeholder="(Do not filter by flags)" (onChange)="getFlagsTree()" class='flag-search'></p-dropdown>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.FLAGSLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]='flagTree' selectionMode="checkbox"  [(selection)]="selectedFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CANCELBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+    
+            <p-tabPanel [header]="'TASKSLIST.GROUPSHEADER' | translate">
+                <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="advancedSearchModel.groupsOption" optionLabel="name" optionValue="id" (onChange)="getGroupsTree()" placeholder="(Do not filter by groups)" class='flag-search'></p-dropdown>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.GROUPSLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]="groupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CANCELBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+    
+            <p-tabPanel [header]="'TASKSLIST.JOBSHEADER' | translate">
+                <div class='d-flex'>
+                    <label>{{'TASKSLIST.LINKEDJOBSLABEL' | translate}}</label>
+                    <p-multiSelect [options]="linkedJobs" [(ngModel)]="advancedSearchModel.jobs.jobs"  selectedItemsLabel="{0} items selected" optionLabel="name" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                    <label>{{'TASKSLIST.FREQUENCYLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name"    [options]="freqOptions" [(ngModel)]="advancedSearchModel.jobs.frequency" (onChange)="check()"  class='flag-search'></p-dropdown>
+                </div>
+                <span class='filter-title'>{{'TASKSLIST.ANYASSOCIATEDLABEL' | translate}}</span>
+                <div class='d-flex mt-3'>
+                    <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.jobs.searchOption" placeholder="(Do not filter by flags)" (onChange)="getJobsFlagTree()" class='flag-search mr-2'></p-dropdown>
+                </div>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.FLAGSLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]='jobFlagTree' selectionMode="checkbox" [(selection)]="selectedLinkedJobsTree"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CANCELBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.SITESHEADER' | translate">
+                <span class='filter-title'>{{'TASKSLIST.SITESEARCH' | translate}}</span>
+                <p-message severity="info" [text]="'TASKSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.SITESLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CANCELBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.FUNCTIONALANALYSIS' | translate">
+                <span class='filter-title'>{{'TASKSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+                <div class='d-flex mt-2'>
+                    <label>{{'TASKSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.from" [showIcon]="true"></p-calendar>
+                    <label>{{'TASKSLIST.ANDLABEL' | translate}}</label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.to" [showIcon]="true"></p-calendar>
+                </div>
+                <div class='d-flex mt-3 mb-custom'>
+                    <label>{{'TASKSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                    <p-multiSelect [options]="providers" [(ngModel)]="advancedSearchModel.functionalAnalysis.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                    <label>{{'TASKSLIST.EVENTLABEL' | translate}}</label>
+                    <p-multiSelect [options]="events" [(ngModel)]="advancedSearchModel.functionalAnalysis.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                </div>
+                <span class='filter-title mt-2'>{{'TASKSLIST.FUNCTIONALLABEL' | translate}}</span>
+                <div class='d-flex mt-3'>
+                    <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id" placeholder="(Do not filter by flags)" (onChange)="getFAflagsTree()" [options]="searchOptions" class='flag-search mr-2'></p-dropdown>
+                </div>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.FLAGSLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]="FAflagTree" selectionMode="checkbox" [(selection)]="selectedFAFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1'><p-button [label]="'TASKSLIST.CANCELBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+    <div class="mt-3 filter d-flex">
+        <div class='new-task'><p-button class="mr-2" [label]="'TASKSLIST.NEWTASKBUTTONLABEL' | translate" (onClick)='newTaskBox = true'  [disabled]="isFunctionValid(functionList$ | async ,9)"></p-button></div>
+        <div class='refresh'><p-button [label]="'TASKSLIST.REFRESHBUTTONLABEL' | translate"></p-button></div>
+        <div class='w-100'></div>
+            <p-dropdown  optionLabel="name" placeholder="View All" class='view-all'></p-dropdown>
+        <p-dropdown  optionLabel="name" placeholder="Results 1 - 50" class='results-filter'></p-dropdown>
+    </div>
+    <div *ngIf="!taskResult" class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    <div class='mt-5' style='padding-bottom:10px;' *ngIf="taskResult">
+        <p-table #dt [first]="first"  [rows]="5"  [value]='tasks' responsiveLayout="scroll"
+        [rowHover]="true" dataKey="id"
+        [(selection)]="selectedTasks"
+        [scrollable]="true" scrollHeight="flex"
+            [showCurrentPageReport]="false">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 2.5rem"></th>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th  pSortableColumn="name">{{'TASKSLIST.NAMEHEADER' | translate}}   </th>
+                <th style="width: 5rem;" pSortableColumn="Department">{{'TASKSLIST.DEPTHEADER' | translate}} </th>
+                <th style="width: 5rem;" pSortableColumn="Group">{{'TASKSLIST.GROUPHEADER' | translate}} </th>
+                <th style="width: 5rem;" pSortableColumn="Flag">{{'TASKSLIST.FLAGHEADER' | translate}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-task let-expanded="expanded">
+            <tr >
+            <td>
+                <button type="button" pButton pRipple [pRowToggler]="task" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            </td>
+            <td>
+                    <p-checkbox [value]="task" (onChange)="addToAdded($event, task.id)" ></p-checkbox>
+                </td>
+                <td ><a>{{task.name}}</a></td>
+                <td><i *ngIf='task.sites.length > 0' class="pi pi-briefcase"></i></td>
+                <td><i *ngIf='task.groups.length > 0' class="pi pi-clone"></i></td>
+                <td><i *ngIf='task.flags.length > 0' class="pi pi-flag"></i></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-task>
+            <tr>
+                <td colspan="10">
+                    <div class="p-p-3">
+                        <div class='row'>
+                                <div>
+                                    <span class='expand-title' *ngIf='task.sites.length > 0'>Department:</span>
+                                        <span *ngFor="let site of task.sites; let i = index">
+                                        {{site?.label}} <span *ngIf='task.sites[i + 1]'>,</span>
+                                    </span>
+                                        <br>
+                                    <span class='expand-title' *ngIf='task.groups.length > 0'>Groups:</span> 
+                                    <span *ngFor="let group of task.groups; let i = index">
+                                        {{group?.label}} <span *ngIf='task.groups[i + 1]'>,</span>
+                                    </span><br>
+                                    <span class='expand-title' *ngIf='task.flags.length > 0'>Flags:</span>
+                                    <span *ngFor="let flag of task.flags; let i = index">
+                                        {{flag?.label}} <span *ngIf='task.flags[i + 1]'>,</span>
+                                    </span>
+                                </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        </p-table>
+        <p-paginator [rows]="10" [totalRecords]="totalCount" (onPageChange)="onPageChange($event)"></p-paginator>
+    </div>
+    <div>
+        <p-dropdown class="job-score" [options]="[]" optionLabel="name" [group]="true"></p-dropdown>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="selectTask = false"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job d-flex flex-row-reverse'><p-button label="Submit" (onClick)="selectTaskBtn()" ></p-button></div>
+        </div>
+    </p-dialog>
+    <p-dialog [(visible)]="taskFilter" [header]="'Task Filter'" [modal]="true">
+        <div class="task-filter-modal">
+            <p-message severity="info" text="Please select the task association that you would like to include."  class='info'></p-message><br>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">Actions</label>
+                <p-dropdown optionLabel="name" optionValue="id" [options]="actionsList"  (onChange)="setAction($event)"  class='ml-2'></p-dropdown>
+            </div>
+            <p-table [value]="taskFilterGroups" dataKey="groupName" responsiveLayout="scroll" [expandedRowKeys]="expandedRows" >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem"></th> 
+                        <th pSortableColumn="name">Name   </th>
+                        <th>Requirement</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-jobFitItem let-expanded="expanded">
+                    <tr>
+                        <td>
+                            <button type="button" pButton pRipple [pRowToggler]="jobFitItem" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td>{{jobFitItem.groupName}}</td>
+                        <td></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-group>
+                    <tr *ngFor="let items of findGroup(group.groupName)">
+                        <td><p-checkbox [(ngModel)]="items.isActive" (onChange)="addToIncluded($event, items.taskSetId)" [value]="items" inputId="binary" [binary]="true"></p-checkbox></td>
+                        <td>{{items.name}}</td>
+                        <td>{{items.required ? 'Essential' : 'Non-Essential'}}</td>
+                    </tr>
+                </ng-template>
+            </p-table> 
+            <div class='buttons-footer d-flex mt-5'>
+                <div class='cancel ml-2'><p-button label="Cancel" (onClick)="taskFilter = false"></p-button></div>
+                <div class='w-100'></div>
+                <div class='submit'><p-button label="Submit" (onClick)="saveTaskFilter()"></p-button></div>
+            </div>
+        </div>
+    </p-dialog>
+    <p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false' [style]="{height:'10em'}">
+        <span class="legend-colors match mr-5">Jobfit Match</span> 
+        <span class="legend-colors notmatch mr-5">Jobfit Mismatch</span>
+        <span class="legend mr-5"><i class="pi pi-check"></i> - Match</span>
+        <span class="legend mr-5">X - Mismatch</span> 
+        <span class="legend mr-5">NT - Not Tested</span> 
+    </p-sidebar>
+    <p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+        <p>{{errorMessage}}</p>
+        <ng-template pTemplate="footer">
+            <div class='buttons-footer d-flex mt-5'>
+                <div class='cancel ml-2'></div>
+                <div class='w-100'></div>
+                <div class='submit-job'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <div class="overlay w-100" *ngIf="!loaded" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+    </div>

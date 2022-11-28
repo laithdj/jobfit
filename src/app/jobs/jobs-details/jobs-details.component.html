@@ -1,0 +1,394 @@
+
+<div class="d-flex w-100" *ngIf="jobDetailsLoaded" >
+    <div class="heading mr-auto">{{'JOBDETAILS.MAINHEADING' | translate}}</div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.CopyJobs] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button label="Copy Job" (onClick)="copyJob()"></p-button></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.EditJob] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'JOBDETAILS.EDITREPORTBUTTON' | translate" (onClick)="editRecord()"></p-button></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteJob] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'JOBSLIST.DELETEBUTTONLABEL' | translate" (onClick)="showArchive()"></p-button></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewReports] && authorisedFunctionList.Function[eFunctions.ViewJobs] ? 'generate' : 'disable-generate'"class='generate'><p-button [label]="'JOBDETAILS.GENERATEREPORTBUTTON' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="container mt-5" *ngIf="jobDetailsLoaded">
+    <div class="row">
+      <div class=" col-8">
+          <div class='desc'>
+            <div class="row">
+                <div class='col'>
+                    <span>{{jobLastUpdate | date: 'dd-MMM-yyyy'}}</span>
+                    <span class='heading-2'>{{jobsDetails?.mainDescriptionHeading}}</span>
+                    <div class='row'>
+                        <div class='col'>
+                            <span class='small-heading'>{{'JOBDETAILS.JOBDESCRIPTION' | translate}}</span><br><br>
+                                <span class="ql-editor"  [innerHTML] ="jobsDetails?.overViewDescription">
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class='col'>
+                    <p-progressBar *ngIf="!imageLoaded"  mode="indeterminate" [style]="{'height': '6px','width':'100%', 'margin-top': '10%'}"></p-progressBar>
+                    <a *ngIf="overviewImage.image.length > 0 && imageLoaded" [routerLink]="" (click)="downloadAttachment(overviewImage.id, overviewImage.contentType)"><img *ngIf="overviewImage.image.length > 0 && imageLoaded" src="{{ 'data:image/jpeg;base64,' + overviewImage.image}}" class='float-r'></a>
+                    <div class="center" *ngIf="overviewImage.image.length == 0 && imageLoaded" >
+                        <p>No Image Selected.</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <div class='jobs mt-2'>
+            <span class='heading-3'>{{'JOBDETAILS.ASSOCIATEDJOBSLABEL' | translate}}</span>
+            <span *ngIf="(authorisedFunctionList.Function[eFunctions.ViewTasks])">
+                <div *ngFor="let jobs of associatedTask?.tasks">
+                    <span class='med-heading'>{{jobs.task?.name}}</span>
+                    <div class='d-flex'>
+                        <span class='mr-2 label'>{{'TASKDETAILS.PRIORITYLABEL' | translate}}</span><p-rating [(ngModel)]="jobs.priority" [cancel]="false" [disabled]="true"  [stars]="5" iconOnClass="fa fa-square" iconOffClass="fa fa-square-o"></p-rating><div class='mr-3'></div>
+                        <span class='mr-2 label'>{{'TASKDETAILS.RATIOOFTIMELABEL' | translate}}</span><p-progressBar [value]="jobs.ratio" class='mt-custom'></p-progressBar><div class='mr-3'></div>
+                        <span class='mr-2 label'>{{'TASKDETAILS.REQUIREMENTLABEL' | translate}}</span><span class='mr-2 label' style='color:#222E50'>{{jobs.req.name}}</span>
+                    </div>
+                </div>
+            </span>
+            <div class="mt-3" *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewTasks])">
+                <p>Your current security setting does not give you access to this information.  Please check with your Administrator for access.</p>
+            </div>
+          </div>
+          <div class='gallery mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.GALLERYLABEL' | translate}}</span>
+            <div class='row' *ngIf="(authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                <p-galleria #galleria [value]="gallery" [(activeIndex)]="activeIndex" [numVisible]="5" [containerStyle]="{'width':'100%', 'margin-top':'5px'}"  [showThumbnails]="showThumbnails"
+                [showItemNavigators]="true" [showItemNavigatorsOnHover]="true" [circular]="true" [autoPlay]="true" [transitionInterval]="3000">
+                <ng-template pTemplate="item" let-item>
+                    <div style="min-width: 250px; min-height: 250px; text-align: center;"><a [routerLink]="" (click)="downloadAttachment(item?.id, item?.contentType)"><img src="{{ 'data:image/jpeg;base64,' + item.image}}" /></a></div>
+                </ng-template>
+                <ng-template pTemplate="thumbnail" let-item>
+                    <div class="p-grid p-nogutter p-justify-center">
+                        <img [src]="item.thumbnailImageSrc" />
+                    </div>
+                </ng-template>
+             </p-galleria>
+            </div>
+            <div class="mt-3" *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                <p>Your current security setting does not give you access to this information.  Please check with your Administrator for access.</p>
+            </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class='analysis'>
+            <span class='heading-3'>{{'JOBDETAILS.JOBBODYLABEL' | translate}}</span>
+            <div class="coming-soon">
+                <span class='heading-3'>Coming Soon</span>
+                </div>
+        </div>
+        <div class='notes mt-2'>
+            <span class='heading-3'>{{'JOBDETAILS.NOTESLABEL' | translate}}</span>
+            <span *ngIf='authorisedFunctionList.Function[eFunctions.ViewNotes]'>
+                <ul  class='mt-1' *ngFor="let notes of jobsDetails.notes">
+                    <hr/>
+                    <li  class="notes-break" [innerHtml]="changeToPlainText(notes.noteField)">
+                    </li>
+                </ul>
+            </span>
+            <span class='mt-1' *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewNotes])">
+                <br/>
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </span>
+        </div>
+        <div class='site mt-2'>
+            <span class='heading-3'>{{'Departments' | translate}}</span>
+            <div *ngIf='selectedDeptTree.length > 0 && (authorisedFunctionList.Function[eFunctions.ViewDepartments] || authorisedFunctionList.Function[eFunctions.EditJob])'>
+                <p-tree [value]='selectedDeptTree' selectionMode="single">
+                    <ng-template pTemplate="default" let-dept>
+                        <div>
+                            <div style='padding:5px;' [class]="dept?.partialSelected == true ? 'selected-label':''">
+                                <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>
+                                {{dept.label}}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.EditJob] && !authorisedFunctionList.Function[eFunctions.ViewDepartments])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+        <div class='flags mt-2'>
+            <span class='heading-3'>{{'JOBDETAILS.FLAGSLABEL' | translate}}</span>
+            <div *ngIf='selectedFlagTree.length > 0 && (authorisedFunctionList.Function[eFunctions.AssignFlags] || authorisedFunctionList.Function[eFunctions.ViewFlags])'>
+                <p-tree [value]="selectedFlagTree"></p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.AssignFlags] && !authorisedFunctionList.Function[eFunctions.ViewFlags])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+        <div class='groups mt-2'>
+            <span class='heading-3'>{{'JOBDETAILS.GROUPSLABEL' | translate}}</span>
+            <div *ngIf='selectedGroupTree.length > 0 && (authorisedFunctionList.Function[eFunctions.AssignGroups] || authorisedFunctionList.Function[eFunctions.ViewGroups])'>
+                <p-tree [value]="selectedGroupTree"></p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.AssignGroups] && !authorisedFunctionList.Function[eFunctions.ViewGroups])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+<p-dialog header="Edit Record" [(visible)]="editJobBox" [closable]="false" [modal]="true">
+    <div class="new-task-modal">
+        <div class='mt-3'>
+            <span>Name *</span><br>
+            <span class="p-float-label">
+                <input type="text" class='new-task-name' class='w-100' [(ngModel)]="editJob.name" pInputText  />
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Description</span><br>
+            <span class="p-float-label">
+                <p-editor name="comments" class="comments w-100 text-editor-height" [(ngModel)]="editJob.description">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Department *</span><br>
+            <div class="notes-modal">
+                <div *ngIf="isLoading" class='loader'>
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+                <p-tree *ngIf="!isLoading" [value]='deptTree' selectionMode="single">
+                    <ng-template pTemplate="default" let-dept>
+                        <p-checkbox *ngIf="dept.typeId == 8" [binary]="true"  (onChange)="selectedDeptChange($event , dept)" [value]="dept.partialSelected" [(ngModel)]="dept.partialSelected"></p-checkbox>
+                        <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>
+                        {{dept.label}}
+                    </ng-template>
+                </p-tree>
+            </div>
+        </div>
+        <div class='d-flex mt-5'>
+            <div class='cancel' style="width:150px;"><p-button label="Cancel" (onClick)="editJobBox = false"></p-button>
+            </div>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="Submit" (onClick)="saveJob(editJob)"></p-button>
+            </div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Information" [(visible)]="displayInfo" [style]="{width: '450px'}" [modal]="true">
+    <p>{{infoMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="OK" (onClick)="navigateToJobList()"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-worker ml-2'></div>
+            <div class='w-100'></div>
+            <div class='save'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Archive Job" [(visible)]="showArchiveJob" [modal]="true" [style]="{width: '450px'}">
+    <p>Are you sure you want to archive this Job?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchiveJob = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='save'><p-button label="Confirm" class='actions' (onClick)="archive()"></p-button></div>
+    </div>
+
+    <div class="overlay w-100" *ngIf="isArchiving" >
+        <div class='archive-loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="archived"> Archiving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Copy Job" [(visible)]="copyBox" [closable]="false" [modal]="true">
+    <div class="new-task-modal">
+        <div class='accordion mt-3'>
+            <p-tabView>
+                <p-tabPanel header="Job Copy Options">
+            <p-accordion>
+                <p-accordionTab header="General">
+                    <h5>Include Options</h5>
+                    <hr>
+                    <div class='mt-3 d-flex w-100'>
+                        <span style="margin-top:2px; margin-right:10px;">Include</span>
+                        <br>
+                            <span class="p-float-label">
+                                <p-multiSelect [filter]="true" filterBy="name" [options]="includeList" [(ngModel)]="selectedOptions" selectedItemsLabel="{0} items selected" optionLabel="value" optionValue="id"  class='include-list'></p-multiSelect>
+                            </span>
+                        </div>
+                        <div class='mt-3 d-flex'>
+                            <span style="margin-top:2px; margin-right:10px;">Link To</span>
+                            <br><br>
+                            <div class='d-flex'>
+                                <div class="p-field-radiobutton mr-2">
+                                    <p-radioButton name="city" [value]="false" [(ngModel)]="selectLinkTo"  inputId="city1"></p-radioButton>
+                                    <label for="city1" class='ml-1'>Existing Associated Tasks</label>
+                                </div>
+                                <div class="p-field-radiobutton">
+                                    <p-radioButton name="city" [value]="true" [(ngModel)]="selectLinkTo" inputId="city2"></p-radioButton>
+                                    <label for="city2" class='ml-1'>Copy of Associated Tasks</label>
+                                </div>
+                            </div>
+                            </div>
+                            <h5>Include Options</h5>
+                            <hr>
+                                <div class='mt-3'>
+                                    <span>Append to Start/End of the Title</span>
+                                    <br><br>
+                                        <div class='d-flex'>
+                                            <span class="p-float-label" style="margin-right:23%">
+                                                Start <input  type="text"  [(ngModel)]="batchCopyOptions.primaryCopyOptions.renameOptions.nameAppendStart" class='w-100 h-25-c' pInputText />
+                                             </span>
+                                             <span class="p-float-label">
+                                                 End <input  type="text" [(ngModel)]="batchCopyOptions.primaryCopyOptions.renameOptions.nameAppendEnd" class='w-100 h-25-c' pInputText />
+                                              </span>
+                                        </div>
+                                </div>
+                                <div class='mt-3'>
+                                    <span>Delete from Start/End of the Title</span>
+                                    <br><br>
+                                        <div class='d-flex'>
+                                            <span class="p-float-label" style="margin-right:23%">
+                                                Start <input  type="text" [(ngModel)]="batchCopyOptions.primaryCopyOptions.renameOptions.nameDeleteStart"  class='w-100 h-25-c' pInputText />
+                                             </span>
+                                             <span class="p-float-label">
+                                                 End <input  type="text" [(ngModel)]="batchCopyOptions.primaryCopyOptions.renameOptions.nameDeleteEnd"  class='w-100 h-25-c' pInputText />
+                                              </span>
+                                        </div>
+                                </div>
+                </p-accordionTab>
+                <p-accordionTab header="Flags" [disabled]="!authorisedFunctionList.Function[eFunctions.AssignFlags]">
+                    <div class='d-flex'>
+                        <div class="p-field-radiobutton mr-2">
+                            <p-radioButton name="city" value="1" [(ngModel)]='selectedFlagOption' inputId="city1"></p-radioButton>
+                            <label for="city1" class='ml-1'>Set Flags</label>
+                        </div>
+                        <div class="p-field-radiobutton">
+                            <p-radioButton name="city" value="2" [(ngModel)]='selectedFlagOption'  inputId="city2"></p-radioButton>
+                            <label for="city2" class='ml-1'>Remove Flags</label>
+                        </div>
+                    </div>
+                    <br>
+                    <p-tree [value]='flagTree' selectionMode="checkbox"   [(selection)]="selectedFlags"></p-tree>
+                </p-accordionTab>
+                <p-accordionTab header="Groups" [disabled]="!authorisedFunctionList.Function[eFunctions.AssignGroups]">
+                    <div class='d-flex'>
+                        <div class="p-field-radiobutton mr-2">
+                            <p-radioButton name="city" value="1" [(ngModel)]='selectedGroupOption' inputId="city1"></p-radioButton>
+                            <label for="city1" class='ml-1'>Set Groups</label>
+                        </div>
+                        <div class="p-field-radiobutton">
+                            <p-radioButton name="city" value="2"  [(ngModel)]='selectedGroupOption' inputId="city2"></p-radioButton>
+                            <label for="city2" class='ml-1'>Remove Groups</label>
+                        </div>
+                    </div>
+                    <p-tree [value]='groupTree' selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+                </p-accordionTab>
+            </p-accordion>
+    </p-tabPanel>
+<p-tabPanel header="Associated Tasks Copy Options" *ngIf="selectLinkTo">
+        <p-accordion>
+            <p-accordionTab header="General">
+                <h5>Include Options</h5>
+                <hr>
+                <div class='mt-3 d-flex w-100'>
+                    <span style="margin-top:2px; margin-right:10px;">Include</span>
+                    <br>
+                        <span class="p-float-label">
+                            <p-multiSelect [filter]="true" filterBy="name" [options]="includeListTask" [(ngModel)]="selectedOptionsTask" selectedItemsLabel="{0} items selected" optionLabel="value" optionValue="id"  class='include-list'></p-multiSelect>
+                        </span>
+                    </div><br><br>
+
+                        <h5>Include Options</h5>
+                        <hr>
+                            <div class='mt-3'>
+                                <span>Append to Start/End of the Title</span>
+                                <br><br>
+                                    <div class='d-flex'>
+                                        <span class="p-float-label" style="margin-right:23%">
+                                            Start <input  type="text"  [(ngModel)]="batchCopyOptions.associatedCopyOptions.renameOptions.nameAppendStart" class='w-100 h-25-c' pInputText />
+                                         </span>
+                                         <span class="p-float-label">
+                                             End <input  type="text" [(ngModel)]="batchCopyOptions.associatedCopyOptions.renameOptions.nameAppendEnd" class='w-100 h-25-c' pInputText />
+                                          </span>
+                                    </div>
+                            </div>
+                            <div class='mt-3'>
+                                <span>Delete from Start/End of the Title</span>
+                                <br><br>
+                                    <div class='d-flex'>
+                                        <span class="p-float-label" style="margin-right:23%">
+                                            Start <input  type="text" [(ngModel)]="batchCopyOptions.associatedCopyOptions.renameOptions.nameDeleteStart"  class='w-100 h-25-c' pInputText />
+                                         </span>
+                                         <span class="p-float-label">
+                                             End <input  type="text" [(ngModel)]="batchCopyOptions.associatedCopyOptions.renameOptions.nameDeleteEnd"  class='w-100 h-25-c' pInputText />
+                                          </span>
+                                    </div>
+                            </div>
+            </p-accordionTab>
+            <p-accordionTab header="Flags" [disabled]="!authorisedFunctionList.Function[eFunctions.AssignFlags]">
+                <div class='d-flex'>
+                    <div class="p-field-radiobutton mr-2">
+                        <p-radioButton name="city" value="1" [(ngModel)]='selectedTaskFlagOption' inputId="city1"></p-radioButton>
+                        <label for="city1" class='ml-1'>Set Flags</label>
+                    </div>
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="city" value="2" [(ngModel)]='selectedTaskFlagOption'  inputId="city2"></p-radioButton>
+                        <label for="city2" class='ml-1'>Remove Flags</label>
+                    </div>
+                </div>
+                <br>
+                <p-tree [value]='flagTaskTree' selectionMode="checkbox"   [(selection)]="selectedTaskFlags"></p-tree>
+            </p-accordionTab>
+            <p-accordionTab header="Groups" [disabled]="!authorisedFunctionList.Function[eFunctions.AssignGroups]">
+                <div class='d-flex'>
+                    <div class="p-field-radiobutton mr-2">
+                        <p-radioButton name="city" value="1" [(ngModel)]='selectedTaskGroupOption' inputId="city1"></p-radioButton>
+                        <label for="city1" class='ml-1'>Set Groups</label>
+                    </div>
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="city" value="2"  [(ngModel)]='selectedTaskGroupOption' inputId="city2"></p-radioButton>
+                        <label for="city2" class='ml-1'>Remove Groups</label>
+                    </div>
+                </div>
+                <p-tree [value]='groupTaskTree' selectionMode="checkbox" [(selection)]="selectedTaskGroups"></p-tree>
+            </p-accordionTab>
+        </p-accordion>
+</p-tabPanel>
+</p-tabView>
+
+        </div>
+        <div class='d-flex mt-5'>
+            <div class='cancel' style="width:150px;"><p-button class='btns' label="Cancel" (onClick)="copyBox = false"></p-button>
+            </div>
+            <div class='w-100'></div>
+            <div class='new'><p-button label="Submit" class='btns' (onClick)="copyJobs()"></p-button>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!jobDetailsLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

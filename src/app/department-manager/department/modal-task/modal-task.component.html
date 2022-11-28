@@ -1,0 +1,212 @@
+<p-dialog class="popup-modal" [header]="modalHeader" [(visible)]="showModal" [style]="{width: '1200px', height: '670px'}" (onHide)="onModalClose()" (onShow)="onShowDialog()" [modal]="true">
+    
+    <div class="flex-spacebetween">
+        <div class="search-container">
+            <p-dropdown class="name" optionLabel="name" optionValue="code" [options]="field" [(ngModel)]="quickSearch.field"></p-dropdown>
+            <p-dropdown class="contains" optionLabel="name" optionValue="code" [options]="type" [(ngModel)]="quickSearch.type"></p-dropdown>
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" class='search-bar' (keyup.enter)="getTasks(1,10, true)" [(ngModel)]="quickSearch.value" placeholder="Search" />
+            </span>
+        </div>
+        <div class="flex-spacebetween">
+            <label class="switch">
+                <input type="checkbox" [checked]='isAdvancedSearch' (click)='toggleAdvancedSearch()'>
+                <span class="slider round"></span>
+            </label>
+            Advanced Search
+        </div>
+    </div>
+
+    <div class='advanced-search' *ngIf='isAdvancedSearch'>
+        <div class='loader-adv' *ngIf="!advanceSearchLoaded">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        <p-tabView *ngIf="advanceSearchLoaded">
+            <p-tabPanel [header]="'TASKSLIST.DETAILSHEADER' | translate">
+                <p-message severity="info" [text]="'TASKSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+                <div class='d-flex  mt-4'>
+                    <span class="p-input-icon-left mr-2 w-100">
+                        <i class="pi pi-search"></i>
+                        <input type="text" class='search-bar-advanced' [(ngModel)]="advancedSearchModel.name" pInputText [placeholder]="'TASKSLIST.SEARCHADVANCED' | translate"  />
+                    </span>
+                    <div class='clear mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn'><p-button [label]="'TASKSLIST.SEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.FLAGSHEADER' | translate">
+                <div class='d-flex mt-3 mb-3'>
+                    <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.flagsOption" placeholder="(Do not filter by flags)" (onChange)="getFlagsTree()" class='flag-search'></p-dropdown>
+                </div>
+                <p-tree *ngIf="advancedSearchModel.flagsOption > 0" [value]='flagTree' selectionMode="checkbox"  [(selection)]="selectedFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+    
+            <p-tabPanel [header]="'TASKSLIST.GROUPSHEADER' | translate">
+                <div class='d-flex mt-3 mb-3'>
+                    <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  [options]="searchOptions" [(ngModel)]="advancedSearchModel.groupsOption" optionLabel="name" optionValue="id" (onChange)="getGroupsTree()" placeholder="(Do not filter by groups)" class='flag-search'></p-dropdown>
+                </div>
+                <p-tree *ngIf="advancedSearchModel.groupsOption > 0" [value]="groupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+    
+            <p-tabPanel [header]="'TASKSLIST.JOBSHEADER' | translate">
+                <div class='d-flex'>
+                    <label>{{'TASKSLIST.LINKEDJOBSLABEL' | translate}}</label>
+                    <p-multiSelect [options]="linkedJobs" [(ngModel)]="advancedSearchModel.jobs.jobs"  selectedItemsLabel="{0} items selected" optionLabel="name" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                    <label>{{'TASKSLIST.FREQUENCYLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name"    [options]="freqOptions" [(ngModel)]="advancedSearchModel.jobs.frequency" class='flag-search'></p-dropdown>
+                </div>
+                <span class='filter-title'>{{'TASKSLIST.ANYASSOCIATEDLABEL' | translate}}</span>
+                <div class='d-flex mt-3 mb-3'>
+                    <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.jobs.searchOption" placeholder="(Do not filter by flags)" (onChange)="getJobsFlagTree()" class='flag-search mr-2'></p-dropdown>
+                </div>
+                <p-tree *ngIf="advancedSearchModel.jobs.searchOption > 0" [value]='jobFlagTree' selectionMode="checkbox" [(selection)]="selectedLinkedJobsTree"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.SITESHEADER' | translate">
+                <span class='filter-title'>{{'TASKSLIST.SITESEARCH' | translate}}</span>
+                <p-message severity="info" [text]="'TASKSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+                <div class='flag-title'>
+                    <span class='flag-text'>{{'TASKSLIST.SITESLABEL' | translate}}</span>
+                </div>
+                <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'TASKSLIST.FUNCTIONALANALYSIS' | translate">
+                <span class='filter-title'>{{'TASKSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+                <div class='d-flex mt-2'>
+                    <label class="falabel">{{'TASKSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='mr-2 ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.from" [showIcon]="true"></p-calendar>
+                    <label>{{'TASKSLIST.ANDLABEL' | translate}}</label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.to" [showIcon]="true"></p-calendar>
+                </div>
+                <div class='d-flex mt-3 mb-custom'>
+                    <label class="falabel">{{'TASKSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                    <p-multiSelect [options]="providers" [(ngModel)]="advancedSearchModel.functionalAnalysis.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                    <label>{{'TASKSLIST.EVENTLABEL' | translate}}</label>
+                    <p-multiSelect [options]="events" [(ngModel)]="advancedSearchModel.functionalAnalysis.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                </div>
+                <span class='filter-title mt-2'>{{'TASKSLIST.FUNCTIONALLABEL' | translate}}</span>
+                <div class='d-flex mt-3 mb-3'>
+                    <label class="falabel">{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id"  [(ngModel)]="advancedSearchModel.functionalAnalysis.flagsOption" placeholder="(Do not filter by flags)" (onChange)="getFAflagsTree()" [options]="searchOptions" class='flag-search mr-2'></p-dropdown>
+                </div>
+                <p-tree *ngIf="advancedSearchModel.functionalAnalysis.flagsOption > 0" [value]="FAflagTree" selectionMode="checkbox" [(selection)]="selectedFAFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="cancelAdvanceSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'TASKSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateAdvancedSearch()"></p-button></div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+    
+    <div class="mt-2" *ngIf="filtersResult.length > 0 && isAdvancedSearch == false">
+        <p-message severity="info" [text]="filters" styleClass="p-mr-2"></p-message>
+    </div>
+    <div class="mt-2">
+        <label class="mr-2"><strong>Frequency</strong></label>
+        <p-dropdown  optionLabel="name" [options]="freqOptions" [(ngModel)]="frequency"></p-dropdown>
+    </div>
+    <div class="mt-2">
+        <p-table dataKey="id" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+            [value]='modalTableItems' [(selection)]="selectedModalTableItems">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="table-checkbox-column"></th>
+                    <th class="table-name-column"><p-tableHeaderCheckbox class="mr-2" (click)="selectAllRows($event)"></p-tableHeaderCheckbox>Name</th>
+                    <th class="table-icon-column">Sites</th>
+                    <th class="table-icon-column">Flags</th>
+                    <th class="table-icon-column">Groups</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-task let-expanded="expanded">
+                <tr [pSelectableRow]="task">
+                    <td><button type="button" *ngIf="task.sites?.length > 0 || task.groups?.length > 0 || task.flags?.length > 0" pButton pRipple [pRowToggler]="task" class="p-button-text p-button-rounded p-button-plain table-checkbox-column" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                    <td class="table-name-column"><p-tableCheckbox [pSelectableRow]="task" [value]="task" class="mr-2" (click)="selectRow($event, task)"></p-tableCheckbox>{{task.name}}</td>
+                    <td class="table-icon-column"><i *ngIf='task.sites.length > 0' class="pi pi-sitemap table-icon-column"></i></td>
+                    <td class="table-icon-column"><i *ngIf='task.flags?.length > 0' class="pi pi-flag table-icon-column"></i></td>
+                    <td class="table-icon-column"><i *ngIf='task.groups?.length > 0' class="pi pi-clone table-icon-column"></i></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-task>
+                <tr>
+                    <td colspan="10">
+                        <div class="p-p-3">
+                            <div class='row mt-2 mb-2'>
+                                    <div>
+                                        <span *ngIf='task?.sites?.length > 0'>
+                                            <span class='expand-title' >Sites:</span>
+                                            <span *ngFor="let site of task?.sites; let i = index">
+                                                {{site?.label}} <span *ngIf='task?.sites[i + 1]'>,</span>
+                                            </span>
+                                             <br>
+                                        </span>
+                                        <span  *ngIf='task?.flags?.length > 0'>
+                                            <span class='expand-title'>Flags:</span>
+                                            <span *ngFor="let flag of task?.flags; let i = index">
+                                                {{flag?.label}} <span *ngIf='task?.flags[i + 1]'>,</span>
+                                            </span>
+                                            <br>
+                                        </span>
+                                        <span class='expand-title' *ngIf='task?.groups?.length > 0'>Groups:</span> 
+                                        <span *ngFor="let group of task?.groups; let i = index">
+                                            {{group?.label}} <span *ngIf='task?.groups[i + 1]'>,</span>
+                                        </span>
+                                    </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="d-flex" style="justify-content: center;" *ngIf="isTaskLoaded">
+            <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="modalTotalCount" (onPageChange)="onPageChange($event)">
+            </p-paginator>
+            <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+        </div>
+    </div>
+
+    <div class="flex-spacebetween button-footer mt-2">
+        <p-button class="cancel-btn" label="Cancel" (onClick)="onModalClose()"></p-button>
+        <p-button class="save-btn" label="Submit" (onClick)="onModalSave()"></p-button>
+    </div>
+    <div id="myNav" class="overlay w-100" *ngIf="!isTaskLoaded || !isSaved" >
+        <div class='dialog-loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!isSaved">Saving...</span>
+            <span class="saved" *ngIf="!isTaskLoaded">Loading...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="No Match" [(visible)]="showNoResults" [modal]="true">
+    <p>We couldn't find any match for the search data, please try again.</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'></div>
+            <div class='w-100'></div>
+            <div class='save-btn'><p-button label="OK" (onClick)="showNoResults = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,85 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">PPE</div> 
+    <div class='generate'><p-button [disabled]="isFunctionValid(functionList$ | async ,45)" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex'>
+        <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,54) ? 'edit' : 'disable-btn'"  style="width:250px;height:40px"><p-button label="Assign PPE"  (onClick)="assignPPE(54)"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div >
+<div class='main mt-3'>
+    <div class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;' *ngIf="PPELoaded">
+        <p-tree [value]="selectedPPETree"  selectionMode="single" *ngIf='selectedPPETree.length > 0'>
+            <ng-template pTemplate="default" let-ppe>
+                <div class="country-item">
+                    <div>
+                        {{ppe.label}} <a *ngIf="!isFunctionBtnValid(functionList$ | async ,54)" (click)="getPPENote(ppe)"><i *ngIf="(ppe.typeId !== 3)"  class="f-r pi pi-pencil" ></i></a>
+                        <p *ngIf="ppe.note?.text?.length > 0"   [ngClass]="ppe.note?.text?.length > 0 ? 'note' : ''">General Note: {{ppe.note?.text}}</p>
+                        <span *ngIf="(ppe.typeId !== 3)"><p [innerHtml]="getSpecificNote(ppe.id)"  [ngClass]="getSpecificNote(ppe.id) ? 'note' : ''"></p></span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedPPETree.length == 0' severity="info" text="No PPE required for this task" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<p-dialog header="Assign PPE" [(visible)]="assignPPEBox" [modal]="true">
+    <p-message severity="info" text="Please select all items required for the task." styleClass="p-mr-2 mb-2" class='info'></p-message>
+    <div class="notes-modal assign">
+        <p-tree [value]='ppeTree' selectionMode="checkbox" [(selection)]="selectedPPENode">
+            <ng-template pTemplate="default" let-ppe>
+                <div class="country-item">
+                    <div>
+                        {{ppe.label}} 
+                        <p *ngIf="ppe.note?.text?.length > 0"   [ngClass]="ppe.note?.text?.length > 0 ? 'note' : ''">General Note: {{ppe.note?.text}}</p>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="assignPPEBox = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="savePPE()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!ppeSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="Edit EnvironmentalNote" [(visible)]="editPpeNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text"  [disabled]='true' class='search-bar w-100' [(ngModel)]="ppeNote.generalNote"  pInputText />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+                <textarea class='comments w-100' id="float-input" [(ngModel)]="ppeNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>
+            </span>
+        </div>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="editPpeNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="savePPENote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!PPELoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

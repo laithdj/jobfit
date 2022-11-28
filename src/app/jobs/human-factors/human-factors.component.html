@@ -1,0 +1,25 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Human Factors</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[0]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='main mt-3'>
+    <div class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-tree [value]="selectedHfTree"  selectionMode="single" *ngIf='selectedHfTree.length > 0'>
+            <ng-template pTemplate="default" let-hf>
+                <div class="country-item">
+                    <div>
+                        {{hf.label}}
+                        <span *ngIf="(hf.typeId !== 3)">
+                            <p *ngIf="hf.note?.text?.length > 0"   [ngClass]="hf.note?.text?.length > 0 ? 'note' : ''">General Note: {{hf?.note?.text}}</p></span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedHfTree.length == 0' severity="info" text="No human factor demands required for this job" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<div id="myNav" class="overlay w-100" *ngIf="!HFLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

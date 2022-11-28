@@ -1,0 +1,597 @@
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-color: #20BCD3;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
+
+    color: #20BCD3;
+}
+
+:host ::ng-deep .accordion .p-component {
+    font-family: "BentonSans-Regular";
+    font-size: 100%;
+}
+:host ::ng-deep .hasError {
+    border:1px solid red
+}
+::ng-deep .p-sidebar-mask.p-component-overlay {
+    background: unset;
+    height:1px;
+}
+.med-heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-inline-message.p-inline-message-info {
+    background: #cccccc5c;
+  }
+:host ::ng-deep .info .p-button {
+    color: #ffffff;
+    background: #20BCD3;
+    border: 1px solid #20BCD3;
+    width:40px;
+}
+:host ::ng-deep .add .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .disabled-add .p-button {
+    color: gray;
+    border: unset;
+    width: 100px;
+    height:40px;
+    font-size: 1rem;
+    background: #E3E6EA;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .save .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 150px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.main{
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+.heading {
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+:host ::ng-deep .generate .p-button {
+    color: #ffffff;
+    border: solid;
+    width: 170px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    border-color: #222e50;
+    border-width: thin;
+    height: 40px;
+}
+:host ::ng-deep .disable-generate .p-button {
+    color: #ffffff;
+    border: solid;
+    width: 170px;
+    font-size: 1rem;
+    background: #E3E6EA;
+    border-color: #222e50;
+    border-width: thin;
+    height: 40px;
+  }
+:host ::ng-deep .edit .p-button {
+    color: #20BCD3;
+    border: unset;
+    font-size: 1rem;
+    background: #4bd9ee42;
+    width: 100px;
+    height:40px;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .p-datatable-responsive-scroll>.p-datatable-wrapper{
+    overflow-x: hidden !important;
+  }
+:host ::ng-deep .p-inline-message {
+
+    justify-content: left !important;
+}
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+.note {
+    background: #56ccf224;
+    border: solid #56CCF2;
+    border-width: 0px;
+    color: grey;
+    padding: 4px;
+}
+:host ::ng-deep .message {
+    margin-left: 3px;
+    margin-bottom: 6px;
+    width: 100%;
+    text-align: left;
+}
+.notes-modal {
+    width:509px;
+}
+:host ::ng-deep .type .p-dropdown {
+    width: 200px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+:host ::ng-deep .provider .p-dropdown {
+    width: 300px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+.comments {
+    width:400px;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .submit-job .p-button {
+    width: 140px;
+    height: 40px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .cancel-job .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:5px;
+    background: white;
+    border-width: thin;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+    height: 40px;
+}
+:host ::ng-deep .p-sidebar-bottom {
+    height: 20rem;
+}
+.f-r{
+    float: right;
+}
+:host ::ng-deep .info-message .p-component {
+    width:100%;
+}
+:host ::ng-deep .info-message .p-inline-message {
+    justify-content: left;
+}
+:host ::ng-deep .sample-dob {
+    font-size:12px;
+    color: gray;
+}
+.med-heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-treenode-label{
+    width:100%
+}
+:host ::ng-deep .flag-tree .p-component {
+    width:100%;
+}
+:host ::ng-deep .pi .pi-pencil{
+    font-size:0.10rem;
+}
+
+:host ::ng-deep .graph .p-dropdown {
+    width: 200px;
+    height: 40px;
+    border: 1px solid #20BCD3;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+:host ::ng-deep .graph .p-inputtext {
+    font-family: "Inter-Regular";
+    font-weight: 500;
+    font-size: 1rem;
+}
+:host ::ng-deep .graph .p-multiselect {
+    width: 400px;
+    height: 40px;
+    border: 1px solid #20BCD3;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+:host ::ng-deep .graph .p-multiselect-label {
+    font-family: "Inter-Regular";
+    font-weight: 500;
+    font-size: 1rem;
+    color: #495057;
+}
+:host ::ng-deep .graph .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height: 40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+
+    :host ::ng-deep .submit-new-FA .p-button {
+    width: 140px;
+    height: 40px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+    }
+
+    :host ::ng-deep .schedule-btn .p-button {
+        color: #20BCD3;
+        border: unset;
+        font-size: 1rem;
+        background: #4bd9ee42;
+        width: 160px;
+        height:40px;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    
+    :host :ng-deep .p-editor-container {
+        height:300px;
+    
+    }
+
+    :host ::ng-deep .actions .p-button {
+        color: #20BCD3;
+        border: unset;
+        font-size: 1rem;
+        background: #4bd9ee42;
+        width: 90px;
+        height:40px;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    :host ::ng-deep .disabled-actions .p-button {
+        color: gray;
+        border: unset;
+        font-size: 1rem;
+        background: #E3E6EA;
+        width: 90px;
+        height:40px;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    
+    :host ::ng-deep .back .p-button {
+        color: #20BCD3;
+        border: unset;
+        font-size: 1rem;
+        background: #4bd9ee42;
+        width: 265px;
+        height:40px;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    :host ::ng-deep .submit .p-button {
+        width: 140px;
+        background: #20BCD3;
+        color:white;
+        border-color: #20BCD3;
+        border-radius: 4px;
+        font-size: 1rem;
+        height: 40px;
+    }
+    .schedule-title{
+        color: #20BCD3;
+    }
+    .underline{
+        color: #20BCD3;
+    }
+    .row{
+        display: flex;
+        flex-direction: row;
+    }
+    @media (max-width: 1400px) {
+        .ui-calendar .ui-datepicker {
+            height : 50px;
+            }
+    
+        .ui-datepicker td span, .ui-datepicker td a {
+        padding: 0px;
+        }
+    
+        ::ng-deep .p-datepicker table td {
+            padding: 0.05rem; 
+        }
+    
+    
+        .ui-datepicker {
+        top: -289px !important;
+        }
+    
+        ::ng-deep .p-calendar .p-datepicker {
+            height: 420px !important;
+            margin-top: 110px !important;
+        }
+    
+    }
+    @media (max-width: 2800px) {
+        .ui-calendar .ui-datepicker {
+            height : 50px;
+            }
+    
+        .ui-datepicker td span, .ui-datepicker td a {
+        padding: 0px;
+        }
+    
+        ::ng-deep .p-datepicker table td {
+            padding: 0.05rem; 
+        }
+    
+        .ui-datepicker {
+        top: -289px !important;
+        }
+    
+        ::ng-deep .p-calendar .p-datepicker {
+            height: 425px !important;
+            margin-top: 10px !important;
+        }
+    
+    }
+    
+    .text-right{
+        display:flex;
+        justify-content: flex-end;
+        margin-left: 55px;
+    }
+    
+    .top-row{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .text-left{
+        display: flex;
+        align-self: flex-start;
+    }
+    
+    .provider-text-right{
+        display:flex;
+        justify-content: flex-end;
+        margin-left: 86px;
+    }
+    
+    .comments-text-right{
+        display:flex;
+        justify-content: flex-end;
+        margin-left: 69px;
+    }
+
+    .med-heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #20BCD3;
+}
+.small-heading{
+    font-family: "BentonSans-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    line-height: 12px;
+    color: #222E50;
+}
+
+:host ::ng-deep .p-calendar-w-btn .p-datepicker-trigger
+{
+    background: none !important;
+    border-color: lightgray;
+}
+.p-field-radiobutton{
+    display: inline-flex;
+    align-items: center;
+}
+:host ::ng-deep div.ql-tooltip.ql-editing{
+    left: 0px !important;
+}
+:host ::ng-deep .comments-list p{
+    white-space: nowrap; 
+    width: 200px; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+  :host ::ng-deep .submit-job .p-button {
+    width: 140px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+    font-size: 1rem;
+    height: 40px;
+}
+:host ::ng-deep .cancel .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:5px;
+    background: white;
+    border-width: thin;
+    height:40px
+}  
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 43px;
+    height: 17px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #20BCD3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #20BCD3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .toggle{
+      margin-top:12px;
+      margin-right:5px;
+  }
+  .nas-panel{
+    background: #FFFFFF;
+    border-radius: 8px;
+    margin-top:10px;
+}
+
+
+
+
+::ng-deep  .p-radiobutton .p-radiobutton-box.p-highlight.p-disabled  {
+    opacity: 0.9 !important;
+    border-color: #afafaf  !important;
+   /* background: #afafaf  !important;*/
+    border: 10px solid #afafaf !important;
+}
+@media screen and (max-width: 1700px){ /* scale 150% */
+
+  }
+
+  .saved {
+    font-weight: bolder;
+    font-size: xx-large;
+  }
+
+  .comments-break{
+    white-space: nowrap;
+    width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

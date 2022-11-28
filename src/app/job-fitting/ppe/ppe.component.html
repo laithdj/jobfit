@@ -1,0 +1,45 @@
+<div>
+    <div class="row">
+        <div class="col-5 d-flex">
+            <label class="mt-2">Job/Tasks</label>
+            <span class="p-float-label ml-3 w-75 ">
+                <p-dropdown class="job-score" [options]="groupOptions" optionLabel="name" [group]="true" (onChange)="getPPE($event)" [(ngModel)]="selectedJobFitSummary"></p-dropdown>
+            </span>
+        </div>
+        <div class="col-5 d-flex">
+            <label class="mt-2">Show Items</label>
+            <span class="p-float-label ml-3 w-75">
+                <p-dropdown class="job-score" [options]="filterOptions" optionValue="id" optionLabel="label" (onChange)="filterFit($event)" [(ngModel)]="selectedStatus"></p-dropdown>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="response" class='mt-5 flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+    <p-button type="button" class="p-mr-2 info mb-2"  (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+    <p-tree [value]='selectedPPETree' selectionMode="single" >
+        <ng-template pTemplate="default" let-flag>
+            <div class="country-item">
+                <div  *ngIf="flag.typeId !== 3">
+                    <i class="pi pi-check green" *ngIf="flag.fit"></i>
+                    <i class="pi pi-times red" *ngIf="!flag.fit"></i>
+                    <span>{{flag.label}}</span>
+                 </div>
+                <div  *ngIf="flag.typeId === 3">
+                    <span>{{flag.label}}</span>
+                </div>
+            </div>
+        </ng-template>
+        </p-tree>
+</div>
+<p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false' [style]="{height:'10em'}">
+    <span class='legend mr-5'><i class="pi pi-check green"></i> - Jobfit Match</span>
+    <span class='legend mr-5'><i class="pi pi-times red"></i> - Jobfit Mismatch</span>
+</p-sidebar>
+<div class="overlay w-100" *ngIf="!response" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>
+
+

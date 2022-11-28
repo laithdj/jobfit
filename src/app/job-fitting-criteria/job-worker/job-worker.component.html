@@ -1,0 +1,433 @@
+
+<div class="main">
+    <div class="w-100">
+        <div class="heading mr-auto ml-4">{{selectedJobs?.name ? selectedJobs?.name : ' '}}</div>
+        <div class='d-flex'>
+            <div class='edit ml-4 mt-4'><p-button [label]="jobNameHeading != '' ? 'Change Job' : 'Select Job'" (onClick)="openWorkerList()"></p-button></div>
+            <div class='w-100'></div>
+            <div class='edit ml-4 mt-4'><p-button label="Perform JobFit" (onClick)="performJobFit()"></p-button></div>
+        </div>
+    </div>
+    <div class="padding" *ngIf='jobNameHeading != ""'>
+        <span class=' heading-sub'>Worker List</span><br>
+        <hr  /> <br>
+        <div>
+            <div class="row">
+                <div class="filter d-flex w-100">
+                    <p-dropdown  optionLabel="name" optionValue="code" [options]="field" [(ngModel)]="quickSearch.field" [placeholder]="'WORKERSLIST.NAMEDROPDOWN' | translate" class='name'></p-dropdown>
+                    <p-dropdown  optionLabel="name" optionValue="code" [options]="type" [(ngModel)]="quickSearch.type" [placeholder]="'WORKERSLIST.CONTAINSDROPDOWN' | translate" class='contains'></p-dropdown>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input type="text" class='search-bar' (keyup.enter)="getWorkers(1,10)"  [(ngModel)]="quickSearch.value" pInputText [placeholder]="'WORKERSLIST.SEARCHBAR' | translate"  />
+                    </span>
+                     
+                    <div class='f-r w-50'>
+                        <span class="mt-title f-r">{{'WORKERSLIST.ADVANCESEARCHTITLE' | translate}}</span> 
+                        <label class="switch toggle f-r">
+                            <input type="checkbox" [checked]='advancedSearch' (click)='advancedSearchToggle()'>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class='advanced-search' *ngIf='advancedSearch'>
+                    <p-tabView>
+                        <p-tabPanel [header]="'WORKERSLIST.DETAILSHEADER' | translate">
+                            <p-message severity="info" [text]="'WORKERSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+                            <div class='d-flex mt-4'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHEMPLOYEEIDLABEL' | translate}}</label>
+                                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.employeeId" />
+                            </div>
+                            <div class='d-flex mt-2'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHFIRSTNAMELABEL' | translate}}</label>
+                                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.firstName" />
+                            </div>
+                            <div class='d-flex mt-2'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHLASTNAMELABEL' | translate}}</label>
+                                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.lastName" />
+                            </div>
+                            <div class='d-flex mt-2'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHGENDERLABEL' | translate}}</label>
+                                <p-dropdown optionLabel="name" optionValue="code" [options]="genders" [(ngModel)]="gender" (onChange)="setGenderSearchField($event)"  class='ml-2'></p-dropdown>
+                            </div>
+                            <div class='d-flex mt-2'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHAGELABEL' | translate}}</label>
+                                <input type="number" class='mr-2 ml-2' pInputText [(ngModel)]="workerDetailsSearch.ageFrom" />
+                                <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                                <input type="number" class='ml-2' pInputText [(ngModel)]="workerDetailsSearch.ageTo" />
+                            </div>
+                            <div class='d-flex mt-2'>
+                                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHDATEOFBIRTHLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="workerDetailsSearch.dobFrom"  [showIcon]="true"></p-calendar>
+                                <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2'  [(ngModel)]="workerDetailsSearch.dobTo"  [showIcon]="true"></p-calendar>
+                            </div>
+                            <div class='d-flex float-r'>
+                                <div class='w-100'></div>
+                                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                                <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel [header]="'WORKERSLIST.FLAGSHEADER' | translate">
+                            <div class='d-flex mt-3 mb-2'>
+                                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="selectedSearchFlagOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                            </div>
+                            <p-tree *ngIf='selectedSearchFlagOption > 0' [value]='flagTree' selectionMode="checkbox"  [(selection)]="selectedFlags"></p-tree>
+                            <div class='d-flex float-r'>
+                                <div class='w-100'></div>
+                                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                                <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel [header]="'WORKERSLIST.GROUPSHEADER' | translate">
+                            <div class='d-flex mt-3 mb-2'>
+                                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                                <p-dropdown  [options]="searchOptions" [(ngModel)]="selectedSearchGroupOption" optionLabel="name" optionValue="id" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                            </div>
+                            <p-tree *ngIf='selectedSearchGroupOption > 0' [value]="groupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+                            <div class='d-flex float-r'>
+                                <div class='w-100'></div>
+                                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                                <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel [header]="'WORKERSLIST.EMPLOYMENTHEADER' | translate">
+                            <p-accordion>
+                                <p-accordionTab header="Sites & Departments">
+                                    <p-message severity="info" [text]="'WORKERSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+                                    <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+                                </p-accordionTab>
+                                <p-accordionTab header="Details">
+                                    <div class='d-flex mt-2'>
+                                        <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTTYPELABEL' | translate}}</label>
+                                        <p-dropdown class='p-25' [options]='employmentType' [(ngModel)]="empType" optionLabel="label" optionValue="id"></p-dropdown>
+                                    </div>
+                                    <div class='d-flex mt-2'>
+                                        <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTDATELABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                                        <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2' [(ngModel)]="employmentFrom"  [showIcon]="true"></p-calendar>
+                                        <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                                        <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2'  [(ngModel)]="employmentTo"  [showIcon]="true"></p-calendar>
+                                    </div>
+                                </p-accordionTab>
+                                <p-accordionTab header="Flags">
+                                    <div class='d-flex mb-2'>
+                                        <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                                        <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="selectedSearchEmploymentFlagOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                                    </div>
+                                    <p-tree *ngIf='selectedSearchEmploymentFlagOption > 0' [value]='employmentFlagTree' selectionMode="checkbox" [(selection)]="selectedEmploymentFlags"></p-tree>
+                                </p-accordionTab>
+                            </p-accordion>
+                            <div class='d-flex float-r'>
+                                <div class='w-100'></div>
+                                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                                <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel [header]="'WORKERSLIST.FUNCTIONALANALYSIS' | translate">
+                            <span class='filter-title'>{{'WORKERSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+                            <div class='d-flex mt-2'>
+                                <label class="falabel">{{'WORKERSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="faSearch.from"  [showIcon]="true"></p-calendar>
+                                <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="faSearch.to"  [showIcon]="true"></p-calendar>
+                            </div>
+                            <div class='d-flex mt-3 mb-custom'>
+                                <label class="falabel">{{'WORKERSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                                <p-multiSelect [options]="providers" [(ngModel)]="faSearch.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='fa-multi mr-2 ml-2'></p-multiSelect>
+                            </div>
+                            <div class='d-flex mt-3 mb-custom'>
+                                <label class="falabel">{{'WORKERSLIST.EVENTLABEL' | translate}}</label>
+                                <p-multiSelect [options]="events" [(ngModel)]="faSearch.events"  selectedItemsLabel="{0} items selected" optionLabel="name" class='fa-multi mr-2 ml-2'></p-multiSelect>
+                            </div>
+                            <span class='filter-title mt-2'>{{'WORKERSLIST.FUNCTIONALLABEL' | translate}}</span>
+                            <div class='d-flex mt-3 mb-2'>
+                                <label class="falabel">{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                                <p-dropdown  optionLabel="name" optionValue="id" placeholder="No Applied Filter" [options]="searchOptions" class='flag-search mr-2' [(ngModel)]="faSearch.flagsOption"></p-dropdown>
+                            </div>
+                            <p-tree *ngIf='faSearch.flagsOption > 0' [value]="FAFlagTree" selectionMode="checkbox" [(selection)]="selectedFAFlags"></p-tree>
+                            <div class='d-flex float-r'>
+                                <div class='w-100'></div>
+                                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                                <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                            </div>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+                <div class="mt-3 filter d-flex">
+                    <div class='refresh'><p-button [label]="'WORKERSLIST.REFRESHBUTTONLABEL' | translate" (onClick)="getWorkers(1,10)"></p-button></div>
+                    <div class='w-100'></div>
+                </div>
+                <div class="mt-2" *ngIf="filtersResult.length > 0 && advancedSearch == false">
+                    <p-message severity="info" [text]="filters" styleClass="p-mr-2"></p-message>
+                </div>
+                <div class='mt-3' style='padding-bottom:10px;' *ngIf="workersResult">
+                    <p-table #dt [first]="first"  [rows]="5" 
+                    [selectionMode]="'single'"
+                     [value]='workers' responsiveLayout="scroll"
+                    [rowHover]="true" dataKey="workerId"
+                    scrollHeight="350px"
+                    [(selection)]="selectedWorkers"
+                     [showCurrentPageReport]="false">
+                   <ng-template pTemplate="header">
+                       <tr>
+                           <th></th>
+                            <th style="width: 2.5rem"></th>
+                            <th  pSortableColumn="employeeID">{{'WORKERSLIST.EMPLOYEEIDHEADER' | translate}}</th>
+                            <th  pSortableColumn="lastName">{{'WORKERSLIST.LASTNAMEHEADER' | translate}}</th>
+                            <th  pSortableColumn="firstName">{{'WORKERSLIST.FIRSTNAMEHEADER' | translate}}</th>
+                            <th style="width: 10rem;">{{'WORKERSLIST.FLAGHEADER' | translate}}</th>
+                            <th style="width: 10rem;">{{'WORKERSLIST.GROUPSHEADER' | translate}}</th>
+                       </tr>
+                   </ng-template>
+                   <ng-template pTemplate="body" let-worker let-expanded="expanded">
+                       <tr >
+                        <td>
+                            <p-tableRadioButton [value]="worker"></p-tableRadioButton>
+                        </td>
+                            <td>
+                                <button  *ngIf="worker.groupsString !='' || worker.flagsString != ''" type="button" pButton pRipple [pRowToggler]="worker" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            </td>
+                
+                           <td  >{{worker.employeeID}}</td>
+                           <td >{{worker.lastName}}</td>
+                           <td  >{{worker.firstName}}</td>
+                           <td><i class="pi pi-flag" *ngIf='worker.flagsString != ""' [title]="worker.flagsString"></i></td>
+                           <td><i class="pi pi-clone" *ngIf='worker.groupsString != ""' [title]="worker.groupsString"></i></td>
+                       </tr>
+                   </ng-template>
+                   <ng-template pTemplate="rowexpansion" let-worker>
+                        <tr>
+                            <td colspan="10">
+                                <div class="p-p-3">
+                                    <div class='row'>
+                                            <div>
+                                                <span class='expand-title' *ngIf='worker.groups.length > 0'>Groups:</span> 
+                                                <span> {{worker.groupsString}}</span>
+                                                <br>
+                                                <span class='expand-title' *ngIf='worker.flags.length > 0'>Flags:</span>
+                                                <span> {{worker.flagsString}}</span>
+                                            </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                   </p-table>
+                   <p-paginator [rows]="10" [totalRecords]="totalCount" (onPageChange)="onPageChange($event)"></p-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<p-dialog [header]="jobNameHeading != '' ? 'Change Job' : 'Select Job'" [(visible)]="selectJob" [modal]="true">
+
+<!--WORKER LIST-->
+
+<div class="mt-5 filter d-flex w-100">
+    <p-dropdown  optionLabel="name" optionValue="code" [options]="jobField" [(ngModel)]="jobQuickSearch.field" [placeholder]="'JOBSLIST.NAMEDROPDOWN' | translate" class='name'></p-dropdown>
+    <p-dropdown  optionLabel="name" optionValue="code" [options]="type" [(ngModel)]="jobQuickSearch.type" [placeholder]="'JOBSLIST.CONTAINSDROPDOWN' | translate" class='contains'></p-dropdown>
+    <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input type="text" class='search-bar' (keyup.enter)="getJobs(1,10)"  [(ngModel)]="jobQuickSearch.value" pInputText [placeholder]="'JOBSLIST.SEARCHBAR' | translate"  />
+    </span>
+     
+    <div class='f-r w-50'>
+        <span class="mt-title f-r">{{'WORKERSLIST.ADVANCESEARCHTITLE' | translate}}</span> 
+        <label class="switch toggle f-r">
+            <input type="checkbox" [checked]='advancedJobSearch' (click)='advancedJobSearchToggle()'>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+<div class='advanced-search' *ngIf='advancedJobSearch'>
+    <p-tabView>
+        <p-tabPanel [header]="'JOBSLIST.DETAILSHEADER' | translate">
+            <p-message severity="info" [text]="'JOBSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+            <div class='d-flex  mt-4'>
+                <span class="p-input-icon-left mr-2 w-100">
+                    <i class="pi pi-search"></i>
+                    <input type="text" class='search-bar-advanced' [(ngModel)]="jobName" pInputText [placeholder]="'JOBSLIST.SEARCHADVANCED' | translate"  />
+                </span>
+                <div class='clear mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn'><p-button [label]="'JOBSLIST.SEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.FLAGSHEADER' | translate">
+            <div class='d-flex mt-3 mb-3'>
+                <label>{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.flagsOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="advancedSearchModel.flagsOption > 0" [value]='jobFlagTree' selectionMode="checkbox"  [(selection)]="selectedJobFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'JOBSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.GROUPSHEADER' | translate">
+            <div class='d-flex mt-3 mb-3'>
+                <label>{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="advancedSearchModel.groupsOption" optionLabel="name" optionValue="id" placeholder="No filter selected" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="advancedSearchModel.groupsOption > 0" [value]="jobGroupTree" selectionMode="checkbox" [(selection)]="selectedJobGroups"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'JOBSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.TASKSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'JOBSLIST.LINKEDTOTASKSLABEL' | translate}}</label>
+                <p-multiSelect [options]="linkedTasks" [(ngModel)]="advancedSearchModel.tasks.tasks"  selectedItemsLabel="{0} items selected" optionLabel="name" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                <label>{{'JOBSLIST.FREQUENCYLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name"    [options]="freqOptions" [(ngModel)]="advancedSearchModel.tasks.frequency" class='flag-search'></p-dropdown>
+            </div>
+            <span class='filter-title mb-3'>{{'JOBSLIST.ANYASSOCIATEDLABEL' | translate}}</span>
+            <div class='d-flex mt-2 mb-3'>
+                <label>{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="advancedSearchModel.tasks.searchOption"  placeholder="No filter selected" class='flag-search mr-2'></p-dropdown>
+            </div>
+            <p-tree *ngIf="advancedSearchModel.tasks.searchOption > 0" [value]='taskFlagTree' selectionMode="checkbox" [(selection)]="selectedLinkedJobsTree"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'JOBSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.SITESHEADER' | translate">
+            <span class='filter-title'>{{'JOBSLIST.SITESEARCH' | translate}}</span>
+            <p-message severity="info" [text]="'JOBSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+            <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedJobSites"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'JOBSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.FUNCTIONALANALYSIS' | translate">
+            <span class='filter-title'>{{'JOBSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+            <div class='d-flex mt-2'>
+                <label class="falabel">{{'JOBSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.from" [showIcon]="true"></p-calendar>
+                <label>{{'JOBSLIST.ANDLABEL' | translate}}</label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="advancedSearchModel.functionalAnalysis.to" [showIcon]="true"></p-calendar>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'JOBSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                <p-multiSelect [options]="providers" [(ngModel)]="advancedSearchModel.functionalAnalysis.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'JOBSLIST.EVENTLABEL' | translate}}</label>
+                <p-multiSelect [options]="events" [(ngModel)]="advancedSearchModel.functionalAnalysis.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <span class='filter-title mt-2'>{{'JOBSLIST.FUNCTIONALLABEL' | translate}}</span>
+            <div class='d-flex mt-3 mb-3'>
+                <label class="falabel">{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id"  [options]="searchOptions" [(ngModel)]="advancedSearchModel.functionalAnalysis.flagsOption" placeholder="No filter selected" class='flag-search mr-2'></p-dropdown>
+            </div>
+             <p-tree *ngIf="advancedSearchModel.functionalAnalysis.flagsOption > 0" [value]="taskFAflagTree" selectionMode="checkbox" [(selection)]="selectedJobFAFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'JOBSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="populateJobAdvancedSearch()"></p-button></div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+<div class="mt-3 filter d-flex">
+    <div class='refresh'><p-button [label]="'JOBSLIST.REFRESHBUTTONLABEL' | translate" (onClick)="getJobs(1,10)"></p-button></div>
+    <div class='w-100'></div>
+</div>
+<div class="mt-2" *ngIf="jobFiltersResult.length > 0 && advancedJobSearch == false">
+    <p-message severity="info" [text]="jobFilters" styleClass="p-mr-2"></p-message>
+</div>
+<div class='mt-3' style='padding-bottom:10px;'>
+    <p-table #dt [first]="first"  [rows]="5"  [value]='jobs' responsiveLayout="scroll"
+    [rowHover]="true" dataKey="id"
+    [(selection)]="selectedJobs"
+    scrollHeight="350px"
+     [showCurrentPageReport]="false">
+   <ng-template pTemplate="header">
+       <tr>
+        <th style="width: 2.5rem"></th>
+           <th style="width: 3rem">
+           </th>
+           <th  pSortableColumn="name">{{'JOBSLIST.NAMEHEADER' | translate}}   </th>
+           <th style="width: 5rem;">{{'JOBSLIST.DEPTHEADER' | translate}}</th>
+           <th style="width: 5rem;">{{'JOBSLIST.GROUPHEADER' | translate}}</th>
+           <th style="width: 5rem;">{{'JOBSLIST.FLAGHEADER' | translate}}</th>
+       </tr>
+   </ng-template>
+   <ng-template pTemplate="body" let-job let-expanded="expanded">
+       <tr >
+        <td>
+            <p-tableRadioButton [value]="job"></p-tableRadioButton>
+        </td>
+        <td>
+            <button type="button" pButton pRipple [pRowToggler]="job" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+        </td>
+           <td >{{job.name}}</td>
+           <td><i *ngIf='job.departments?.length > 0' class="pi pi-briefcase"></i></td>
+           <td><i *ngIf='job.groups?.length > 0' class="pi pi-clone"></i></td>
+           <td><i *ngIf='job.flags?.length > 0' class="pi pi-flag"></i></td>
+       </tr>
+   </ng-template>
+   <ng-template pTemplate="rowexpansion" let-job>
+    <tr>
+        <td colspan="10">
+            <div class="p-p-3">
+                <div class='row'>
+                        <div>
+                            <span class='expand-title' *ngIf='job?.departments?.length > 0'>Department:</span>
+                            <span *ngFor="let site of job?.departments; let i = index">
+                                {{site?.label}} <span *ngIf='job?.departments[i + 1]'>,</span>
+                            </span>
+                            <br>
+                            <span class='expand-title' *ngIf='job?.groups?.length > 0'>Groups:</span> 
+                            <span *ngFor="let group of job?.groups; let i = index">
+                                {{group?.label}} <span *ngIf='job?.groups[i + 1]'>,</span>
+                            </span><br>
+                            <span class='expand-title' *ngIf='job?.flags?.length > 0'>Flags:</span>
+                            <span *ngFor="let flag of job?.flags; let i = index">
+                                {{flag?.label}} <span *ngIf='job?.flags[i + 1]'>,</span>
+                            </span>
+                        </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</ng-template>
+   </p-table>
+   <p-paginator [rows]="10" [totalRecords]="totalCount" (onPageChange)="onJobPageChange($event)"></p-paginator>
+</div>
+<!--WORKER LIST-->
+<div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)="selectJob = false"></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit d-flex flex-row-reverse'><p-button label="Submit" (onClick)="selectJobBtn()" ></p-button></div>
+</div>
+<div class="overlay w-100" *ngIf="!jobLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<div class="overlay w-100" *ngIf="!isLoaded || (jobId > 0 && jobNameHeading == '')" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

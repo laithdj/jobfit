@@ -1,0 +1,28 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Environment</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[0]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='main mt-3'>
+    <p-message severity="info" text="Items below show combined environmental factors for all the associated tasks" styleClass="p-mr-2" class='info mt-5'></p-message>
+
+    <div class='flag-tree mt-3' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-tree  *ngIf="selectedEnvTree.length > 0" [value]='selectedEnvTree' selectionMode="single">
+            <ng-template pTemplate="default" let-env>
+                <div class="country-item">
+                    <div>
+                        {{env.label}}
+                        <span *ngIf="(env.typeId !== 3)">
+                            <p *ngIf="env.generalNote"   [ngClass]="env.generalNote?.length > 0 ? 'note' : ''">General Note: {{env.generalNote}}</p>
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedEnvTree.length == 0' severity="info" text="No environmental factor demands required for this job" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<div id="myNav" class="overlay w-100" *ngIf="!envLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

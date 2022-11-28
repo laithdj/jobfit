@@ -1,0 +1,170 @@
+<div>
+  <p-breadcrumb [model]="(breadCrumb$ | async)" >
+  </p-breadcrumb>
+    <div style="padding-top: 20px; max-width: 85%;">
+        <div class='row'>
+            <div class="col-2 vertical-align">
+                <div class="sub-label">Report Type</div>
+            </div>
+            <div class="col-10">
+                <div class="w-100">
+                    <p-dropdown [options]="reports" optionLabel="name" optionValue="id" [(ngModel)]="selectedReportId" (onChange)="selectedValue($event)" [placeholder]="'Report Type' | translate" class='name' [style]="{'width':'100%'}" ></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="heading-2">Report Options</div>
+            <p-button label="Generate Report" class='generate f-r'(onClick)="generateReport()"></p-button>
+        </div>
+        <div class="line"></div>
+        <div *ngIf="!isWorkerFunctionalCapabilitiesForm()">
+            <div *ngIf="!isJobFitEntity() && (sectionExist(1) || sectionExist(3) || sectionExist(5))">
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">General</div>
+                    </div>
+                    <div class="col-10">
+                        <span *ngIf="sectionExist(1)"><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeBiologicalSex}}" label="{{generalOptions.includeBiologicalSex}}"></p-checkbox><br /></span>
+                        <span *ngIf="sectionExist(2)"><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeAddress}}" label="{{generalOptions.includeAddress}}"></p-checkbox><br /></span>
+                        <span *ngIf="sectionExist(27)"><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeJobfitMatchingGrid}}" label="{{generalOptions.includeJobfitMatchingGrid}}"></p-checkbox><br /></span>
+                        <span *ngIf="sectionExist(16) || isStandard"><p-checkbox name="General" [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeImageAttachments}}" label="{{generalOptions.includeImageAttachments}}"></p-checkbox><br /></span>
+                        <span *ngIf="sectionExist(25) || isStandard"><p-checkbox name="General" [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeFaqPage}}" label="{{generalOptions.includeFaqPage}}"></p-checkbox></span>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div *ngIf="isJobFitEntity()">
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">General</div>
+                    </div>
+                    <div class="col-10">
+                        <span *ngIf="!isJobFitReportType()"><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeBiologicalSex}}" label="{{generalOptions.includeBiologicalSex}}"></p-checkbox><br /></span>
+                        <span *ngIf="!isJobFitReportType()"><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeAddress}}" label="{{generalOptions.includeAddress}}"></p-checkbox><br /></span>
+                        <span><p-checkbox name="General" [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeFaqPage}}" label="{{generalOptions.includeFaqPage}}"></p-checkbox></span>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div *ngIf="sectionExist(7) && selectedReport.id === 4">
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">Associated Tasks</div>
+                    </div>
+                    <div class="col-10">
+                        <p-checkbox name="AssociatedTasks" [(ngModel)]="selectedAssociatedTasks" value="{{associatedTasksOptions.includeDetails}}" label="{{associatedTasksOptions.includeDetails}}"></p-checkbox> <br />
+                        <p-checkbox name="AssociatedTasks" [(ngModel)]="selectedAssociatedTasks" value="{{associatedTasksOptions.includeImageAttachments}}" label="{{associatedTasksOptions.includeImageAttachments}}"></p-checkbox>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div class='row' *ngIf="showTaskSort()">
+                <div class="col-2">
+                    <div class="sub-label">Task Sort</div>
+                </div>
+                <div class="col-10">
+                    <div class="tasksort" style="width: 100%;">
+                        <p-dropdown [options]="sortType.toArray" [(ngModel)]="selectedSortType" [placeholder]="'Task sort'" [style]="{'width':'58.5%'}"></p-dropdown>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div *ngIf="isJobFitEntity() || sectionExist(26)">
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">Task Details</div>
+                    </div>
+                    <div class="col-10">
+                        <div class="taskdetails">
+                            <div class="sub-label" style="font-weight: bold; margin-bottom: 5px;">Include Detailed Task Fit</div>
+                            <p-dropdown [options]="taskDetailsOptions" [(ngModel)]="selectedTaskDetails" [style]="{'width':'58.5%'}"></p-dropdown>
+                            <div *ngIf="showTaskDetailsCustomList()">
+                                <br />
+                                <div class="sub-label" style="font-weight: bold; margin-bottom: 5px;">Custom List Of Detailed Task Fits</div>
+                                <p-multiSelect [options]="taskDetailsCustomListOption" [(ngModel)]="selectedTaskDetailsCustomList" selectedItemsLabel="{0} items selected" placeholder="Select options" [group]="true" [filter]="false" [style]="{'width':'58.5%'}"></p-multiSelect>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div *ngIf="(isJobFitEntity() && !isJobFitReportType()) || sectionExist(17)">
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">Functional Analysis</div>
+                    </div>
+                    <div class="col-10">
+                        <p-checkbox name="FunctionalAnalysis" [(ngModel)]="selectedFaCheckboxes" value="{{functionalAnalysisOptions.includeFaRecords}}" label="{{functionalAnalysisOptions.includeFaRecords}}"></p-checkbox> <br />
+                        <p-checkbox *ngIf="!isJobFitEntity() && !isJobEntity()" name="FunctionalAnalysis" [(ngModel)]="selectedFaCheckboxes" value="{{functionalAnalysisOptions.includeFaGraphs}}" label="{{functionalAnalysisOptions.includeFaGraphs}}"></p-checkbox> <br />
+                        <br />
+
+                        <div *ngIf="showRecordSelectionSection() || showRecordGraphSection()" class="record">
+                            <div class="heading-3">Record Selection Options</div>
+                            <div class="line"></div>
+                            <div class='row'>
+                                <div class="col-4 vertical-align">
+                                    <div class="sub-label" style="font-weight: bold">Use these Functional Analysis Records </div>
+                                </div>
+                                <div class="col-8">
+                                    <p-dropdown [options]="recordSelectionOptions.toArray" [(ngModel)]="selectedRecordSelection" [style]="{'width':'44%'}"></p-dropdown>
+                                </div>
+                            </div>
+                            <div *ngIf="showDatePickers()" style="margin-top: 10px;">
+                                <span *ngIf="selectedRecordSelection == 'Between'" class="sample-dob mr-2">e.g. 01-Jul-2000</span>
+                                <p-calendar dataType="string" dateFormat="dd-M-yy" [showButtonBar]="true" [showIcon]="true" [(ngModel)]="selectedFromDateValue" placeholder="From" class="mr-2"></p-calendar>
+                                and
+                                <p-calendar dataType="string" dateFormat="dd-M-yy" [showButtonBar]="true" [showIcon]="true" [(ngModel)]="selectedToDateValue"  placeholder="To" class="ml-2"></p-calendar>
+                            </div>
+                        </div>
+                        <div *ngIf="!isJobFitReportType() && showRecordGraphSection()" class="record">
+                            <br />
+                            <div class="vertical-align">
+                                <i class="pi pi-info-circle mr-2"></i>
+                                <span *ngIf="!showDatePickers()">Graphs will be plotted using <b>all</b> records.</span>
+                                <span *ngIf="showDatePickers()">Graphs will be plotted using records between selected dates.</span>
+                            </div>
+                            <br />
+                            <div class="heading-3">Graph Options</div>
+                            <div class="line"></div>
+                            <div class='row'>
+                                <div class="col-2 vertical-align">
+                                    <div class="sub-label">Postural Tolerances</div>
+                                </div>
+                                <div class="col-10">
+                                    <p-multiSelect [options]="posturalTolerancesOptions" [(ngModel)]="selectedPosturalTolerances" selectedItemsLabel="{0} items selected" placeholder="Select options" [group]="true" [filter]="false" [style]="{'width':'50%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class="col-2 vertical-align">
+                                    <div class="sub-label">Material Handlings</div>
+                                </div>
+                                <div class="col-10">
+                                    <p-multiSelect [options]="materialHandlingsOptions" [(ngModel)]="selectedMaterialHandlings" selectedItemsLabel="{0} items selected" placeholder="Select options" [group]="true" [filter]="false" [style]="{'width':'50%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isWorkerFunctionalCapabilitiesForm() || isJobFunctionalRequirementsForm">
+            <div>
+                <div class='row'>
+                    <div class="col-2">
+                        <div class="sub-label">General</div>
+                    </div>
+                    <div class="col-10">
+                        <span><p-checkbox [(ngModel)]="selectedGeneralCheckboxes" value="{{generalOptions.includeBiologicalSex}}" label="{{generalOptions.includeBiologicalSex}}"></p-checkbox></span>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+        </div>
+</div>
+
+<div id="myNav" class="overlay w-100" *ngIf="!loaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Groups</div> 
+    <div class='generate'><p-button [disabled]="isFunctionValid(functionList$ | async ,45)" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex'>
+        <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,50) ? 'edit' : 'disable-btn'"  style="width:250px;height:40px"><p-button label="Assign Groups"  (onClick)="assignGroups(50)"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div >
+<div class='main mt-3'>
+    <div *ngIf="groupsLoaded" class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-tree [value]='selectedGroupTree' selectionMode="single" *ngIf='selectedGroupTree.length > 0'>
+            <ng-template pTemplate="default" let-group>
+                <div class="country-item">
+                    <div>
+                        {{group.label}} <a *ngIf="!isFunctionBtnValid(functionList$ | async ,50)" (click)="getGroupNote(group)"><i *ngIf="(group.typeId === 0)"  class="f-r pi pi-pencil" ></i></a>
+                        <span *ngIf="(group.typeId === 0)">
+                            <p *ngIf="group.note.text?.length > 0"   [ngClass]="group.note.text?.length > 0 ? 'note' : ''">General Note: {{group.note.text}}</p>
+                            <p [innerHtml]="getSpecificNote(group.id)"  [ngClass]="getSpecificNote(group.id) ? 'note' : ''"></p></span> 
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedGroupTree.length == 0' severity="info" text="No Groups assigned to this task" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<p-dialog header="Assign Groups" [(visible)]="assignGroupBox" [modal]="true">
+    <div class="notes-modal assign">
+        <p-tree [value]='groupTree' selectionMode="checkbox"  [(selection)]="selectedGroupNode">
+            <ng-template pTemplate="default" let-group>
+                <div class="country-item">
+                    <div>
+                        {{group.label}} <br>
+                        <span *ngIf="(group.typeId === 0)">
+                            <p *ngIf="group.note.text?.length > 0"   [ngClass]="group.note.text?.length > 0 ? 'note' : ''">General Note: {{group.note.text}}</p></span> 
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelAssignedGroups()"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveGroup()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!groupsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Edit Group Note" [(visible)]="editGroupNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text" [(ngModel)]="groupNote.generalNote"   [disabled]='true' class='search-bar w-100' pInputText />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+               <textarea class='comments w-100' id="float-input" [(ngModel)]="groupNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>
+            </span>
+        </div>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="editGroupNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveGroupNote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!groupsLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

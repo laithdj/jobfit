@@ -1,0 +1,9 @@
+
+:host ::ng-deep .p-menuitem-link-active {
+    background: rgb(32 188 211);
+    border-radius: 61px !important;
+}
+::ng-deep .disabled-side {
+    color:#495057 !important;
+    opacity: 0.6 !important;
+}

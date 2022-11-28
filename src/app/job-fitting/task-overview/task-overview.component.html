@@ -1,0 +1,121 @@
+<div>
+    <div class="row">
+        <div class="col-7 d-flex">
+            <label class="mt-2">Job/Tasks</label>
+            <span class="p-float-label ml-3 w-100">
+                <p-dropdown class="job-score" [options]="groupOptions" optionLabel="name" [group]="true" placeholder="Please select a task" (onChange)="getFunctionalAnalysis($event)" [(ngModel)]="selectedJobFitSummary"></p-dropdown>
+            </span>
+        </div>
+
+    </div>
+</div>
+<div class='accordion mt-3' *ngIf="taskId > 0">
+            <p-accordion>
+                <p-accordionTab header="Task Overview" [selected]="true">
+                    <div class='row'>
+                        <div class='col'>
+                            <span>Task Overview:</span><br>
+                            <span [innerHTML]="currentFunctionalAnalysis.taskOverview"></span>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col'>
+                            <span>Duration</span><br>
+                            <span [innerHTML]="currentFunctionalAnalysis.duration"></span>
+                        </div>
+                </div>
+                <div class='row'>
+                    <div class='col'>
+                        <span>Frequency Notes</span><br>
+                        <span [innerHTML]="currentFunctionalAnalysis.frequencyNotes"></span>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col'>
+                        <span>Task Comments</span><br>
+                        <span [innerHTML]="currentFunctionalAnalysis.taskComments"></span>
+                    </div>
+                </div>
+                </p-accordionTab>
+                <p-accordionTab header="Flags">
+                    <p-tree [value]='selectedFlagTree' selectionMode="single">
+                        <ng-template pTemplate="default" let-flag>
+                            <div class="country-item">
+                                <div style='padding:5px;'>
+                                    {{flag.label}}
+                                    <span *ngIf="(flag.typeId === 0)">
+                                        <p [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                                        <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span> 
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-tree>
+
+                </p-accordionTab>
+                <p-accordionTab header="Postural Tolerances">
+                  <jobfit-postural-tolerances [toleranceResult]="posturalToleranceResults" ></jobfit-postural-tolerances>
+                  <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+                <p-accordionTab header="Material Handling">
+                    <jobfit-material-handling [materialHandlingResults]="materialHandlingResults"></jobfit-material-handling>
+                    <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+                <p-accordionTab header="Grip Strength">
+                    <jobfit-grip-strength [gripResultItems]="gripResultItems"></jobfit-grip-strength>
+                </p-accordionTab>
+                <!-- <p-accordionTab header="Risk Rating">
+                    <risk-rating [editMode]="editMode" (riskToolResultsOutput)="getRiskToolResults($event)"></risk-rating>
+                </p-accordionTab> -->
+            </p-accordion>
+</div>
+<div class="overlay w-100" *ngIf="!loaded || groupOptions.length == 0" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>
+<p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false' [style]="{height:'20em'}">
+    <div class='definitions'>
+        <div class='row'>
+            <div class='col'>Definitions</div>
+            <div class='col'>% Task Time</div>
+            <div class='col'>Reps per Day</div>
+            <div class='col'>Reps per Hour</div>
+            <div class='col'>Reps per Minute</div>
+        </div>
+        <div class='row'>
+            <div class='col'>N - Never</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+        </div>
+        <div class='row'>
+            <div class='col'>O - Occasionally</div>
+            <div class='col'>1 - 33</div>
+            <div class='col'>1 - 100</div>
+            <div class='col'>0 - 12</div>
+            <div class='col'>1 every 5 - 15</div>
+        </div>
+        <div class='row'>
+            <div class='col'>F - Frequently</div>
+            <div class='col'>34 - 66</div>
+            <div class='col'>101 - 500</div>
+            <div class='col'>12 - 63</div>
+            <div class='col'>1 every 1 - 5</div>
+        </div>
+        <div class='row'>
+            <div class='col'>C - Continuous</div>
+            <div class='col'>67 - 100</div>
+            <div class='col'>500+</div>
+            <div class='col'>>63</div>
+            <div class='col'>1 or more</div>
+        </div>
+        <div class='row'>
+            <div class='col'>NT - Not Tested</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+            <div class='col'>-</div>
+        </div>
+    </div>
+</p-sidebar>

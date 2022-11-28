@@ -1,0 +1,26 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">PPE</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[0]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='main mt-3'>
+    <div class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-tree [value]="selectedPPETree"  selectionMode="single" *ngIf='selectedPPETree.length > 0'>
+            <ng-template pTemplate="default" let-ppe>
+                <div class="country-item">
+                    <div>
+                        {{ppe.label}}
+                        <span *ngIf="(ppe.typeId !== 3)">
+                            <p *ngIf="ppe.note?.text?.length > 0"   [ngClass]="ppe.note?.text?.length > 0 ? 'note' : ''">General Note: {{ppe?.note?.text}}</p></span>
+
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedPPETree.length == 0' severity="info" text="No PPE demands required for this job" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<div id="myNav" class="overlay w-100" *ngIf="!PPELoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<div>
+    <div class="row">
+        <div class="col-5 d-flex">
+            <label class="mt-2">Job/Tasks</label>
+            <span class="p-float-label ml-3 w-75 ">
+                <p-dropdown class="job-score" [options]="groupOptions" optionLabel="name" [group]="true" (onChange)="getHealthHygiene($event)" [(ngModel)]="selectedJobFitSummary"></p-dropdown>
+            </span>
+        </div>
+        <div class="col-5 d-flex">
+            <label class="mt-2">Show Items</label>
+            <span class="p-float-label ml-3 w-75">
+                <p-dropdown class="job-score" [options]="filterOptions" optionValue="id" optionLabel="label" (onChange)="filterFit($event)"></p-dropdown>
+            </span>
+        </div>
+    </div>
+</div>
+<div class="mt-5" *ngIf="optionSelected">
+    <p-table [value]="jobFitItems" dataKey="name" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="legend-col"><p-button type="button" class="p-mr-2 info"  (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button></th>
+                <th pSortableColumn="name">Name</th>
+                <th>Field</th>
+                <th>Criteria</th>
+                <th>Required Values</th>
+                <th>Worker Result</th>
+                <th>Fit</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-jobFitItem let-expanded="expanded">
+            <tr>
+                <td colspan="2">{{jobFitItem.name}}</td>
+                <td>{{jobFitItem.field}}</td>
+                <td>{{jobFitItem.criteria}}</td>
+                <td>{{jobFitItem.required}}</td>
+                <td>{{jobFitItem.result}}</td>
+                <td>
+                    <i *ngIf="jobFitItem.fit" class="pi pi-check green"></i>
+                    <i *ngIf="jobFitItem.fit == false" class="pi pi-times red"></i>
+                    <i *ngIf="jobFitItem.fit == null" class="pi pi-circle-on" style="color:orange"></i>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false' [style]="{height:'10em'}">
+    <span class="legend mr-5">NT - Not Tested</span>
+    <span class='legend mr-5'><i class="pi pi-check green"></i> - Jobfit Match</span>
+    <span class='legend mr-5'><i class="pi pi-times red"></i> - Jobfit Mismatch</span>
+    <span class='legend mr-5'><i class="pi pi-circle-on orange"></i> - Not Tested</span>
+</p-sidebar>
+<div class="overlay w-100"  *ngIf="!loaded">
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

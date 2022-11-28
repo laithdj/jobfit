@@ -1,0 +1,380 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Health and Hygiene</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[4]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='d-flex mt-3'>
+    <div class='w-100'><span class='mr-2 hh-label'>H&H Items</span>
+        <p-dropdown *ngIf="HHLoaded && mainHygieneList.length > 0" class="type items" [options]="mainHygieneList" placeholder="Select Health and Hygiene" (onChange)="setList($event)" optionValue="id" optionLabel="name"></p-dropdown>
+    </div>
+    <div class='f-r w-50'  *ngIf="hhId > 0">
+        <span class="mt-2 f-r">{{'Next Assessment Schedule' | translate}}</span> 
+        <label class="switch toggle f-r">
+            <input type="checkbox" [checked]='showNas' (click)='nasToggle()'>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+<div class='d-flex'>
+    <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,71) ? 'addNew mt-2' : 'disable-btn addNew mt-2'"  style="width:150px;height:40px"><p-button label="Add New Health and Hygiene"  [disabled]="hhId == 0" (onClick)="addNew(71)"></p-button></div>
+    <div class='w-100'></div>
+    <div *ngIf="hhId > 0 && showNas && !nextAssessmentSchedule.isActive" class='schedule-btn  mt-2'><p-button (onClick)="addSchedule()" label="Add Schedule"></p-button></div> 
+    <div *ngIf="hhId > 0 && showNas && nextAssessmentSchedule.isActive" class='schedule-btn  mt-2'><p-button (onClick)="editSchedule()" label="Edit Schedule"></p-button></div> 
+    <div *ngIf="hhId > 0 && showNas && nextAssessmentSchedule.isActive" class='schedule-btn  mt-2'><p-button *ngIf="nextAssessmentSchedule.isActive" (onClick)="showArchiveSchedule = true" label="Archive Schedule"></p-button></div>
+</div>
+
+<div  class = 'main mt-2' *ngIf="hhId > 0 && showNas">
+    <div class ="underline">
+        <p class ='med-heading'>Next Assessment Schedule</p>
+    </div>
+    <div *ngIf="hhId > 0 && !nextAssessmentSchedule.isActive">
+        <p-message severity="info" text="There is no assessment schedule recorded" styleClass="p-mr-2" class='info'></p-message>
+    </div>
+    <div *ngIf="nextAssessmentSchedule.isActive">
+        <div class="top-row">
+            <div class="text-left">
+                Date & Time
+            </div>
+            <div class="text-right">
+            {{nextAssessmentSchedule.assessmentDateTime | date: 'dd-MMM-yyyy h:mm a'}}
+            </div>
+        </div>
+        <div class="top-row" *ngIf="!authorisedList[1]">
+            <div class="text-left">
+                Provider
+            </div>
+            <div class="provider-text-right">
+                {{getProvider(nextAssessmentSchedule.providerId ?? 0)}}
+            </div>
+        </div>
+        <div class="top-row">
+            <div class="text-left">
+                Comments
+            </div>
+            <div class="comments-text-right">
+                <span [innerHtml]="nextAssessmentSchedule.comments"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='accordion mt-2'>
+    <p-tabView>
+        <p-tabPanel header="Latest">
+            <p-table #dt [value]='latestHygieneResults'  responsiveLayout="scroll"
+            [rowHover]="true" dataKey="id"
+           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                            <th class="table-expand-column"></th>
+                            <th style="width: 15rem;"> Item </th>
+                            <th class="table-center-column"> Date</th>
+                            <th class="table-center-column"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-hyg let-expanded="expanded">
+                    <tr>
+                            <td>
+                                <button type="button" pButton pRipple [pRowToggler]="hyg" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            </td>
+                        <td>{{hyg?.healthHygiene?.name}}</td>
+                        <td class="table-center-column">{{hyg?.assessmentDate | date: 'dd-MMM-yyyy'}}</td>
+                        <td class="table-center-column">
+                            <p-button  label="View/Edit" class='mr-2 actions' (onClick)="edit(hyg)"></p-button>
+                            <p-button label="Archive" class='actions' *ngIf="!isFunctionBtnValid(functionList$ | async ,58)" (onClick)="showArchiveHH = true; selectedHealthHygieneResult = hyg"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-hh>
+                    <tr>
+                        <td colspan="10">
+                            <div class="p-p-3">
+                                <div class='row'>
+                                    <div class='col-7'>
+                                        <div *ngIf="!authorisedList[1]">
+                                            <span class='expand-title'>Provider: </span> {{getProvider(hh.providerId)}}<br>
+                                        </div>
+                                        <div class='d-flex'>
+                                            <span class="mr-2">Next Review Date:</span><br>
+                                            <div class="p-field-radiobutton mr-2" *ngIf="hh.nextDueDate?.date == null && hh.nextDueDate?.isManualNextDueDate == null">
+                                                <label class='ml-1'>Not Set</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2"  *ngIf="hh.nextDueDate?.date != null && hh.nextDueDate?.isManualNextDueDate == true">
+                                                <label class='ml-1'>Manual Date</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2" *ngIf="hh.nextDueDate?.date != null && hh.nextDueDate?.isManualNextDueDate == false">
+                                                <label class='ml-1'>Automatic Date</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2">
+                                                <span *ngIf="hh.nextDueDate?.date != null" class='ml-1 mr-2'>{{hh.nextDueDate.date | date: 'dd-MMM-yyyy'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='col'>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                            <div class="p-p-3" *ngIf="hhResultPerCategoryList.length > 0">
+                                <div class='row' *ngFor="let hhPC of hhResultPerCategoryList[0]">
+                                    <div class='col-7 mt-3'>
+                                        <div>
+                                            <span class='expand-title-name'>{{hhPC.category}}</span><br>
+                                            <hr/>
+                                        </div>
+                                        <div class='row' *ngFor="let hyg of hhPC.results;">
+                                            <div class='col-7'>
+                                                <div class='d-flex'>
+                                                    <div class='row w-100'>
+                                                        <div class='col-7'>
+                                                            <span style='font-weight: bold;'>{{hyg.name}}</span>
+                                                        </div>
+                                                        <div class='col-9'>
+                                                            <span [innerHtml]="hyg.inputTypeId != 2 ? hyg.value: hyg.valueText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='col'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+           </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="History">
+            <p-table #dt [value]='hygieneResults' [rows]="10" [rowsPerPageOptions]="[10,20,30]" [paginator]="true" responsiveLayout="scroll"
+            [rowHover]="true" dataKey="id"
+           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                            <th class="table-expand-column"></th>
+                            <th> Item</th>
+                            <th class="table-center-column"> Date</th>
+                            <th class="table-center-column"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-hyg let-expanded="expanded" >
+                    <tr>
+                        <td class="table-expand-column">
+                            <button type="button" pButton pRipple [pRowToggler]="hyg" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td>{{hyg.healthHygiene?.name}}</td>
+                        <td class="table-center-column">{{hyg.assessmentDate | date: 'dd-MMM-yyyy'}}</td>
+                        <td class="table-center-column">
+                            <p-button label="Edit" class='mr-2 actions' (onClick)="edit(hyg)" [disabled]="authorisedList[2]"></p-button>
+                            <p-button label="Archive" class='actions' (onClick)="showArchiveHH = true; selectedHealthHygieneResult = hyg"  [disabled]="authorisedList[3]"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-hh let-ind="rowIndex"> 
+                    <tr>
+                        <td colspan="10">
+                            <div class="p-p-3">
+                                <div class='row'>
+                                    <div class='col-7'>
+                                        <div *ngIf="!authorisedList[1]">
+                                            <span class='expand-title'>Provider: </span> {{getProvider(hh.providerId)}}<br>
+                                        </div>
+                                        <div class='d-flex'>
+                                            <span class="mr-2">Next Review Date:</span><br>
+                                            <div class="p-field-radiobutton mr-2" *ngIf="hh.nextDueDate?.date == null && hh.nextDueDate?.isManualNextDueDate == null">
+                                                <label class='ml-1'>Not Set</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2"  *ngIf="hh.nextDueDate?.date != null && hh.nextDueDate?.isManualNextDueDate == true">
+                                                <label class='ml-1'>Manual Date</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2" *ngIf="hh.nextDueDate?.date != null && hh.nextDueDate?.isManualNextDueDate == false">
+                                                <label class='ml-1'>Automatic Date</label>
+                                            </div>
+                                            <div class="p-field-radiobutton mr-2">
+                                                <span *ngIf="hh.nextDueDate?.date != null" class='ml-1 mr-2'>{{hh.nextDueDate.date | date: 'dd-MMM-yyyy'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='col'>
+                                        <div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                            <div class="p-p-3" *ngIf="hhResultPerCategoryList.length > 0">
+                                <div class='row' *ngFor="let hhPC of hhResultPerCategoryList[ind]">
+                                    <div class='col-7 mt-3'>
+                                        <div>
+                                            <span class='expand-title-name'>{{hhPC.category}}</span><br>
+                                            <hr/>
+                                        </div>
+                                        <div class='row' *ngFor="let hyg of hhPC.results;">
+                                            <div class='col-7'>
+                                                <div class='d-flex'>
+                                                    <div class='row w-100'>
+                                                        <div class='col-7'>
+                                                            <span style='font-weight: bold;'>{{hyg.name}}</span>
+                                                        </div>
+                                                        <div class='col-9'>
+                                                            <span [innerHtml]="hyg.inputTypeId != 2 ? hyg.value: hyg.valueText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='col'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+           </p-table>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+<p-dialog [header]="header" [(visible)]="showAddHH" [modal]="true">
+    <div class="hh-modal">
+        <span class='heading-md' >{{hhName}}</span>
+        <hr/>
+        <div class='name mt-3' *ngIf="!authorisedList[1]">
+            <span>Provider</span><br>
+            <p-dropdown [disabled]="!editMode" optionLabel="fullNameWithProfession" [options]="providers"  class="provider w-100" [(ngModel)]="selectedHealthHygiene.providerId" placeholder="No provider selected..." optionValue="id"></p-dropdown>
+        </div>
+        <div class='name mt-3'>
+            <span class="mr-2">Assessment Date *</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+            <p-calendar [disabled]="!editMode" placeholder="DD-MMM-YYYY" appendTo="body" name="assessmentDate" dateFormat="dd-M-yy" [(ngModel)]="assessmentDate" [showIcon]="true" (onSelect)="changeAssessmentDate()" ></p-calendar>
+
+        </div>
+        <div class='row'>
+            <div class='col-9'>
+                <div class='name'>
+                    <span class="mr-2">Next Review Date</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                    <div class="p-field-radiobutton mr-2">
+                        <p-radioButton [disabled]="!editMode" (onClick)="nextDueDateDisable = true" value="NotSet" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                        <label class='ml-1'>Not Set</label>
+                    </div>
+                    <div class="p-field-radiobutton mr-2">
+                        <p-radioButton  [disabled]="!editMode" value="ManualDate" (onClick)="nextDueDateDisable = false" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                        <label class='ml-1'>Manual Date</label>
+                    </div>
+                    <div class="p-field-radiobutton mr-2 align-self-end">
+                        <p-radioButton [disabled]="!editMode" value="Automatic" (onClick)="setAutomaticDate()" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                        <label  class='ml-1 mr-1'>Automatic Date</label>
+                        <p-calendar [disabled]="!editMode" placeholder="DD-MMM-YYYY" appendTo="body" name="dueDate" [disabled]="nextDueDateDisable" dateFormat="dd-M-yy" [(ngModel)]="nextDueDate" [showIcon]="true"></p-calendar>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div *ngIf="selectedHHResultPerCategory && selectedHHResultPerCategory.length > 0">
+            <div class="mt-3" *ngFor="let hh of selectedHHResultPerCategory;let i= index">
+                <span class='heading-sm' >{{hh.category}}</span>
+                <hr/>
+                <div *ngFor="let item of hh.results">
+                    <div class='row w-100'>
+                        <div class='col-12'>
+                            <p-checkbox name="category" [disabled]="!editMode" [(ngModel)]="item.useResult" [binary]="true"></p-checkbox>
+                            <label for="item.name" class='ml-1'>{{item.name}}</label>
+                        </div>
+                        <div class='col-12 ml-5' *ngIf="item">
+                            <health-hygiene-controls [disabled]="!editMode" [typeId]="item.inputTypeId" (valueChange)="setValue($event,item.inputItem)" [inputItem]="item.inputItem" [initialValue]="item.value"></health-hygiene-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='buttons-footer d-flex mt-5 mb-5'>
+            <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showAddHH = false' (onClick)="cancelViewEdit()"></p-button></div>
+            <div *ngIf="!editMode"  [ngClass]="!isFunctionBtnValid(functionList$ | async ,58) ? 'edit ml-2' : 'disabled-btn ml-2'"><p-button label="Edit" (onClick)="editHH(63)"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit' *ngIf="editMode"><p-button label="Submit" (onClick)="saveResult()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Archive Health & Hygiene Results" [(visible)]="showArchiveHH" [modal]="true">
+    <p>Are you sure you want to archive this health and hygiene result?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showArchiveHH = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='actions'><p-button label="Confirm" (onClick)="archiveResult()"></p-button></div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-health-hygiene ml-2'></div>
+            <div class='w-100'></div>
+            <div class='actions'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [header]="nextAssessmentSchedule.isActive? 'Edit Schedule':'Add Schedule'" [(visible)]="displaySchedule" [style]="{width: '500px'}" [modal]="true">
+    <div class="nas-modal">
+        <div class='name'>
+            <span class="mr-2">Assessment Date *</span> <span class="sample-dob">e.g. 01-Jul-2000 12:30 PM</span><br>
+            <p-calendar appendTo="body" dateFormat="dd-M-yy" placeholder="Please Select Date and Time" [(ngModel)]="nasDate" [showTime] = "true" [showIcon]="true" [hourFormat]="'12'"></p-calendar>
+        </div>
+        <div class='name mt-3' *ngIf="!authorisedList[1]"> 
+            <span>Provider</span><br>
+            <p-dropdown appendTo="body" [placeholder]="'Please Select A Provider'"optionLabel="fullName" class="provider"  [options]='providers' [(ngModel)]="nasProvider" optionValue="id"></p-dropdown>
+        </div>
+        <div class='name mt-3'>Comments</div>
+        <p-editor name="comments" [(ngModel)]="nasComment" [style]="{'height':'150px'}" appendTo="body">
+            <ng-template pTemplate="header">
+                <span class="ql-formats">
+                    <button type="button" class="ql-bold" aria-label="Bold"></button>
+                    <button type="button" class="ql-italic" aria-label="Italic"></button>
+                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                    <button type="button" class="ql-strike" aria-label="Strike"></button>
+                    <button type="button" class="ql-link" aria-label="Strike"></button>
+                    <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                    <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                </span>
+            </ng-template>
+        </p-editor>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel ml-2'><p-button label="Cancel" (onClick)="displaySchedule = false"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit'><p-button label="Submit" (onClick)="saveNextAssessment()"></p-button></div>
+        </div>
+        <div class="overlay w-100" *ngIf="!nasSaved" >
+            <div class='loader'>
+                <p-progressSpinner></p-progressSpinner>
+                <br />
+                <span class="saved"> Saving...</span>
+            </div>
+        </div>
+</p-dialog>
+<p-dialog header="Archive Next Assessment Schedule" [(visible)]="showArchiveSchedule" [modal]="true">
+    <p>Are you sure you want to archive this next assessment schedule?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-worker ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchiveSchedule = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-worker'><p-button label="Confirm" class='actions' (onClick)="archiveNextAssessment()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!HHLoaded || mainHygieneList.length == 0" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

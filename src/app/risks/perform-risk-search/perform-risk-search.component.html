@@ -1,0 +1,413 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">{{'PERFORMRISKSEARCH.MAINHEADING' | translate}}</div>
+    <div class="w-80"></div>
+    <div [class]="authorisedFunctionList.Function[eFunctions.RunRisk] ? 'run mr-2':'disabled-run mr-2'"><p-button [label]="'PERFORMRISKSEARCH.RUN' | translate" (click)="runRiskSearch()"></p-button></div>  
+    <div [class]="!authorisedFunctionList.Function[eFunctions.ViewReports] || !runRiskSearchClicked ? 'disabled-export f-r mr-2':'export f-r mr-2'"><button icon="pi" pButton [label]="'PERFORMRISKSEARCH.EXPORT' | translate" (click)="export()"></button></div>   
+    <div [class]="!authorisedFunctionList.Function[eFunctions.ViewReports] || !runRiskSearchClicked ? 'disabled-print f-r' : 'print f-r'"><button icon="pi" pButton [label]="'PERFORMRISKSEARCH.PRINT' | translate" (click)="printList()"></button></div>    
+</div>
+<div class="d-flex w-100 mt-5 mb-2">
+    <div class='heading-3'>{{'PERFORMRISKSEARCH.RISKSEARCHCRITERIA' | translate}}</div>
+</div>
+<div *ngFor="let item of riskSearchCriteriaList" class="mb-2">
+    <div class="d-flex w-100">
+        <span class='heading-2'>{{item}}</span>
+    </div>
+</div>
+<div class="mt-5 filter d-flex w-100" *ngIf="authorisedFunctionList.Function[eFunctions.RunRisk]">
+    <div style="width: 400rem;">
+    <span class="mt-title mr-2" style="width: 8rem;">{{'PERFORMRISKSEARCH.USERECORDS' | translate}}</span>
+    <p-dropdown  *ngIf="riskSearch.typeName != 'Job'" optionLabel="label" optionValue="id" [options]="useRecordList" [(ngModel)]="useRecords" [placeholder]="'Select here' | translate" class='name' (onChange)="changeUseRecord($event)"></p-dropdown>
+    <p-dropdown  *ngIf="riskSearch.typeName == 'Job'" optionLabel="label" optionValue="id" [options]="jobUseRecordList" [(ngModel)]="useRecords" [placeholder]="'Select here' | translate" class='name'></p-dropdown>
+    <span *ngIf="useRecords == 'Between' && riskSearch.typeName != 'Job'">
+        <p-calendar placeholder="DD-MMM-YYYY" *ngIf="useRecords == 'Between' && riskSearch.typeName != 'Job'" dateFormat="dd-M-yy" class='ml-2 mr-2' [(ngModel)]="useRecordStart" [showIcon]="true"></p-calendar>
+        <label *ngIf="useRecords == 'Between' && riskSearch.typeName != 'Job'" class="mt-2">{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+        <p-calendar placeholder="DD-MMM-YYYY" *ngIf="useRecords == 'Between' && riskSearch.typeName != 'Job'" dateFormat="dd-M-yy" class='ml-2 mr-2' [(ngModel)]="useRecordEnd" [showIcon]="true"></p-calendar>
+        <span class="sample-dob">e.g. 01-Jul-2000</span>
+    </span>
+    </div>
+     
+    <div class='f-r' style="width: 100rem;">
+        <span class="mt-title f-r ml-2">{{refinelabel}}</span>  
+        <label class="switch toggle f-r">
+            <input type="checkbox" [checked]='advancedSearch' (click)='advancedSearchToggle()'>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+<div class="mt-2" *ngIf='showNoFilter && riskSearchFilters.length == 0'>
+    <p-message severity="info" [text]="'PERFORMRISKSEARCH.NOTFILTERED' | translate" styleClass="p-mr-2"></p-message>
+</div>
+<div class="d-flex w-100 mt-5 mb-2" *ngIf='riskSearchFilters.length > 0'>
+    <div class='heading-3 w-100'>{{'PERFORMRISKSEARCH.FILTEREDBY' | translate}}</div>
+</div>
+<div *ngIf='riskSearchFilters.length > 0'>
+    <div *ngFor="let item of riskSearchFilters">
+        <div class="d-flex w-100">
+            <span>{{item}}</span>
+        </div>
+    </div>
+</div>
+ <div class='advanced-search' *ngIf="advancedSearch && riskSearch.typeName =='Worker'">
+    <p-tabView>
+        <p-tabPanel [header]="'WORKERSLIST.DETAILSHEADER' | translate">
+            <p-message severity="info" [text]="'WORKERSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+            <div class='d-flex mt-4'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHEMPLOYEEIDLABEL' | translate}}</label>
+                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.employeeId" />
+            </div>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHFIRSTNAMELABEL' | translate}}</label>
+                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.firstName" />
+            </div>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHLASTNAMELABEL' | translate}}</label>
+                <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.lastName" />
+            </div>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHGENDERLABEL' | translate}}</label>
+                <p-dropdown optionLabel="name" optionValue="code" [options]="genders" [(ngModel)]="gender" (onChange)="setGenderSearchField($event)" ></p-dropdown>
+            </div>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHAGELABEL' | translate}}</label>
+                <input type="number" class='mr-2' pInputText [(ngModel)]="workerDetailsSearch.ageFrom" />
+                <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                <input type="number" class='ml-2' pInputText [(ngModel)]="workerDetailsSearch.ageTo" />
+            </div>
+            <div class='d-flex mt-2'>
+                <label class="advanced-search-label">{{'WORKERSLIST.SEARCHDATEOFBIRTHLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2' [(ngModel)]="workerDetailsSearch.dobFrom" [showIcon]="true"></p-calendar>
+                <label class="mt-2">{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2'  [(ngModel)]="workerDetailsSearch.dobTo" [showIcon]="true"></p-calendar>
+            </div>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEWORKER' | translate" (onClick)="refineWorker()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'WORKERSLIST.FLAGSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="flagsOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="flagsOption > 0" [value]='workerFlagTree' selectionMode="checkbox" [(selection)]="selectedFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEWORKER' | translate" (onClick)="refineWorker()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'WORKERSLIST.GROUPSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="groupsOption" optionLabel="name" optionValue="id" placeholder="No filter selected" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="groupsOption > 0" [value]="workerGroupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEWORKER' | translate" (onClick)="refineWorker()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'WORKERSLIST.EMPLOYMENTHEADER' | translate">
+            <p-accordion>
+                <p-accordionTab header="Sites & Departments">
+                    <p-message severity="info" [text]="'WORKERSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+                    <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+                </p-accordionTab>
+                <p-accordionTab header="Details">
+                    <div class='d-flex mt-2'>
+                        <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTTYPELABEL' | translate}}</label>
+                        <p-dropdown class='p-25' [options]='employmentType' [(ngModel)]="empType" optionLabel="label" optionValue="id"></p-dropdown>
+                    </div>
+                    <div class='d-flex mt-2'>
+                        <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTDATELABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                        <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2' [(ngModel)]="employmentFrom" [showIcon]="true"></p-calendar>
+                        <label class="mt-2">{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                        <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2'  [(ngModel)]="employmentTo" [showIcon]="true"></p-calendar>
+                    </div>
+                </p-accordionTab>
+                <p-accordionTab header="Flags">
+                    <div class='d-flex mb-2'>
+                        <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                        <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="employmentFlagOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                    </div>
+                    <p-tree *ngIf="employmentFlagOption > 0" [value]='employmentFlagTree' selectionMode="checkbox" [(selection)]="selectedEmploymentFlags"></p-tree>
+                </p-accordionTab>
+            </p-accordion>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEWORKER' | translate" (onClick)="refineWorker()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'WORKERSLIST.FUNCTIONALANALYSIS' | translate">
+            <span class='filter-title'>{{'WORKERSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+            <div class='d-flex mt-2'>
+                <label class="falabel">{{'WORKERSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="faSearch.from" [showIcon]="true"></p-calendar>
+                <label class="mt-2">{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="faSearch.to" [showIcon]="true"></p-calendar>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'TASKSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                <p-multiSelect [options]="providers" [(ngModel)]="faSearch.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'TASKSLIST.EVENTLABEL' | translate}}</label>
+                <p-multiSelect [options]="events" [(ngModel)]="faSearch.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <span class='filter-title mt-2'>{{'WORKERSLIST.FUNCTIONALLABEL' | translate}}</span>
+            <div class='d-flex mt-3'>
+                <label class="falabel">{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" placeholder="No Applied Filter" [options]="searchOptions" class='flag-search mr-2' [(ngModel)]="faSearch.flagsOption"></p-dropdown>
+            </div>
+            <p-tree *ngIf="faSearch.flagsOption > 0" [value]="workerFAFlagTree" selectionMode="checkbox" [(selection)]="selectedWorkerFAFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEWORKER' | translate" (onClick)="refineWorker()"></p-button></div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div> 
+<div class='advanced-search' *ngIf="advancedSearch && riskSearch.typeName =='Task'">
+    <p-tabView>
+        <p-tabPanel [header]="'TASKSLIST.DETAILSHEADER' | translate">
+            <p-message severity="info" [text]="'TASKSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+            <div class='d-flex  mt-4'>
+                <span class="p-input-icon-left mr-2 w-100">
+                    <i class="pi pi-search"></i>
+                    <input type="text" class='search-bar-advanced' [(ngModel)]="taskDetail" pInputText [placeholder]="'TASKSLIST.SEARCHADVANCED' | translate"  />
+                </span>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+         <p-tabPanel [header]="'TASKSLIST.FLAGSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="flagsOption"  placeholder="No Applied Filter" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="flagsOption > 0" [value]='taskFlagTree' selectionMode="checkbox"  [(selection)]="selectedFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()" ></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'TASKSLIST.GROUPSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="groupsOption" optionLabel="name" optionValue="id"  placeholder="No Applied Filter" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="groupsOption > 0" [value]="taskGroupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()" ></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'TASKSLIST.JOBSHEADER' | translate">
+            <div class='d-flex'>
+                <label class="jobslabel">{{'TASKSLIST.LINKEDJOBSLABEL' | translate}}</label>
+                <p-multiSelect [options]="linkedJobs" [(ngModel)]="selectedLinkedJobs"  selectedItemsLabel="{0} items selected" optionLabel="name" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class="d-flex mt-2">
+                <label  class="jobslabel">{{'TASKSLIST.FREQUENCYLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" [options]="freqOptions" [(ngModel)]="selectedFrequency" class='flag-search' placeholder="Select Frequency"></p-dropdown>
+            </div>
+            <span class='filter-title'>{{'TASKSLIST.ANYASSOCIATEDLABEL' | translate}}</span>
+            <div class='d-flex mt-3 mb-2'>
+                <label class="jobslabel">{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions"  placeholder="No Applied Filter" [(ngModel)]="jobSearchOption" class='flag-search mr-2'></p-dropdown>
+            </div>
+            <p-tree *ngIf="jobSearchOption > 0" [value]='jobFlagTree' selectionMode="checkbox" [(selection)]="selectedLinkedJobFlagTree"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'TASKSLIST.SITESHEADER' | translate">
+            <span class='filter-title'>{{'TASKSLIST.SITESEARCH' | translate}}</span>
+            <p-message severity="info" [text]="'TASKSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+            <div class='flag-title'>
+                <span class='flag-text'>{{'TASKSLIST.SITESLABEL' | translate}}</span>
+            </div>
+            <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+         <p-tabPanel [header]="'TASKSLIST.FUNCTIONALANALYSIS' | translate">
+            <span class='filter-title'>{{'TASKSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+            <div class='d-flex mt-2'>
+                <label class="falabel">{{'TASKSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="faSearch.from" [showIcon]="true"></p-calendar>
+                <label class="mt-2">{{'TASKSLIST.ANDLABEL' | translate}}</label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="faSearch.to" [showIcon]="true"></p-calendar>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'TASKSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                <p-multiSelect [options]="providers" [(ngModel)]="faSearch.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="falabel">{{'TASKSLIST.EVENTLABEL' | translate}}</label>
+                <p-multiSelect [options]="events" [(ngModel)]="faSearch.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <span class='filter-title mt-2'>{{'TASKSLIST.FUNCTIONALLABEL' | translate}}</span>
+            <div class='d-flex mt-3 mb-2'>
+                <label class="falabel">{{'TASKSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id"  [(ngModel)]="faSearch.flagsOption" placeholder="No Applied Filter" [options]="searchOptions" class='flag-search mr-2'></p-dropdown>
+            </div>
+            <p-tree *ngIf="faSearch.flagsOption > 0" [value]="taskFAFlagTree" selectionMode="checkbox" [(selection)]="selectedTaskFAFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'TASKSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearTaskSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINETASK' | translate" (onClick)="refineTask()"></p-button></div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+ <div class='advanced-search' *ngIf="advancedSearch && riskSearch.typeName =='Job'">
+    <p-tabView>
+        <p-tabPanel [header]="'JOBSLIST.DETAILSHEADER' | translate">
+            <p-message severity="info" [text]="'JOBSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+            <div class='d-flex  mt-4'>
+                <span class="p-input-icon-left mr-2 w-100">
+                    <i class="pi pi-search"></i>
+                    <input type="text" class='search-bar-advanced' [(ngModel)]="jobDetail" pInputText [placeholder]="'JOBSLIST.SEARCHADVANCED' | translate"  />
+                </span>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel>
+       <p-tabPanel [header]="'JOBSLIST.FLAGSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="flagsOption" placeholder="No Applied Filter" class='flag-search'></p-dropdown>
+            </div>  
+            <p-tree *ngIf="flagsOption > 0" [value]='jobFlagTree' selectionMode="checkbox"  [(selection)]="selectedFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel>
+       <p-tabPanel [header]="'JOBSLIST.GROUPSHEADER' | translate">
+            <div class='d-flex mb-2'>
+                <label>{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="groupsOption" optionLabel="name" optionValue="id" placeholder="No Applied Filter" class='flag-search'></p-dropdown>
+            </div>
+            <p-tree *ngIf="groupsOption > 0" [value]="jobGroupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel>
+       <p-tabPanel [header]="'JOBSLIST.TASKSHEADER' | translate">
+            <div class='d-flex'>
+                <label class="jobslabel">{{'JOBSLIST.SEARCHBUTTONLABEL' | translate}}</label>
+                <p-multiSelect [options]="linkedTasks" [(ngModel)]="selectedLinkedTasks"  selectedItemsLabel="{0} items selected" optionLabel="name" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class='d-flex mt-2 mb-2'>
+                <label class="jobslabel">{{'JOBSLIST.FREQUENCYLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" [options]="freqOptions" [(ngModel)]="selectedFrequency" class='flag-search' placeholder="Select Frequency" ></p-dropdown>
+            </div>
+            <span class='filter-title'>{{'JOBSLIST.ANYASSOCIATEDLABEL' | translate}}</span>
+            <div class='d-flex mt-3 mb-2'>
+                <label class="jobslabel">{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="linkedTaskFlagTreeOption" class='flag-search mr-2' placeholder="No Applied Filter" ></p-dropdown>
+            </div>
+            <p-tree *ngIf="linkedTaskFlagTreeOption > 0" [value]='taskFlagTree' selectionMode="checkbox" [(selection)]="selectedLinkedTaskFlagTree"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'PERFORMRISKSEARCH.SITESHEADER' | translate">
+            <span class='filter-title'>{{'JOBSLIST.SITESEARCH' | translate}}</span>
+            <p-message severity="info" [text]="'PERFORMRISKSEARCH.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2 mb-2"></p-message>
+            <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'JOBSLIST.FUNCTIONALANALYSIS' | translate">
+            <span class='filter-title'>{{'JOBSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+            <div class='d-flex mt-2'>
+                <label class="jobslabel">{{'JOBSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='mr-2 ml-2' [(ngModel)]="faSearch.from" [showIcon]="true"></p-calendar>
+                <label class="mt-2">{{'JOBSLIST.ANDLABEL' | translate}}</label>
+                <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" class='ml-2' [(ngModel)]="faSearch.to" [showIcon]="true"></p-calendar>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="jobslabel">{{'JOBSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                <p-multiSelect [options]="providers" [(ngModel)]="faSearch.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <div class='d-flex mt-3 mb-custom'>
+                <label class="jobslabel">{{'JOBSLIST.EVENTLABEL' | translate}}</label>
+                <p-multiSelect [options]="events" [(ngModel)]="faSearch.events"  selectedItemsLabel="{0} items selected" optionLabel="name"   class='linked-jobs mr-2 ml-2'></p-multiSelect>
+            </div>
+            <span class='filter-title mt-2'>{{'JOBSLIST.FUNCTIONALLABEL' | translate}}</span>
+            <div class='d-flex mt-3 mb-2'>
+                <label class="jobslabel">{{'JOBSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id"  [options]="searchOptions" [(ngModel)]="faSearch.flagsOption" class='flag-search mr-2' placeholder="No Applied Filter"></p-dropdown>
+            </div>
+            <p-tree *ngIf="faSearch.flagsOption > 0" [value]="taskFAFlagTree" selectionMode="checkbox" [(selection)]="selectedTaskFAFlags"></p-tree>
+            <div class='d-flex float-r'>
+                <div class='w-100'></div>
+                <div class='clear mt-1 mr-2'><p-button [label]="'JOBSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearJobSearch()"></p-button></div>
+                <div class='search-btn-2 mt-1'><p-button [label]="'PERFORMRISKSEARCH.REFINEJOB' | translate" (onClick)="refineJob()"></p-button></div>
+            </div>
+        </p-tabPanel> 
+    </p-tabView>
+</div> 
+<div class="d-flex w-100 mt-5 mb-2" *ngIf="authorisedFunctionList.Function[eFunctions.RunRisk]">
+    <div class="heading-3 w-75">{{'PERFORMRISKSEARCH.RISKSRESULTS' | translate}}</div>
+    <div class='f-r w-25' *ngIf="riskSearchResults.length > 0">
+        <span class="mt-title f-r ml-2">{{expandLabel}}</span>  
+        <label class="switch toggle f-r">
+            <input type="checkbox" [checked]='isExpanded' (click)='expandToggle()'>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+<div style='padding-bottom:10px;' *ngIf="riskSearchResults.length > 0">
+    <p-tree [value]='resultTreeNode' selectionMode="single">
+        <ng-template pTemplate="default" let-result>
+            <div class="item">
+                <div>
+                    {{result.label}}
+                </div>
+            </div>
+        </ng-template>
+    </p-tree>
+</div>
+<div style='padding-bottom:10px;' *ngIf="riskSearchResults.length == 0 && showNoResult== true">
+    <p-message severity="info" [text]="'PERFORMRISKSEARCH.NORESULT' | translate" styleClass="p-mr-2"></p-message>
+</div>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-worker ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-risk'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<div id="myNav" class="overlay w-100" *ngIf="isLoading" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

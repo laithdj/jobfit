@@ -1,0 +1,507 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Functional Analysis</div>
+    <div [class]="authorisedFunctionList.Function[eFunctions.ViewReports] ? 'generate':'disable-generate'"><p-button [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='d-flex'  *ngIf="faLoaded && authorisedFunctionList.Function[eFunctions.ViewFunctionalAnalyses]">
+    <div class='w-100 heading'></div>
+    <div class='f-r w-50'>
+        <span class="mt-2 f-r">{{'Next Assessment Schedule' | translate}}</span>
+        <label class="switch toggle f-r">
+            <input type="checkbox" [checked]='showNas' (click)='nasToggle()'>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+<div class='nas-panel' *ngIf='showNas && authorisedFunctionList.Function[eFunctions.ViewFunctionalAnalyses]'>
+    <div class='d-flex' *ngIf="faLoaded">
+        <div class='w-100 underline mt-2 ml-2'> <p class ='med-heading'>Next Assessment Schedule</p></div>
+        <div *ngIf="!nextAssessmentSchedule.isActive" class='schedule-btn mt-2'><p-button (onClick)="addSchedule()" label="Add Schedule"></p-button></div>
+        <div *ngIf="nextAssessmentSchedule.isActive" class='schedule-btn mt-2'><p-button (onClick)="editSchedule()" label="Edit Schedule"></p-button></div>
+        <div *ngIf="nextAssessmentSchedule.isActive" class='schedule-btn  mt-2'><p-button *ngIf="nextAssessmentSchedule.isActive" (onClick)="showArchiveSchedule = true" label="Archive Schedule"></p-button></div>
+    </div>
+    <div class = 'main mt-2' *ngIf="faLoaded">
+        <div *ngIf="!nextAssessmentSchedule.isActive">
+            <p-message severity="info" text="There is no assessment schedule recorded" styleClass="p-mr-2" class='info'></p-message>
+        </div>
+        <div *ngIf="nextAssessmentSchedule.isActive">
+            <div class="top-row">
+                <div class="text-left">
+                    Date & Time
+                </div>
+                <div class="text-right">
+                {{nextAssessmentSchedule.assessmentDateTime | date: 'dd-MMM-yyyy h:mm a'}}
+                </div>
+            </div>
+            <div class="top-row" *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">
+                <div class="text-left">
+                    Provider
+                </div>
+                <div class="provider-text-right">
+                    {{getProvider(nextAssessmentSchedule.providerId)}}
+                </div>
+            </div>
+            <div class="top-row">
+                <div class="text-left">
+                    Comments
+                </div>
+                <div class="comments-text-right rendered-quill-content ql-editor">
+                    <span [innerHtml]="nextAssessmentSchedule.comments"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='d-flex' *ngIf="faLoaded">
+    <div *ngIf="!editMode && !editBtnClicked && !faHistoryEdit"  [class]="authorisedFunctionList.Function[eFunctions.AddFunctionalAnalysis] ? 'add mt-2': 'disabled-add mt-2'"><p-button (onClick)="newFA()" label="New"></p-button></div>
+    <div *ngIf="editMode && !editBtnClicked && !faHistoryEdit" class='cancel  mt-2'><p-button label="Cancel" (onClick)="cancelNewFA()"></p-button></div>
+    <div *ngIf="activeIndex == 0 && currentFunctionalAnalysis != null && !editMode && !newBtnClicked && !faHistoryEdit" [class]="authorisedFunctionList.Function[eFunctions.EditFunctionalAnalysis] ? 'actions mt-2': 'disabled-actions mt-2'"><p-button label="Edit" (onClick)="editFA()"></p-button></div>
+    <div *ngIf="editMode && !newBtnClicked" class='cancel mt-2'><p-button label="Cancel" (onClick)="cancelEditFa()"></p-button></div>
+    <div class='submit-job mt-2' *ngIf="activeIndex == 0 && editMode && currentFunctionalAnalysis != null"><p-button [disabled]="!editMode" label="Submit" (onClick)="saveFunctionalAnalysis(true)"></p-button></div>
+    <div *ngIf="!editMode && !newBtnClicked && faHistoryEdit" class='cancel mt-2'><p-button label="Cancel" (onClick)="cancelEditFaHistory()"></p-button></div>
+    <div *ngIf="activeIndex == 2 && faHistoryEdit" class='save mt-2'><p-button [disabled]="!faHistoryEdit" label="Submit" (onClick)="saveFunctionalAnalysis(false)"></p-button></div>
+    
+    <div *ngIf="activeIndex == 2 && viewFA && !editMode && !newBtnClicked && !faHistoryEdit && !editBtnClicked" [class]="authorisedFunctionList.Function[eFunctions.EditFunctionalAnalysis] ? 'actions mt-2': 'disabled-actions mt-2'"><p-button label="Edit" (onClick)="editFunctionalAnalysis()"></p-button></div>
+    <div *ngIf="activeIndex == 2 && viewFA && !editMode && !newBtnClicked && !faHistoryEdit && !editBtnClicked" [class]="authorisedFunctionList.Function[eFunctions.DeleteFunctionalAnalysis] ? 'actions mt-2': 'disabled-actions mt-2'"><p-button label="Archive" (onClick)="archive()"></p-button></div>
+    <div *ngIf="activeIndex == 2 && viewFA && !editMode && !newBtnClicked && !faHistoryEdit && !editBtnClicked" class='back mt-2'><p-button label="Back to Functional Analysis List" (onClick)="cancelView()"></p-button></div>
+    <div class='w-100'></div>
+</div>
+<div class='accordion mt-3' *ngIf="faLoaded && authorisedFunctionList.Function[eFunctions.ViewFunctionalAnalyses]">
+    <p-tabView  [(activeIndex)]="activeIndex" (onChange)="handleTabChange($event)">
+        <p-tabPanel header="Current Analysis">
+            <p-accordion *ngIf="currentFunctionalAnalysis != null" (onOpen)="onTabOpen($event)">
+                <div [class]="hasError ? 'hasError': ''">
+                    <p-accordionTab header="Details" [(selected)]="activeState[0]">
+                        <div class='row'>
+                            <div class='col'>
+                                <span class="small-heading mr-2">Assessment Date *</span> <span *ngIf="editMode" class="sample-dob">e.g. 01-Jul-2000</span><br>
+                                <span *ngIf="!editMode">{{currentFunctionalAnalysis.assessmentDate | date: 'dd-MMM-yyyy'}}</span>
+                                <p-calendar placeholder="DD-MMM-YYYY" [styleClass]="hasError && assessmentDate == null ? 'hasError': ''" [(ngModel)]="assessmentDate" *ngIf="editMode" dateFormat="dd-M-yy" [showIcon]="true" (onSelect)="changeAssessmentDate()"></p-calendar>
+                            </div>
+                            <div class='col' *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">
+                                <span class="small-heading">Provider</span><br>
+                                <span *ngIf="!editMode">{{getProviderName(currentFunctionalAnalysis.providerId) ?? 'No Provider Selected'}}</span>
+                                <p-dropdown *ngIf="editMode" optionLabel="fullName" class="provider"  [options]='providers' [(ngModel)]="providerId" optionValue="id" placeholder="No provider selected..."></p-dropdown>
+                            </div>
+                            <div class='col'>
+                                <span class="small-heading">Event *</span><br>
+                                <span *ngIf="!editMode">{{currentFunctionalAnalysis.event?.name}}</span>
+                                <p-dropdown *ngIf="editMode" [styleClass]="hasError && event?.id == 0 ? 'hasError provider': 'provider'" optionLabel="name" [options]='events' [(ngModel)]="event" placeholder="Please select Event"></p-dropdown>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10' *ngIf="authorisedFunctionList.Function[eFunctions.ViewNextReviewDate]">
+                                <span class="mr-2 small-heading">Next Review Date</span> <span *ngIf="editMode" class="sample-dob mr-2">e.g. 01-Jul-2000</span>
+                                <span *ngIf='currentFunctionalAnalysis?.nextDueDate && !editMode'>
+                                    <span class="mr-2" >
+                                        <label class='mr-2' *ngIf="currentFunctionalAnalysis?.nextDueDate?.date == null && currentFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == null">Not Set</label>
+                                        <label class='mr-2' *ngIf="currentFunctionalAnalysis?.nextDueDate?.date != null && currentFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == true">Manual Date</label>
+                                        <label class='mr-2' *ngIf="currentFunctionalAnalysis?.nextDueDate?.date != null && currentFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == false">Automatic Date</label>
+                                        <span *ngIf="currentFunctionalAnalysis?.nextDueDate?.date != null" class='ml-1 mr-2'>{{currentFunctionalAnalysis?.nextDueDate?.date | date: 'dd-MMM-yyyy'}}</span>
+                                    </span>
+                                </span>
+                                <span class='name' *ngIf="editMode">
+                                    <span class="p-field-radiobutton mr-2">
+                                        <p-radioButton (onClick)="setNotSet()" value="NotSet" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                        <label class='ml-1'>Not Set</label>
+                                    </span>
+                                    <span class="p-field-radiobutton mr-2">
+                                        <p-radioButton  value="ManualDate" (onClick)="nextDueDateDisable = false" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                        <label class='ml-1'>Manual Date</label>
+                                    </span>
+                                    <span class="p-field-radiobutton mr-2 align-self-end">
+                                        <p-radioButton value="Automatic" (onClick)="setAutomaticDate()" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                        <label  class='ml-1 mr-1'>Automatic Date</label>
+                                        <p-calendar placeholder="DD-MMM-YYYY" [styleClass]="hasError && selectedReviewDate === 'ManualDate' && nextDueDate == null ? 'hasError': ''" name="dueDate" [disabled]="nextDueDateDisable" dateFormat="dd-M-yy" [(ngModel)]="nextDueDate" [showIcon]="true"></p-calendar>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col'>
+                                <span class="small-heading">Comments</span><br>
+                                <div *ngIf="!editMode" class="ql-editor" [innerHTML]="currentFunctionalAnalysis.comments"></div>
+                                <p-editor *ngIf="editMode"  name="comments" [(ngModel)]="comments" class='text-editor-height'>
+                                    <ng-template pTemplate="header">
+                                        <span class="ql-formats">
+                                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                                        </span>
+                                    </ng-template>
+                                </p-editor>
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                </div>
+                <p-accordionTab header="Flags"  [(selected)]="activeState[1]">
+                    <div>
+                        <div class="w-100" *ngIf="editMode">
+                            <p-message *ngIf="editMode" severity="info" [text]="'Select flag and click on the pencil to edit note'" styleClass="p-mr-2 mb-1" class='info'></p-message>
+                            <p-tree [value]='faFlagTree' selectionMode="single">
+                                <ng-template pTemplate="default" let-flag>
+                                    <div class="item">
+                                        <div style='padding:5px;'>
+                                            <p-checkbox *ngIf="flag.typeId !== 5"  (onChange)="selectedFlagChange($event , flag)" [binary]="true" [value]="flag.partialSelected" [inputId]="flag.flagId" [(ngModel)]="flag.partialSelected"></p-checkbox>{{flag.label}}
+                                            <a *ngIf="checked(flag.id) || flag.partialSelected == true" (click)="getFlagNote(flag)"><i *ngIf="(flag.typeId === 0)"  class="f-r pi pi-pencil" ></i></a>
+                                            <span *ngIf="(flag.typeId === 0)">
+                                            <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note?.text}}</p>
+                                            <p *ngIf="checked(flag.id) || flag.partialSelected == true" [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-tree>
+                        </div>
+                        <div *ngIf="!editMode" class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+                            <p-tree [value]='selectedFlagTree' selectionMode="single" *ngIf='selectedFlagTree.length > 0'>
+                                <ng-template pTemplate="default" let-flag>
+                                    {{flag.label}}
+                                    <span *ngIf="(flag.typeId === 0)">
+                                        <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                                        <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                                </ng-template>
+                            </p-tree>
+                            <p-message *ngIf='selectedFlagTree.length == 0' severity="info" text="No Flags assigned to this Functional Analysis" styleClass="p-mr-2" class='info'></p-message>
+                        </div>
+                    </div>
+
+
+                </p-accordionTab>
+                 <p-accordionTab header="Postural Tolerances"  [(selected)]="activeState[2]">
+                    <postural-tolerances [faToleranceResult]="currentFunctionalAnalysis?.posturalToleranceResults" [editMode]="editMode" (onChange)="onPosturalToleranceChange($event)"></postural-tolerances>
+                    <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+               <p-accordionTab header="Material Handling"  [(selected)]="activeState[3]">
+                    <material-handling [editMode]="editMode" [materialHandlingResults]="materialHandlingResults" (onChange)="onMaterialHandlingChange($event)"></material-handling>
+                    <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+                <p-accordionTab header="Grip Strength"  [(selected)]="activeState[4]">
+                    <worker-grip-strength [editMode]="editMode" [gripStrengthData]="gripStrengthData" (onDominantChange)="onDominantChange($event)" (onGripChange)="onGripsChange($event)"></worker-grip-strength>
+                </p-accordionTab>
+                <p-accordionTab header="Other"  [(selected)]="activeState[5]">
+                    <fahealth-hygiene [editMode]="editMode" [functionalAnalysis]="currentFunctionalAnalysis" (onChange)="onHealthHygieneResultsChange($event)"></fahealth-hygiene>
+                </p-accordionTab>
+                <p-accordionTab header="Attachment" *ngIf="!editMode || editBtnClicked"  [(selected)]="activeState[6]">
+                    <worker-faattachments [editMode]="editMode" [functionalAnalysisId]="faId" ></worker-faattachments>
+                </p-accordionTab>
+            </p-accordion>
+        </p-tabPanel>
+        <p-tabPanel header="Graphs">
+            <div class='graph d-flex'>
+                <p-dropdown [options]="graphTypes" [(ngModel)]="selectedGraphType" placeholder="Type" (onChange)="getGraphSeries()" [disabled]="!worker?.fullName"></p-dropdown>
+                <p-multiSelect [options]="graphSeries" [(ngModel)]="selectedGraphSeries" selectedItemsLabel="{0} items selected" placeholder="Series" [group]="true" [filter]="false" [disabled]="!selectedGraphType"></p-multiSelect>
+                <p-button label="View" (onClick)="viewGraph()"></p-button>
+            </div>
+            <div *ngIf="viewBtnClicked" class="card mt-2">
+                <p-chart type="line" height="400px" [data]="graphData" [options]="graphStyle"></p-chart>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Functional Analysis List">
+            <div *ngIf="!faHistoryEdit && !viewFA">
+                <p-table #dt [value]='faList'  [paginator]="false"  responsiveLayout="scroll" class='mt-5'
+                    [rowHover]="true" dataKey="id"
+                    [(selection)]="selectedFAs"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                                <th class="table-date-column">Date</th>
+                                <th class="table-text-column" *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">Provider</th>
+                                <th class="table-text-column">Event</th>
+                                <th class="table-comment-column">Comments</th>
+                                <th class="table-center-column"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa>
+                        <tr>
+                            <td class="table-date-column">{{fa.assessmentDate | date: 'dd-MMM-yyyy'}}</td>
+                            <td class="table-text-column" *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">{{getProviderName(fa.providerId) ?? 'No Provider Selected'}}</td>
+                            <td class="table-text-column">{{fa.event?.name}}</td>
+                            <td class="table-comment-column">
+                                <div class="comments-break">
+                                    <span [innerHtml]="fa.commentforDisplay"></span>
+                                </div>
+                            </td>
+                            <td class="table-center-column"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="viewFAHistory(fa)"></p-button></div></td>
+                        </tr>
+                    </ng-template>
+               </p-table>
+               <div class="d-flex" style="justify-content: center;">
+                <p-paginator [rows]="rowCount" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+                </p-paginator>
+                <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-1"></p-dropdown>
+               </div>
+            </div>
+            <div *ngIf="faHistoryEdit || viewFA">
+                <p-accordion (onOpen)="onTabOpen($event)">
+                    <div [class]="hasError ? 'hasError': ''">
+                        <p-accordionTab header="Details" [(selected)]="activeState[0]">
+                            <div class='row'>
+                                <div class='col'>
+                                    <span class="small-heading mr-2">Assessment Date *</span> <span *ngIf="faHistoryEdit" class="sample-dob">e.g. 01-Jul-2000</span><br>
+                                    <span *ngIf="!faHistoryEdit">{{selectedFunctionalAnalysis.assessmentDate | date: 'dd-MMM-yyyy'}}</span>
+                                    <p-calendar placeholder="DD-MMM-YYYY" [styleClass]="hasError && assessmentDate == null ? 'hasError': ''" [(ngModel)]="assessmentDate" *ngIf="faHistoryEdit" dateFormat="dd-M-yy" [showIcon]="true" (onSelect)="changeAssessmentDate()"></p-calendar>
+                                </div>
+                                <div class='col' *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">
+                                    <span class="small-heading">Provider</span><br>
+                                    <span *ngIf="!faHistoryEdit">{{getProviderName(selectedFunctionalAnalysis.providerId) ?? 'No Provider Selected'}}</span>
+                                    <p-dropdown *ngIf="faHistoryEdit" optionLabel="fullName" class="provider"  [options]='providers' [(ngModel)]="providerId" optionValue="id" placeholder="No provider selected..."></p-dropdown>
+                                </div>
+                                <div class='col'>
+                                    <span class="small-heading">Event *</span><br>
+                                    <span *ngIf="!faHistoryEdit">{{selectedFunctionalAnalysis.event?.name}}</span>
+                                    <p-dropdown *ngIf="faHistoryEdit" [styleClass]="hasError && event?.id == 0 ? 'hasError provider': 'provider'" optionLabel="name" [options]='events' [(ngModel)]="event" placeholder="Please select Event"></p-dropdown>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col' *ngIf="authorisedFunctionList.Function[eFunctions.ViewNextReviewDate]">
+                                    <span class="small-heading mr-2">Next Review Date</span> <span *ngIf="faHistoryEdit" class="sample-dob mr-2">e.g. 01-Jul-2000</span>
+                                    <span *ngIf='selectedFunctionalAnalysis?.nextDueDate && !faHistoryEdit'>
+                                        <span class="mr-2" >
+                                            <label class='mr-2' *ngIf="selectedFunctionalAnalysis?.nextDueDate?.date == null && selectedFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == null">Not Set</label>
+                                            <label class='mr-2' *ngIf="selectedFunctionalAnalysis?.nextDueDate?.date != null && selectedFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == true">Manual Date</label>
+                                            <label class='mr-2' *ngIf="selectedFunctionalAnalysis?.nextDueDate?.date != null && selectedFunctionalAnalysis?.nextDueDate?.isManualNextDueDate == false">Automatic Date</label>
+                                            <span *ngIf="selectedFunctionalAnalysis?.nextDueDate?.date != null" class='ml-1 mr-2'>{{selectedFunctionalAnalysis?.nextDueDate?.date | date: 'dd-MMM-yyyy'}}</span>
+                                        </span>
+                                    </span>
+                                    <span class='name' *ngIf="faHistoryEdit">
+                                        <span class="p-field-radiobutton mr-2">
+                                            <p-radioButton (onClick)="setNotSet()" value="NotSet" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                            <label class='ml-1'>Not Set</label>
+                                        </span>
+                                        <span class="p-field-radiobutton mr-2">
+                                            <p-radioButton  value="ManualDate" (onClick)="nextDueDateDisable = false" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                            <label class='ml-1'>Manual Date</label>
+                                        </span>
+                                        <span class="p-field-radiobutton mr-2 align-self-end">
+                                            <p-radioButton value="Automatic" (onClick)="setAutomaticDate()" [(ngModel)]="selectedReviewDate"></p-radioButton>
+                                            <label  class='ml-1 mr-1'>Automatic Date</label>
+                                            <p-calendar placeholder="DD-MMM-YYYY" [styleClass]="hasError && selectedReviewDate === 'ManualDate' && nextDueDate == null ? 'hasError': ''" name="dueDate" [disabled]="nextDueDateDisable" dateFormat="dd-M-yy" [(ngModel)]="nextDueDate" [showIcon]="true"></p-calendar>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col'>
+                                    <span class="small-heading">Comments</span><br>
+                                    <div *ngIf="!faHistoryEdit" [innerHTML]="selectedFunctionalAnalysis.comments"></div>
+                                    <p-editor *ngIf="faHistoryEdit"  name="comments" [(ngModel)]="comments" class='text-editor-height'>
+                                        <ng-template pTemplate="header">
+                                            <span class="ql-formats">
+                                                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                                <button type="button" class="ql-strike" aria-label="Strike"></button>
+                                                <button type="button" class="ql-link" aria-label="Strike"></button>
+                                                <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                                                <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                                            </span>
+                                        </ng-template>
+                                    </p-editor>
+                                </div>
+                            </div>
+                        </p-accordionTab>
+                    </div>
+                    <p-accordionTab header="Flags" [(selected)]="activeState[1]">
+                        <div class="main">
+                            <div class="w-100" *ngIf="faHistoryEdit">
+                                <p-message *ngIf="faHistoryEdit" severity="info" [text]="'Select flag and click on the pencil to edit note'" styleClass="p-mr-2 mb-1" class='info'></p-message>
+                                <p-tree [value]='faFlagTree' selectionMode="single">
+                                    <ng-template pTemplate="default" let-flag>
+                                        <div class="item">
+                                            <div style='padding:5px;'>
+                                                <p-checkbox *ngIf="flag.typeId !== 5"  (onChange)="selectedFlagChange($event , flag)" [binary]="true" [value]="flag.partialSelected" [inputId]="flag.flagId" [(ngModel)]="flag.partialSelected"></p-checkbox>{{flag.label}}
+                                                <a *ngIf="checked(flag.id) || flag.partialSelected == true" (click)="getFlagNote(flag)"><i *ngIf="(flag.typeId === 0)"  class="f-r pi pi-pencil" ></i></a>
+                                                <span *ngIf="(flag.typeId === 0)">
+                                                <p *ngIf="flag.note.text?.length > 0" [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note?.text}}</p>
+                                                <p *ngIf="checked(flag.id) || flag.partialSelected == true" [innerHtml]="getHistorySpecificNote(flag.id)"  [ngClass]="getHistorySpecificNote(flag.id) ? 'note' : ''"></p></span>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-tree>
+                            </div>
+                            <div *ngIf="!faHistoryEdit" class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+                                <p-tree [value]='selectedFlagTree' selectionMode="single" *ngIf='selectedFlagTree.length > 0'>
+                                    <ng-template pTemplate="default" let-flag>
+                                        {{flag.label}}
+                                        <span *ngIf="(flag.typeId === 0)">
+                                            <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                                            <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                                    </ng-template>
+                                </p-tree>
+                                <p-message *ngIf='selectedFlagTree.length == 0' severity="info" text="No Flags assigned to this Functional Analysis" styleClass="p-mr-2" class='info'></p-message>
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Postural Tolerances" [(selected)]="activeState[2]">
+                        <postural-tolerances [faToleranceResult]="selectedFunctionalAnalysis?.posturalToleranceResults" [editMode]="faHistoryEdit" (onChange)="onPosturalToleranceChange($event)"></postural-tolerances>
+                        <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar = true" icon="pi pi-info-circle"></p-button>
+                    </p-accordionTab>
+
+                     <p-accordionTab header="Material Handling" [(selected)]="activeState[3]">
+                        <material-handling [editMode]="faHistoryEdit" [materialHandlingResults]="materialHandlingResults" (onChange)="onMaterialHandlingChange($event)"></material-handling>
+                        <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar = true" icon="pi pi-info-circle"></p-button>
+                    </p-accordionTab>
+                    <p-accordionTab header="Grip Strength" [(selected)]="activeState[4]">
+                        <worker-grip-strength [editMode]="faHistoryEdit" [gripStrengthData]="gripStrengthData" (onDominantChange)="onDominantChange($event)" (onGripChange)="onGripsChange($event)"></worker-grip-strength>
+                    </p-accordionTab>
+                    <p-accordionTab header="Other" [(selected)]="activeState[5]">
+                        <fahealth-hygiene [editMode]="faHistoryEdit" [functionalAnalysis]="selectedFunctionalAnalysis" (onChange)="onHealthHygieneResultsChange($event)"></fahealth-hygiene>
+                    </p-accordionTab>
+                    <p-accordionTab header="Attachment" *ngIf="!editMode || editBtnClicked" [(selected)]="activeState[6]">
+                        <worker-faattachments [editMode]="faHistoryEdit" [functionalAnalysisId]="faId"></worker-faattachments>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+
+        </p-tabPanel>
+    </p-tabView>
+</div>
+<div class='d-flex'>
+    <div class='w-100'></div>
+</div>
+<p-sidebar [(visible)]="visibleSidebar" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false'>
+<div class='definitions'>
+    <div class='row'>
+        <div class='col'>Definitions</div>
+        <div class='col'>% Task Time</div>
+        <div class='col'>Reps per Day</div>
+        <div class='col'>Reps per Hour</div>
+        <div class='col'>Reps per Minute</div>
+    </div>
+    <div class='row'>
+        <div class='col'>N - Never</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+    </div>
+    <div class='row'>
+        <div class='col'>O - Occasionally</div>
+        <div class='col'>1 - 33</div>
+        <div class='col'>1 - 100</div>
+        <div class='col'>0 - 12</div>
+        <div class='col'>1 every 5 - 15</div>
+    </div>
+    <div class='row'>
+        <div class='col'>F - Frequently</div>
+        <div class='col'>34 - 66</div>
+        <div class='col'>101 - 500</div>
+        <div class='col'>12 - 63</div>
+        <div class='col'>1 every 1 - 5</div>
+    </div>
+    <div class='row'>
+        <div class='col'>X- No Limitation Identified</div>
+        <div class='col'>67 - 100</div>
+        <div class='col'>500+</div>
+        <div class='col'>>63</div>
+        <div class='col'>1 or more</div>
+    </div>
+    <div class='row'>
+        <div class='col'>NT - Not Tested</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+    </div>
+</div>
+</p-sidebar>
+<p-dialog header="Edit Flag Note" [(visible)]="editFlagNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text"  [disabled]='true' [(ngModel)]="note.generalNotes"  class='search-bar w-100' pInputText />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+              <textarea class='comments w-100' id="float-input" [(ngModel)]="flagNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>
+            </span>
+        </div>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel ml-2'><p-button label="Cancel" (onClick)="editFlagNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveFlagNote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-worker ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-worker'><p-button label="OK" (onClick)="closeValidation()"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [header]="nextAssessmentSchedule.isActive? 'Edit Schedule':'Add Schedule'" [(visible)]="displaySchedule" [style]="{width: '500px'}" [modal]="true">
+    <div class="hh-modal">
+        <div class='name mt-3'>
+            <span class="mr-2">Assessment Date *</span> <span class="sample-dob">e.g. 01-Jul-2000 12:30 PM</span><br>
+            <p-calendar appendTo="body" dateFormat="dd-M-yy" placeholder="Please Select Date and Time" [(ngModel)]="nasDate" [showTime] = "true" [showIcon]="true" [hourFormat]="'12'"></p-calendar>
+        </div>
+        <div class='name mt-3' *ngIf="authorisedFunctionList.Function[eFunctions.ViewProviders]">
+            <span>Provider</span><br>
+            <p-dropdown [placeholder]="'Please Select A Provider'" appendTo="body" optionLabel="fullName" class="provider"  [options]='providers' [(ngModel)]="nasProvider" optionValue="id"></p-dropdown>
+        </div>
+        <div class='name mt-3'>Comments</div>
+        <p-editor name="comments" [(ngModel)]="nasComment" [style]="{'height':'200px'}">
+            <ng-template pTemplate="header">
+                <span class="ql-formats" appendTo="body">
+                    <button type="button" class="ql-bold" aria-label="Bold"></button>
+                    <button type="button" class="ql-italic" aria-label="Italic"></button>
+                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                    <button type="button" class="ql-strike" aria-label="Strike"></button>
+                    <button type="button" class="ql-link" aria-label="Strike"></button>
+                    <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                    <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                </span>
+            </ng-template>
+        </p-editor>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel ml-2'><p-button label="Cancel" (onClick)="displaySchedule = false"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="Submit" (onClick)="saveNextAssessment()"></p-button></div>
+        </div>
+        <div class="overlay w-100" *ngIf="!nasSaved" >
+            <div class='loader'>
+                <p-progressSpinner></p-progressSpinner>
+                <br />
+                <span class="saved"> Saving...</span>
+            </div>
+        </div>
+</p-dialog>
+
+<p-dialog header="Archive Next Assessment Schedule" [(visible)]="showArchiveSchedule" [modal]="true">
+    <p>Are you sure you want to archive this next assessment schedule ?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showArchiveSchedule = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" (onClick)="archiveNextAssessment()"></p-button></div>
+    </div>
+</p-dialog>
+<p-dialog header="Archive Functional Analysis" [(visible)]="showArchiveFA" [modal]="true">
+    <p>Are you sure you want to archive the selected functional analysis ?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Cancel" (onClick)='showArchiveFA = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" (onClick)="archiveFunctionalAnalysis()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!faLoaded || !allFaLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

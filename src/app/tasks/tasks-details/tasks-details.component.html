@@ -1,0 +1,245 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">{{'TASKDETAILS.MAINHEADING' | translate}}</div>
+    <div class="w-47"></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.EditTask] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'TASKDETAILS.EDITREPORTBUTTON' | translate" (onClick)="editTask()"></p-button></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteTask] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'TASKSLIST.DELETEBUTTONLABEL' | translate" (onClick)="showArchive()"></p-button></div>
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewReports] && authorisedFunctionList.Function[eFunctions.ViewTasks] ? 'generate' : 'disable-generate'"><p-button [label]="'TASKDETAILS.GENERATEREPORTBUTTON' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+
+<div class="container mt-3" *ngIf="taskDetailsLoaded">
+    <div class="row">
+      <div class=" col-8">
+          <div class='desc'>
+            <div class="row">
+                <div class='col'>
+                    <span class='date'>{{taskLastUpdate}}</span>
+                    <span class='heading-2'>{{taskDetails.mainDescriptionHeading}}</span>
+                    <div class='row'>
+                        <div class='col'>
+                            <span class='small-heading'>{{'TASKDETAILS.DURATIONLABEL' | translate}}</span><br><br>
+                                <span>
+                                    <div [innerHTML]="currentFunctionalAnalysis.duration"></div>
+                                </span>
+                        </div>
+                        <div class='col'>
+                            <span class='small-heading'>{{'TASKDETAILS.FREQUENCYLABEL' | translate}}</span><br><br>
+                                <span>
+                                    <div [innerHTML]="currentFunctionalAnalysis.frequencyNotes"></div>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class='col'>
+                    <p-progressBar *ngIf="overviewImage.image.length > 0 && !imageLoaded"  mode="indeterminate" [style]="{'height': '6px','width':'100%', 'margin-top': '10%'}"></p-progressBar>
+                    <div class="center" style="width: 193px; height: 183px; border-color: transparent; text-align: center; padding: 0px;position:relative;" *ngIf="overviewImage.image.length > 0 && imageLoaded" >
+                      <a *ngIf="overviewImage.image.length > 0 && imageLoaded" [routerLink]="" (click)="downloadAttachment(overviewImage.id, overviewImage.contentType)"><img *ngIf="overviewImage.image.length > 0 && imageLoaded" src="{{ 'data:image/jpeg;base64,' + overviewImage.image}}" style="max-width:187px;max-height:177px;width:auto;height:auto;position: absolute;top: 0;bottom: 0;left: 0;right: 0;margin: auto;"></a>
+                    </div>
+                    <div class="center" style="min-width: 193px; min-height: 183px; text-align: center;" *ngIf="overviewImage.image.length < 1" >
+                        <p>No Image Selected.</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class='overview mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.DESCRIPTION' | translate}}</span><br>
+            <div class="ql-editor" [innerHTML]="taskDetails.overViewDescription"></div>
+          </div>
+          <div class='overview mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.OVERVIEWLABEL' | translate}}</span><br>
+            <div class="ql-editor" [innerHTML]="currentFunctionalAnalysis.taskOverview"></div>
+          </div>
+          <div class='jobs mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.ASSOCIATEDJOBSLABEL' | translate}}</span>
+            <span *ngIf="authorisedFunctionList.Function[eFunctions.ViewJobs]">
+                <div *ngFor="let jobs of taskDetails?.associatedJobs">
+                    <span class='med-heading'>{{jobs.fileName}}</span>
+                    <div class='d-flex'>
+                        <span class='mr-2 label'>{{'TASKDETAILS.PRIORITYLABEL' | translate}}</span><p-rating [(ngModel)]="jobs.priority" [disabled]="true" [cancel]="false" [stars]="5" iconOnClass="fa fa-square" iconOffClass="fa fa-square-o"></p-rating><div class='mr-3'></div>
+                        <span class='mr-2 label'>{{'TASKDETAILS.RATIOOFTIMELABEL' | translate}}</span><p-progressBar [value]="jobs.ratio" class='mt-custom'></p-progressBar><div class='mr-3'></div>
+                        <span class='mr-2 label'>{{'TASKDETAILS.REQUIREMENTLABEL' | translate}}</span><span class='mr-2 label' style='color:#222E50'>{{jobs.req.name}}</span>
+                    </div>
+                </div>
+            </span>
+            <div class="mt-3" *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewJobs])">
+                <p>Your current security setting does not give you access to this information.  Please check with your Administrator for access.</p>
+            </div>
+          </div>
+          <div class='gallery mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.GALLERYLABEL' | translate}}</span>
+            <div class='row' *ngIf="(authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                <span *ngIf="(!galleryLoaded)">Loading Gallery....</span>
+                <p-progressBar *ngIf="(!galleryLoaded)"  mode="indeterminate" [style]="{'height': '6px','width':'100%'}"></p-progressBar>
+                <p-galleria *ngIf="gallery.length > 0" #galleria [value]="gallery" [(activeIndex)]="activeIndex" [numVisible]="5" [containerStyle]="{'width':'100%', 'margin-top':'5px'}"  [showThumbnails]="showThumbnails"
+                [showItemNavigators]="true" [showItemNavigatorsOnHover]="true" [circular]="true" [autoPlay]="true" [transitionInterval]="3000">
+                <ng-template pTemplate="item" let-item>
+                  <div style="min-width: 250px; min-height: 250px; text-align: center;"><a [routerLink]="" (click)="downloadAttachment(item?.id, item?.contentType)"><img src="{{ 'data:image/jpeg;base64,' + item.image}}" /></a></div>
+                </ng-template>
+                <ng-template pTemplate="thumbnail" let-item>
+                    <div class="p-grid p-nogutter p-justify-center">
+                        <img [src]="item.thumbnailImageSrc" />
+                    </div>
+                </ng-template>
+             </p-galleria>
+            </div>
+            <div class="mt-3" *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                <p>Your current security setting does not give you access to this information.  Please check with your Administrator for access.</p>
+            </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class='analysis'>
+            <span class='heading-3'>{{'TASKDETAILS.TASKBODYLABEL' | translate}}</span>
+            <div class="coming-soon">
+            <span class='heading-3'>Coming Soon</span>
+            </div>
+        </div>
+        <div class='notes mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.NOTESLABEL' | translate}}</span>
+            <span *ngIf='authorisedFunctionList.Function[eFunctions.ViewNotes]'>
+                <ul  class='mt-1' *ngFor="let notes of taskDetails.notes">
+                    <hr/>
+                    <li  class="notes-break" [innerHtml]="changeToPlainText(notes.noteField)">
+                    </li>
+                </ul>
+            </span>
+            <span class='mt-1' *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewNotes])">
+                <br/>
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </span>
+        </div>
+        <div class='site mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.SITERELATIONSHIPLABEL' | translate}}</span>
+            <p-progressBar *ngIf="(!siteTreeLoaded)"  mode="indeterminate" [style]="{'height': '6px','width':'100%'}"></p-progressBar>
+            <div *ngIf='selectedSiteTree.length > 0 && (authorisedFunctionList.Function[eFunctions.EditTask] || authorisedFunctionList.Function[eFunctions.ViewOrganisationStructure])'>
+                <p-tree [value]='selectedSiteTree' selectionMode="single">
+                    <ng-template pTemplate="default" let-site>
+                        <div>
+                            <div style='padding:5px;' [class]="site?.partialSelected == true ? 'selected-label':''">
+                                <i class="{{getIndexIcon(site.typeId)}} mr-2"></i>
+                                {{site.label}}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.EditTask] && !authorisedFunctionList.Function[eFunctions.ViewOrganisationStructure])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+        <div class='flags mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.FLAGSLABEL' | translate}}</span>
+            <div *ngIf='selectedFlagTree.length > 0 && authorisedFunctionList.Function[eFunctions.ViewFlags]'>
+                <p-tree [value]="selectedFlagTree"></p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewFlags])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+        <div class='groups mt-2'>
+            <span class='heading-3'>{{'TASKDETAILS.GROUPSLABEL' | translate}}</span>
+            <div *ngIf='selectedGroupTree.length > 0 && authorisedFunctionList.Function[eFunctions.ViewGroups]'>
+                <p-tree [value]="selectedGroupTree"></p-tree>
+            </div>
+            <div *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewGroups])">
+                Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<p-dialog header="Edit Task" [(visible)]="editTaskBox" [closable]="false" [modal]="true">
+    <div class="new-task-modal">
+        <div class='mt-3'>
+            <span>Name *</span><br>
+            <span class="p-float-label">
+                <input type="text" class='new-task-name' class='w-100' [(ngModel)]="name" pInputText  />
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Description</span><br>
+            <span class="p-float-label">
+                <p-editor  name="comments" [(ngModel)]="description" class='comments w-100 text-editor-height'>
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Sites</span><br>
+            <div *ngIf="!isSiteTreeLoaded" class='loader'>
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            <div>
+                <p-tree *ngIf="isSiteTreeLoaded" [value]='taskSiteTree' selectionMode="single">
+                    <ng-template pTemplate="default" let-site>
+                        <p-checkbox *ngIf="site.typeId == 7" [binary]="true"  (onChange)="selectedSiteChange($event, site)" [value]="site.partialSelected" [(ngModel)]="site.partialSelected"></p-checkbox>
+                        <i class="{{getIndexIcon(site.typeId)}} mr-2"></i>
+                        {{site.label}}
+                    </ng-template>
+                </p-tree>
+            </div>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job'><p-button label="Cancel" (onClick)="editTaskBox = false"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="Submit" (onClick)="saveTask()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Information" [(visible)]="displayInfo" [style]="{width: '450px'}" [modal]="true">
+    <p>{{infoMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="OK" (onClick)="navigateToTaskList()"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Archive Task" [(visible)]="showArchiveTask" [style]="{width: '450px'}" [modal]="true">
+    <p>Are you sure you want to archive this Task?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-job ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchiveTask = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" class='actions' (onClick)="archiveTask()"></p-button></div>
+    </div>
+
+    <div class="overlay w-100" *ngIf="isArchiving" >
+        <div class='archive-loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="archived"> Archiving...</span>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-task ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!taskDetailsLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

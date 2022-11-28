@@ -1,0 +1,345 @@
+@media screen and (max-width: 1300px) {
+    .col-7-custom {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+}
+@media screen and (min-width: 1300px) {
+    .col-7-custom {
+        flex: 0 0 auto;
+        width: 58.33333333%;
+    }
+}
+.notes-break{
+    white-space: nowrap;
+    width: 15rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+:host ::ng-deep .p-galleria-thumbnail-container {
+    background-color: white;
+}
+.heading {
+        font-family: "BentonSans-Bold";
+        font-style: normal;
+        font-weight: bold;
+        font-size: 28px;
+        color: #20BCD3;
+    }
+    :host ::ng-deep .edit .p-button {
+        color: #ffffff;
+        border: unset;
+        width: 120px;
+        height:40px;
+        font-size: 1rem;
+        background: #4bd9ee;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    :host ::ng-deep .disabled-btn .p-button {
+        color: gray;
+        border: unset;
+        font-size: 1rem;
+        margin-right:2px;
+        background: #E3E6EA;
+        height: 40px;
+        width: 120px;
+    }
+    :host ::ng-deep .btns .p-button {
+        color: #ffffff;
+        border: unset;
+        width: 120px;
+        height:40px;
+        font-size: 1rem;
+        background: #20BCD3;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    :host ::ng-deep .edit .p-button {
+        color: #20BCD3;
+        border: unset;
+        font-size: 1rem;
+        margin-right:2px;
+        background: #4bd9ee42;
+    }
+    :host ::ng-deep .generate .p-button {
+        color: #ffffff;
+        border: solid;
+        width: 170px;
+        font-size: 1rem;
+        background: #4bd9ee;
+        border-color: #222e50;
+        border-width: thin;
+        height: 40px;
+    }
+    :host ::ng-deep .disable-generate .p-button {
+        color: gray;
+        border: solid;
+        width: 170px;
+        font-size: 1rem;
+        background: #E3E6EA;
+        border-color: #222e50;
+        border-width: thin;
+        height: 40px;
+    }
+    .rem15{
+        width:15rem;
+    }
+    .w-47{
+        width:47%
+    }
+    .desc{
+        padding:15px;
+        background: #FFFFFF;
+        border-radius: 8px;
+        margin-right:41px;
+    }
+    .overview{
+        padding:15px;
+        background: #FFFFFF;
+        border-radius: 8px;
+        margin-right:41px;
+    }
+    .jobs{
+        background: #FFFFFF;
+        border-radius: 8px;
+        margin-right:41px;
+        padding:15px;
+    }
+    .gallery{
+        background: #FFFFFF;
+        border-radius: 8px;
+        margin-right:41px;
+        padding:15px;
+    }
+    
+    .analysis{
+        height: 404px;
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        }
+    .analysis{
+        height: 404px;
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        } 
+    .notes{
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        }
+    .site{
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        }   
+    .flags{
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        }
+    .groups{
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding:15px;
+        }
+    .date{
+        font-family: "BentonSans-Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        color: #222E50 ;
+    }
+    .heading-2{
+        font-family: "BentonSans-Bold";
+        font-style: normal;
+        font-weight: bold;
+        font-size: 22px;
+        line-height: 131.9%;
+        /* or 29px */
+        display: flex;
+        align-items: center;
+        color: #20BCD3;
+    }
+    .float-r{
+        float:right;
+    }
+    .small-heading{
+        font-family: "BentonSans-Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 12px;
+        color: #222E50;
+    }
+    .med-heading{
+        font-family: "BentonSans-Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        display: flex;
+        align-items: center;
+        color: #222E50;
+    }
+    .heading-3{
+        font-family: "BentonSans-Regular";
+        font-style: normal;
+        font-weight: bold;
+        font-size: 1rem;
+        color: #20BCD3;
+    }
+    .label{
+        font-family: "BentonSans-Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        color: #20BCD3;
+        margin-top:5px;
+    }
+    :host ::ng-deep .p-rating .p-rating-icon {
+        font-size: 100%;
+    }
+    :host ::ng-deep .p-progressbar {
+        height: 5px;
+        width: 40px;
+      }
+    .mt-custom{
+        margin-top:10px;
+    }
+    :host ::ng-deep .p-rating .p-rating-icon.pi-star, :host ::ng-deep .p-rating .p-rating-icon.pi-star-o {
+        color: #202020;
+    }
+    :host ::ng-deep .p-progressbar .p-progressbar-value {
+        background: #202020;
+    }
+    :host ::ng-deep .p-tree {
+        border: unset;
+
+    }
+    :host ::ng-deep .p-progress-spinner {
+        width: 80px!important;
+        }
+:host ::ng-deep .p-dialog {
+    width:800px;
+}
+:host ::ng-deep .save .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 120px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .cancel .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .include-list .p-multiselect {
+    width:250px;
+}
+:host ::ng-deep .selected-label{
+    font-weight: bolder;
+    color: #495057 !important;
+}
+:host ::ng-deep .p-checkbox-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    display: none;
+}
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  ::ng-deep .p-progressbar .p-progressbar-value {
+    background: #20BCD3 !important;
+} 
+.coming-soon {
+    text-align: center;
+    vertical-align: middle;
+    line-height: 90px; 
+    margin-top: 5rem;
+}
+.center {
+    margin: auto;
+    border: 3px solid #20BCD3;
+    padding: 10px;
+    height:183px;
+    width:193px;
+  }
+  .saved {
+    font-weight: bolder;
+    font-size: xx-large;
+  }
+  .archived {
+    font-weight: bolder;
+    font-size: larger;
+}
+.archive-loader {
+    margin-left:40%;
+    margin-top:15%;
+  }

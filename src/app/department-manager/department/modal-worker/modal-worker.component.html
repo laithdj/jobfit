@@ -1,0 +1,221 @@
+<p-dialog class="popup-modal" [header]="modalHeader" [(visible)]="showModal" [style]="{width: '1200px', height: '670px'}" (onHide)="onModalClose()" (onShow)="onShowDialog()" [modal]="true">
+    
+    <div class="flex-spacebetween">
+        <div class="search-container">
+            <p-dropdown class="name" optionLabel="name" optionValue="code" [options]="field" [(ngModel)]="quickSearch.field"></p-dropdown>
+            <p-dropdown class="contains" optionLabel="name" optionValue="code" [options]="type" [(ngModel)]="quickSearch.type"></p-dropdown>
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" class='search-bar' (keyup.enter)="getWorkers()" [(ngModel)]="quickSearch.value" placeholder="Search" />
+            </span>
+        </div>
+        <div class="flex-spacebetween">
+            <label class="switch">
+                <input type="checkbox" [checked]='isAdvancedSearch' (click)='toggleAdvancedSearch()'>
+                <span class="slider round"></span>
+            </label>
+            Advanced Search
+        </div>
+    </div>
+
+    <div class='advanced-search worker' *ngIf="isAdvancedSearch">
+        <div class='loader-adv' *ngIf="!advanceSearchLoaded">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        <p-tabView>
+            <p-tabPanel [header]="'WORKERSLIST.DETAILSHEADER' | translate">
+                <p-message severity="info" [text]="'WORKERSLIST.DETAILSMESSAGE' | translate" styleClass="p-mr-2"></p-message>
+                <div class='d-flex mt-4'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHEMPLOYEEIDLABEL' | translate}}</label>
+                    <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.employeeId" />
+                </div>
+                <div class='d-flex mt-2'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHFIRSTNAMELABEL' | translate}}</label>
+                    <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.firstName" />
+                </div>
+                <div class='d-flex mt-2'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHLASTNAMELABEL' | translate}}</label>
+                    <input type="text" class='worker-search' pInputText [(ngModel)]="workerDetailsSearch.lastName" />
+                </div>
+                <div class='d-flex mt-2'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHGENDERLABEL' | translate}}</label>
+                    <p-dropdown optionLabel="name" optionValue="code" [options]="genders" [(ngModel)]="gender" (onChange)="setGenderSearchField($event)"  class='ml-2'></p-dropdown>
+                </div>
+                <div class='d-flex mt-2'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHAGELABEL' | translate}}</label>
+                    <input type="number" class='mr-2 ml-2' pInputText [(ngModel)]="workerDetailsSearch.ageFrom" />
+                    <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                    <input type="number" class='ml-2' pInputText [(ngModel)]="workerDetailsSearch.ageTo" />
+                </div>
+                <div class='d-flex mt-2'>
+                    <label class="advanced-search-label">{{'WORKERSLIST.SEARCHDATEOFBIRTHLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='mr-2 ml-2' [(ngModel)]="workerDetailsSearch.dobFrom" [showIcon]="true"></p-calendar>
+                    <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='ml-2'  [(ngModel)]="workerDetailsSearch.dobTo" [showIcon]="true"></p-calendar>
+                </div>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'WORKERSLIST.FLAGSHEADER' | translate">
+                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="selectedSearchFlagOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                <p-tree *ngIf="selectedSearchFlagOption > 0" [value]='flagTree' selectionMode="checkbox" [(selection)]="selectedFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'WORKERSLIST.GROUPSHEADER' | translate">
+                <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                <p-dropdown  [options]="searchOptions" [(ngModel)]="selectedSearchGroupOption" optionLabel="name" optionValue="id" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                <p-tree *ngIf="selectedSearchGroupOption > 0" [value]="groupTree" selectionMode="checkbox" [(selection)]="selectedGroups"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'WORKERSLIST.EMPLOYMENTHEADER' | translate">
+                <p-accordion>
+                    <p-accordionTab header="Sites & Departments">
+                        <p-message severity="info" [text]="'WORKERSLIST.SITESMESSAGEBOARD' | translate" styleClass="p-mr-2"></p-message>
+                        <p-tree [value]="siteTree" selectionMode="checkbox" [(selection)]="selectedSites"></p-tree>
+                    </p-accordionTab>
+                    <p-accordionTab header="Details">
+                        <div class='d-flex mt-2'>
+                            <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTTYPELABEL' | translate}}</label>
+                            <p-dropdown class='p-25' [options]='employmentType' [(ngModel)]="empType" optionLabel="label" optionValue="id"></p-dropdown>
+                        </div>
+                        <div class='d-flex mt-2'>
+                            <label class="employment-label">{{'WORKERSLIST.EMPLOYMENTDATELABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                            <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='mr-2' [(ngModel)]="employmentFrom" [showIcon]="true"></p-calendar>
+                            <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                            <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='ml-2'  [(ngModel)]="employmentTo" [showIcon]="true"></p-calendar>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Flags">
+                        <div class='d-flex mb-2'>
+                            <label>{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                            <p-dropdown  optionLabel="name" optionValue="id" [options]="searchOptions" [(ngModel)]="selectedSearchEmploymentFlagOption" placeholder="No filter selected" class='flag-search'></p-dropdown>
+                        </div>
+                        <p-tree *ngIf="selectedSearchEmploymentFlagOption > 0" [value]='employmentFlagTree' selectionMode="checkbox" [(selection)]="selectedEmploymentFlags"></p-tree>
+                    </p-accordionTab>
+                </p-accordion>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()" ></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel [header]="'WORKERSLIST.FUNCTIONALANALYSIS' | translate">
+                <span class='filter-title'>{{'WORKERSLIST.ASSESSMENTDATESLABEL' | translate}}</span>
+                <div class='d-flex mt-2'>
+                    <label class="falabel">{{'WORKERSLIST.BETWEENLABEL' | translate}} <span class="sample-dob">e.g. 01-Jul-2000</span></label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='mr-2 ml-2' [(ngModel)]="faSearch.from" [showIcon]="true"></p-calendar>
+                    <label>{{'WORKERSLIST.ANDLABEL' | translate}}</label>
+                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" class='ml-2' [(ngModel)]="faSearch.to" [showIcon]="true"></p-calendar>
+                </div>
+                <div class='d-flex mt-3 mb-custom'>
+                    <label class="falabel">{{'WORKERSLIST.ASSESSEDBYLABEL' | translate}}</label>
+                    <p-multiSelect [options]="providers" [(ngModel)]="faSearch.providers"  selectedItemsLabel="{0} items selected" optionLabel="fullName" optionValue="id" class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                    <label>{{'WORKERSLIST.EVENTLABEL' | translate}}</label>
+                    <p-multiSelect [options]="events" [(ngModel)]="faSearch.events"  selectedItemsLabel="{0} items selected" optionLabel="name" optionValue="id"  class='linked-jobs mr-2 ml-2'></p-multiSelect>
+                </div>
+                <span class='filter-title mt-2'>{{'WORKERSLIST.FUNCTIONALLABEL' | translate}}</span>
+                <div class='d-flex mt-3'>
+                    <label class="falabel">{{'WORKERSLIST.SEARCHOPTIONSLABEL' | translate}}</label>
+                    <p-dropdown  optionLabel="name" optionValue="id" placeholder="No Applied Filter" [options]="searchOptions" class='flag-search mr-2' [(ngModel)]="faSearch.flagsOption"></p-dropdown>
+                </div>
+                <p-tree *ngIf="faSearch.flagsOption > 0" [value]="FAflagTree" selectionMode="checkbox" [(selection)]="selectedFAFlags"></p-tree>
+                <div class='d-flex float-r'>
+                    <div class='w-100'></div>
+                    <div class='clear mt-1 mr-2'><p-button [label]="'WORKERSLIST.CLEARBUTTONLABEL' | translate" (onClick)="clearAdvancedWorkerSearch()"></p-button></div>
+                    <div class='search-btn-2 mt-1'><p-button [label]="'WORKERSLIST.APPLYSEARCHBUTTONLABEL' | translate" (onClick)="onAdvanceSearchClick()"></p-button></div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+    <div class="mt-2" *ngIf="filtersResult.length > 0 && isAdvancedSearch == false">
+        <p-message severity="info" [text]="filters" styleClass="p-mr-2"></p-message>
+    </div>
+    <div class="mt-3">
+        <p-table dataKey="workerId" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+        [value]='modalTableItems' [(selection)]="selectedModalTableItems">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="table-checkbox-column"></th>
+                    <th class="table-checkbox-column"><p-tableHeaderCheckbox (click)="selectAllRows($event)"></p-tableHeaderCheckbox></th>
+                    <th class="table-emp-column">Employee Id</th>
+                    <th class="table-name-column">Last Name</th>
+                    <th class="table-name-column">First Name</th>
+                    <th class="table-icon-column">Flag</th>
+                    <th class="table-icon-column">Group</th>
+                </tr>  
+            </ng-template>
+            <ng-template pTemplate="body" let-worker let-expanded="expanded">
+                <tr [pSelectableRow]="worker">
+                    <td class="table-checkbox-column"><button type="button" *ngIf="worker?.flags?.length > 0 || worker?.groups?.length > 0" pButton pRipple [pRowToggler]="worker" class="p-button-text p-button-rounded p-button-plain table-checkbox-column" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                    <td class="table-checkbox-column"><p-tableCheckbox [pSelectableRow]="worker" [value]="worker" (click)="selectRow($event, worker)"></p-tableCheckbox></td>
+                    <td class="table-emp-column">{{worker.employeeID}}</td>
+                    <td class="table-name-column">{{worker.lastName}}</td>
+                    <td class="table-name-column">{{worker.firstName}}</td>
+                    <td class="table-icon-column"><i *ngIf='worker.flags?.length > 0' class="pi pi-flag table-icon-column"></i></td>
+                    <td class="table-icon-column"><i *ngIf='worker.groups?.length > 0' class="pi pi-clone table-icon-column"></i></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-worker>
+                <tr>
+                    <td colspan="10">
+                        <div class="p-p-3">
+                            <div class='row'>
+                                    <div>
+                                        <span *ngIf='worker.flags.length > 0'>
+                                            <span class='expand-title'>Flags:</span>
+                                            <span> {{worker.flagsString}}</span>                                            <br>
+                                        </span>
+                                        <span *ngIf='worker.groups.length > 0'>
+                                            <span class='expand-title'>Groups:</span> 
+                                            <span> {{worker.groupsString}}</span>
+                                            <br>
+                                        </span>
+                                    </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="d-flex" style="justify-content: center;" *ngIf="isWorkerLoaded">
+            <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="modalTotalCount" (onPageChange)="onPageChange($event)">
+            </p-paginator>
+            <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+        </div>
+    </div>
+
+    <div class="flex-spacebetween button-footer mt-2">
+        <p-button class="cancel-btn" label="Cancel" (onClick)="onModalClose()"></p-button>
+        <p-button class="save-btn" label="Submit" (onClick)="onModalSave()"></p-button>
+    </div>
+    <div id="myNav" class="overlay w-100" *ngIf="!isWorkerLoaded || !isSaved" >
+        <div class='dialog-loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!isSaved">Saving...</span>
+            <span class="saved" *ngIf="!isWorkerLoaded">Loading...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="No Match" [(visible)]="showNoResults" [modal]="true">
+    <p>We couldn't find any match for the search data, please try again.</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'></div>
+            <div class='w-100'></div>
+            <div class='save-btn'><p-button label="OK" (onClick)="showNoResults = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>

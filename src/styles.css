@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+    font-family: "BentonSans-Bold";
+    src: local("BentonSans"), url(./assets/fonts/BentoSans/BentonSans-Bold.otf) format("truetype");
+}
+@font-face {
+    font-family: "BentonSans-Regular";
+    src: local("BentonSans"), url(./assets/fonts/BentoSans/BentonSans-Regular.otf) format("truetype");
+}
+@font-face {
+    font-family: "Inter-Regular";
+    src: local("Inter"), url(./assets/fonts/Inter/Inter-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Roboto-Regular";
+    src: local("Roboto"), url(./assets/fonts/Roboto/Roboto-Regular.ttf) format("truetype");
+}
+body {
+    background-color: #F5F7F9 !important;
+    margin: 0 !important;
+}
+ul {
+    font-family: "Roboto-Regular";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1rem;
+    color: #A6A6A6;
+}
+
+.text-editor-height{
+    height: 120px;
+}

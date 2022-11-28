@@ -1,0 +1,161 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Job Flags</div> 
+    <div class='generate'><p-button [disabled]="isFunctionValid(functionList$ | async ,45)" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex' *ngIf="flagsLoaded">
+        <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,48) ? 'edit' : 'disable-btn'"  style="width:250px;height:40px"><p-button label="Assign Flag"  (onClick)="assignFlagBtn(48)"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div>
+<div class='main mt-3'>
+    <div class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;' *ngIf="flagsLoaded">
+        <p-tree [value]='selectedFlagTree' selectionMode="single"  *ngIf='selectedFlagTree.length > 0'>
+            <ng-template pTemplate="default" let-flag>
+                <div class="country-item">
+                    <div style='padding:5px;'>
+                       {{flag.label}} <a *ngIf="!isFunctionBtnValid(functionList$ | async ,48)" (click)="getFlagNote(flag)"><i *ngIf="(flag.typeId === 0)"  class="f-r pi pi-pencil" ></i></a>
+                       <span *ngIf="(flag.typeId === 0)">
+                           <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                           <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedFlagTree.length == 0' severity="info" text="No Flags assigned to this job" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<div class='main'>
+    <div class="w-100">
+        <div class="med-heading mr-auto">Associated Task Flags (Combined and per-Task)</div><br>
+        <div class='flag-tree mt-2' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+            <div class='d-flex mt-3 mb-3 w-100'>
+                <label>Job/Tasks</label>
+                <p-dropdown class="job-tasks-dropdown" optionLabel="label" [options]="flagOptions" [group]="true" [(ngModel)]="jobTaskSelection" (onChange)="getAssociatedTaskGroupTree($event)"></p-dropdown><br/>
+            </div>
+            <p-message *ngIf="isJob" severity="info" text="Items below show combined flags for all the associated tasks." styleClass="p-mr-2" class='info'></p-message>
+            <p-message *ngIf="!isJob" severity="info" text="Items below show flags for the selected task." styleClass="p-mr-2" class='info'></p-message>
+
+            <div class="mt-3"></div>
+            <div style="margin-left:20%"  *ngIf="associatedLoader">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            <p-tree [value]='associatedFlagTree' selectionMode="single" *ngIf='!associatedLoader'>
+                <ng-template pTemplate="default" let-flag>
+                    <div class="country-item">
+                        <div>
+                            {{flag.label}} 
+                            <span *ngIf="(flag.typeId === 0)">
+                                <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                                <p *ngIf="!isJob" [innerHtml]="getAscSpecificNote(flag.id)"  [ngClass]="getAscSpecificNote(flag.id) ? 'note' : ''"></p></span> 
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tree>
+        </div>
+    </div>
+</div>
+<div class='main'>
+    <div class="w-100">
+        <div class="med-heading mr-auto">Functional Analysis Flags (Combined and per-Task)</div><br>
+        <div class='flag-tree mt-2' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+            <div class='d-flex mt-3 mb-3 w-100'>
+                <label>Job/Tasks</label>
+                <p-dropdown class="job-tasks-dropdown" optionLabel="label" [options]="flagOptions" [group]="true" [(ngModel)]="fAjobTaskSelection" (onChange)="getFAAssociatedTaskGroupTree($event)"></p-dropdown><br/>
+            </div>           
+            <p-message *ngIf="isJobFA" severity="info" text="Items below show combined flags for functional analysis of all the associated tasks." styleClass="p-mr-2" class='info'></p-message>
+            <p-message *ngIf="!isJobFA" severity="info" text="Items below show flags for the current functional analysis of the selected task." styleClass="p-mr-2" class='info'></p-message>
+            <div class="mt-3"></div>
+            <div style="margin-left:20%"  *ngIf="fAassociatedLoader">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            <p-tree [value]='associatedFAFlagTree' selectionMode="single" *ngIf='!fAassociatedLoader'>
+                <ng-template pTemplate="default" let-flag>
+                    <div class="country-item">
+                        <div>
+                            {{flag.label}} 
+                            <span *ngIf="(flag.typeId === 0)">
+                                <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                                <p *ngIf="!isJobFA" [innerHtml]="getFAAscSpecificNote(flag.id)"  [ngClass]="getFAAscSpecificNote(flag.id) ? 'note' : ''"></p></span> 
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tree>
+        </div>
+    </div>
+</div>
+<p-dialog header="Assign Flags" [(visible)]="assignFlagBox" [modal]="true">
+    <div class="notes-modal assign">
+        <p-tree [value]='flagTree' selectionMode="checkbox" [(selection)]="selectedFlagNode">
+            <ng-template pTemplate="default" let-flag>
+                <div class="country-item">
+                    <div style='padding:5px;'>
+                       {{flag.label}}
+                       <span *ngIf="(flag.typeId === 0)">
+                           <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p>
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelAssignedFlags()"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveFlags()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!flagsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Edit Flag Note" [(visible)]="editFlagNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text" [(ngModel)]="note.generalNotes" [disabled]='true' class='search-bar w-100' pInputText />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+                <!-- 
+                <p-editor  name="comments" [(ngModel)]="flagNote.specificNote" class='text-editor-height' [style]="{'height':'120px'}">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-image" aria-label="Strike"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+                -->
+                <textarea class='comments w-100' id="float-input" [(ngModel)]="flagNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>
+            </span>
+        </div>    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="editFlagNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveFlagNote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!flagsLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

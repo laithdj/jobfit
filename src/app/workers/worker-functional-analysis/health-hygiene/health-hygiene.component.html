@@ -1,0 +1,84 @@
+<div *ngIf="editMode && healthHygieneList.length > 0" class='accordion mt-3'>
+    <span *ngFor="let hh of healthHygieneList;  let hhIndex = index" class="d-flex">
+        <p-checkbox [binary]="true" (onChange)="onCheckboxSelection($event, hh.id)" [ngModel]="hh.useResult" class="checkbox mr-2"></p-checkbox>
+        <p-accordion (onOpen)="onTabOpen($event, hh.id)" (onClose)="onTabClose()" class="w-100"> 
+            <p-accordionTab [disabled]="!hh.useResult" [selected]="getTabSelected(hh.id)">
+                <ng-template pTemplate="header">
+                    <span>{{hh.name}}</span>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div *ngIf="hhListPerCategory[hhIndex]">
+                        <div *ngFor="let hhResults of hhListPerCategory[hhIndex].categories;" class="mt-3">
+                            <span class='heading-sm' >{{hhResults.category}}</span>
+                            <hr/>
+                            <div *ngFor="let item of hhResults.results">
+                                <div class='row w-100'>
+                                    <div class='col-12' >
+                                        <label for="item.name" class='ml-1'>{{item.name}}</label>
+                                    </div>  
+                                    <div class='col-12 ml-5'>
+                                        <health-hygiene-controls [typeId]="item.inputTypeId" (valueChange)="setValue($event,item.inputItem)" [inputItem]="item.inputItem" [initialValue]="item.value"></health-hygiene-controls>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-accordionTab>
+        </p-accordion>
+    </span>
+</div>
+
+<div *ngIf="!editMode" class='accordion mt-3'>
+    <p-table #dt [value]='healthHygieneResults' [rows]="10" [paginator]="true" responsiveLayout="scroll"
+        [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 5rem;"></th>
+                <th style="width: 15rem;"> Item</th>
+                <th  pSortableColumn="assessmentDate">Date</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-hyg let-expanded="expanded" >
+            <tr *ngIf="hyg.isActive">
+                <td>
+                    <button type="button" pButton pRipple [pRowToggler]="hyg" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+                <td>{{hyg.healthHygiene?.name}}</td>
+                <td>{{hyg.assessmentDate | date: 'dd-MMM-yyyy'}}</td>
+            </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-hh let-ind="rowIndex">
+            <tr>
+                <td colspan="12">
+                    <div class="p-p-3">
+                        <div class='row' *ngFor="let hhPC of hhResultPerCategoryList[ind]; ">
+                            <div class='col-7'>
+                                <div>
+                                    <span class='expand-title-name'>{{hhPC.category}}</span><br>
+                                    <hr/>
+                                </div>
+                                <div *ngIf="hhPC.results.length > 0"></div>
+                                <div class='row' *ngFor="let hyg of hhPC.results;">
+                                    <div class='col-7'>
+                                        <div class='d-flex'>
+                                            <div class='row w-100'>
+                                                <div class='col-7'>
+                                                    <span style='font-weight: bold;'>{{hyg.name}}</span>
+                                                </div>
+                                                <div class='col-9'>
+                                                    <span [innerHtml]="hyg.inputTypeId != 2 ? hyg.value: hyg.valueText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                            </div>
+                        </div> 
+                    </div>   
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

@@ -1,0 +1,138 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Notes</div>
+    <div class='generate'><p-button [disabled]="isFunctionValid(functionList$ | async ,45)" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex'>
+        <div [ngClass]="!isFunctionValid(functionList$ | async ,64) ? 'submit-job mt-3' : 'disable-btn mt-3'" style="width:140px;height:38px"><p-button label="Add Note"  (onClick)="newNote(64)"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div>
+<div class='main mt-3'>
+    <div *ngIf="!isLoading" style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-table #dt [value]='notes'  [paginator]="false" responsiveLayout="scroll"
+        [rowHover]="true" dataKey="id"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+       <ng-template pTemplate="header">
+           <tr>
+                <th style="width: 5rem;"></th>
+                <th style="width: 15rem;" pSortableColumn="entryDateField"> Entry Date</th>
+                <th class="center" pSortableColumn="noteField"> Note</th>
+                <th class="center" pSortableColumn="noteType" style="width: 15rem;"> Note Type</th>
+                <th class="center" style="width: 10rem;"></th>
+           </tr>
+       </ng-template>
+       <ng-template pTemplate="body" let-note let-expanded="expanded">
+           <tr>
+                <td>
+                    <button type="button" pButton pRipple [pRowToggler]="note" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+               <td>{{note.entryDateField | date: 'dd-MMM-yyyy'}}</td>
+               <td class="center" class="ql-editor">
+                <div class="comments-break">
+                    <span [innerHtml]="changeToPlainText(note.noteField)"></span>
+                </div>
+               </td>
+               <td class="center">{{getNoteType(note.noteType)}}</td>
+               <td class="center"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="viewEditNote(note)"></p-button></div></td>
+           </tr>
+       </ng-template>
+        <ng-template pTemplate="rowexpansion" let-note>
+                <tr>
+                    <td colspan="10">
+                        <div class="p-p-3">
+                            <div class='row'>
+                                <div class='col-7'>
+                                    <div *ngIf="!isFunctionValid(functionList$ | async ,17)">
+                                        <span class='expand-title'>Provider: </span> {{getProviderName(note.providedBy)}}<br>
+                                    </div>
+                                </div>
+                                <div class='col'>
+                                    <div>
+                                        <span class='expand-title'>Added By: </span>{{note.addedByName}}<br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+       </p-table>
+       <div class="d-flex" style="justify-content: center;">
+        <p-paginator [rows]="rowCount" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+        </p-paginator>
+        <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-1"></p-dropdown>
+       </div>
+    </div>
+</div>
+<p-dialog [header]="note.id > 0 ? 'View/Edit Note':'New Note'" [(visible)]="newNotesBox" [modal]="true" [closable]="false">
+    <div class="notes-modal">
+        <div>
+            <span>Type *</span><br>
+            <p-dropdown  [disabled]="!editMode" class="type" [options]='noteTypes' [(ngModel)]="note.noteType" appendTo="body" optionValue="id" optionLabel="noteTypeName"></p-dropdown>
+        </div>
+        <div class='name mt-3'>
+            <span>Provider</span><br>
+            <p-dropdown [disabled]="!editMode" optionLabel="fullName" class="provider"  [options]='providers' appendTo="body" [(ngModel)]="note.providedBy" optionValue="id" placeholder="No provider selected..."></p-dropdown>
+        </div>
+        <div class='name mt-3'>
+            <span class="mr-2">Entry Date *</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+            <p-calendar  [disabled]="!editMode" dateFormat="dd-M-yy" [(ngModel)]="note.entryDateField" appendTo="body" [showIcon]="true"></p-calendar>
+        </div>
+        <div class='mt-3'>
+            <span>Note *</span><br>
+            <span class="p-float-label">
+                <p-editor   [readonly]="!editMode" name="comments" [(ngModel)]="note.noteField" class='text-editor-height'>
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelViewEdit()"></p-button></div>
+            <div *ngIf="!editMode"  [ngClass]="!isFunctionValid(functionList$ | async ,63) ? 'edit ml-2' : 'disabled-btn ml-2'" class='edit ml-2'><p-button label="Edit" (onClick)="editNote(63)"></p-button></div>
+            <div *ngIf="note.id > 0 && editMode" class='archive-job ml-2' [ngClass]="!isFunctionValid(functionList$ | async ,65) ? 'archive-job ml-2' : 'disable-btn ml-2'" style="width:150px;height:40px"><p-button label="Archive" (onClick)="archiveNoteBtn(65)"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job' *ngIf="editMode"><p-button label="Submit" (onClick)="saveNote()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-note ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-note'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Archive Note" [(visible)]="showArchiveNote" [modal]="true">
+    <p>Are you sure you want to archive this note?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-job ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchiveNote = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" class='actions' (onClick)="archiveNote(note.id)"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="isLoading" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

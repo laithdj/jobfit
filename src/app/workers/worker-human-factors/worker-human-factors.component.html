@@ -1,0 +1,87 @@
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Human Factors</div> 
+    <div class='generate'><p-button [disabled]="isFunctionValid(functionList$ | async ,45)" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex'>
+        <div [ngClass]="!isFunctionBtnValid(functionList$ | async ,52) ? 'edit' : 'disable-btn'"  style="width:300px;height:40px"><p-button label="Assign Human Factors"  (onClick)="assignHumanfactor(52)"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div >
+<div class='main mt-3'>
+    <div class='flag-tree' style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-tree [value]="selectedHFTree"  selectionMode="single" *ngIf='selectedHFTree.length > 0'>
+            <ng-template pTemplate="default" let-hf>
+                <div class="country-item">
+                    <div>
+                        {{hf.label}} <a *ngIf="!isFunctionBtnValid(functionList$ | async ,52)" (click)="getHumanFactorNote(hf)"><i *ngIf="(hf.typeId !== 3)"  class="f-r pi pi-pencil" ></i></a>
+                        <span *ngIf="(hf.typeId !== 3)">
+                            <p *ngIf="hf.note.text?.length > 0"   [ngClass]="hf.note.text?.length > 0 ? 'note' : ''">General Note: {{hf.note.text}}</p>
+                            <p [innerHtml]="getSpecificNote(hf.id)"  [ngClass]="getSpecificNote(hf.id) ? 'note' : ''"></p>
+                            </span>                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-message *ngIf='selectedHFTree.length == 0' severity="info" text="No human factor restrictions assigned to this worker" styleClass="p-mr-2" class='info'></p-message>
+</div>
+<p-dialog header="Assign Human Factors" [(visible)]="assignHF" [modal]="true">
+    <p-message severity="info" text="Please select all items the worker is unable to perform." styleClass="p-mr-2 mb-2" class='info'></p-message>
+    <div class="notes-modal assign">
+        <p-tree [value]='humanFactorTree' selectionMode="checkbox" [(selection)]="selectedHFTreeNode">
+            <ng-template pTemplate="default" let-hf>
+                <div class="country-item">
+                    <div>
+                        {{hf.label}}
+                        <span *ngIf="(hf.typeId !== 3)">
+                            <p *ngIf="hf.note.text?.length > 0"   [ngClass]="hf.note.text?.length > 0 ? 'note' : ''">General Note: {{hf.note.text}}</p>
+                            
+                            </span>                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="assignHF = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveHumanFactors()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!humanFactorSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Edit Human Factor Note" [(visible)]="editHFNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text"  [disabled]='true' class='search-bar w-100' pInputText [(ngModel)]="hfNote.generalNote" />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+                <textarea class='comments w-100' id="float-input" [(ngModel)]="hfNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>  
+            </span>
+        </div>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="editHFNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveHFNote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!HFLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

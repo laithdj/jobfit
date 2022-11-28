@@ -1,0 +1,105 @@
+
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Functional Analysis</div> 
+    <div [class]="authorisedFunctionList.Function[eFunctions.ViewReports] ? 'generate':'disable-generate'"><p-button [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class='accordion mt-3' *ngIf="faLoaded && authorisedFunctionList.Function[eFunctions.ViewFunctionalAnalyses]">
+            <p-accordion>
+                <p-accordionTab header="Flags">
+                    <p-tree [value]='selectedFlagTree' selectionMode="single" *ngIf='selectedFlagTree.length > 0'>
+                        <ng-template pTemplate="default" let-flag>
+                            {{flag.label}}
+                            <span *ngIf="(flag.typeId === 0)">
+                                <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note.text}}</p></span>
+                        </ng-template>
+                    </p-tree>
+                    <p-message *ngIf='selectedFlagTree.length == 0' severity="info" text="No Flags assigned to this Functional Analysis" styleClass="p-mr-2" class='info'></p-message>
+                </p-accordionTab>
+                <p-accordionTab header="Postural Tolerances">
+                  <jobs-postural-tolerances [editMode]="editMode"></jobs-postural-tolerances>
+                    <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+                <p-accordionTab header="Material Handling">
+                    <material-handling></material-handling>
+                    <p-button type="button" class="p-mr-2 info" (click)="visibleSidebar4 = true" icon="pi pi-info-circle"></p-button>
+                </p-accordionTab>
+                <p-accordionTab header="Grip Strength">
+                    <grip-strength></grip-strength>
+                </p-accordionTab>
+                <!--<p-accordionTab header="Other">
+                </p-accordionTab>-->
+                <p-accordionTab header="Risk Rating">
+                    <p-table [value]="selectedRiskRatings" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Risk Tool Name</th>
+                                <th>Score</th>
+                                <th>Rating</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-risk let-i="rowIndex">
+                            <tr>
+                                <td>{{risk.name}}</td>
+                                <td>{{risk.riskAssessmentValue}}</td>
+                                <td>{{risk.riskRangeRate}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+
+</div>
+
+<div id="myNav" class="overlay w-100" *ngIf="!faLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>
+<div class='d-flex'>
+    <div class='w-100'></div>
+</div>
+<p-sidebar [(visible)]="visibleSidebar4" position="bottom" [baseZIndex]="1" [autoZIndex]='false' [dismissible]='false'  [style]="{height:'20em'}">
+<div class='definitions'>
+    <div class='row'>
+        <div class='col'>Definitions</div>
+        <div class='col'>% Task Time</div>
+        <div class='col'>Reps per Day</div>
+        <div class='col'>Reps per Hour</div>
+        <div class='col'>Reps per Minute</div>
+    </div>
+    <div class='row'>
+        <div class='col'>N - Never</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+    </div>
+    <div class='row'>
+        <div class='col'>O - Occasionally</div>
+        <div class='col'>1 - 33</div>
+        <div class='col'>1 - 100</div>
+        <div class='col'>0 - 12</div>
+        <div class='col'>1 every 5 - 15</div>
+    </div>
+    <div class='row'>
+        <div class='col'>F - Frequently</div>
+        <div class='col'>34 - 66</div>
+        <div class='col'>101 - 500</div>
+        <div class='col'>12 - 63</div>
+        <div class='col'>1 every 1 - 5</div>
+    </div>
+    <div class='row'>
+        <div class='col'>C - Continuous</div>
+        <div class='col'>67 - 100</div>
+        <div class='col'>500+</div>
+        <div class='col'>>63</div>
+        <div class='col'>1 or more</div>
+    </div>
+    <div class='row'>
+        <div class='col'>NT - Not Tested</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+        <div class='col'>-</div>
+    </div>
+</div>

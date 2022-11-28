@@ -1,0 +1,38 @@
+<div *ngIf="!editMode">
+    <p-table [value]="selectedRiskRatings" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Risk Tool Name</th>
+                <th class="center">Score</th>
+                <th class="center">Rating</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-risk let-i="rowIndex">
+            <tr>
+                <td>{{risk.name}}</td>
+                <td class="center"><p-inputNumber mode="decimal" [disabled]="!editMode" [(ngModel)]="risk.riskAssessmentValue" [showButtons]="true" inputId="minmax-buttons" [min]="MIN_VALUE" [max]="MAX_VALUE" (onInput)="changeRisk($event, risk)" placeholder="0">
+                </p-inputNumber></td>
+                <td class="center">{{risk.riskRangeRate}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<div *ngIf="editMode">
+    <p-table [value]="riskTools" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Risk Tool Name</th>
+                <th class="center">Score</th>
+                <th class="center">Rating</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-risk let-i="rowIndex">
+            <tr>
+                <td><p-checkbox [binary]="true" [(ngModel)]="risk.isActive" [inputId]="risk.isActive" [disabled]="!editMode" class='mr-2' (onChange)="changeActive($event, risk)">)"></p-checkbox>{{risk.name}}</td>
+                <td class="center"><p-inputNumber mode="decimal" [disabled]="!risk.isActive" [(ngModel)]="risk.riskAssessmentValue" [showButtons]="true" inputId="minmax-buttons" [min]="MIN_VALUE" [max]="MAX_VALUE" (onInput)="changeValue($event, risk)" placeholder="0">
+                </p-inputNumber></td>
+                <td class="center">{{risk.riskRangeRate ?? getRiskRating(0, risk)}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

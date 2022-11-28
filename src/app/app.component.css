@@ -1,0 +1,56 @@
+:host ::ng-deep .p-menu {
+    padding: 0.25rem 0;
+    background: unset;
+    color: #495057;
+    border:unset;
+    border-radius: 3px;
+    width: 12.5rem;
+}
+:host ::ng-deep .p-menu ul{
+    font-family: "BentonSans-Regular" !important;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1rem;
+    color: #20BCD3;
+}
+.m5 {
+    margin-top:10%
+}
+.p-top {
+    padding-top: 1rem;
+}
+.main-padding{
+    padding-left:10%;
+    padding-right:10%;
+    padding-top:3rem;
+}
+.side-padding{
+    padding-left:2%;
+    padding-right:5%;
+    padding-top:45px;
+}
+@media screen and (max-width: 1500px){
+    .side-padding{
+        padding-left:2%;
+        padding-right:19px;
+        padding-top:45px;
+    }
+}
+@media screen and (min-width: 2200px) {
+    .side-padding{
+        padding-right:20%;
+        padding-top:15px;
+    }
+    .main-padding{
+        padding-left:20%;
+        padding-right:20%;
+        padding-top:15px;
+    }
+  }
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 4px !important;
+  }
+  
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 6px !important;
+  }

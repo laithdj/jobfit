@@ -1,0 +1,232 @@
+ <div class="d-flex w-100">
+    <div class="heading mr-auto">Associated Jobs</div> 
+    <div class='generate'><p-button [disabled]="authorisedList[0]" [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex' *ngIf="associatedJobsLoaded">
+        <div class='submit-job mt-3'><p-button label="Add New" (onClick)="addNew()"></p-button></div>
+        <div class='w-100'></div>
+    </div>
+</div >
+<div class='main mt-3'>
+    <div *ngIf="associatedJobsLoaded" style='padding-bottom:10px;padding-left:15px;padding-right:15px;'>
+        <p-table #dt [value]='associatedJob.jobs' responsiveLayout="scroll"
+        [rowHover]="true" dataKey="id">
+       <ng-template pTemplate="header">
+            <tr>
+                <th  pSortableColumn="fileName">Name</th>
+                <th class="center" style="width: 120px;" pSortableColumn="ratioTime">Ratio of Time</th>
+                <th class="center" style="width: 120px;" pSortableColumn="priority"> Priority</th>
+                <th class="center" style="width: 120px;" pSortableColumn="req"> Requirement</th>
+                <th class="center" style="width: 5rem;"></th>
+            </tr>
+       </ng-template>
+       <ng-template pTemplate="body" let-jobs>
+            <tr>
+                <td ><a [routerLink]="" (click)="goToJobsDetails(jobs?.job?.originalRevisionId ?? jobs?.job?.id)">{{jobs.fileName}}</a></td>
+                <td class="center"><p-progressBar [value]="jobs.ratio" class='w-50 ratio-table'></p-progressBar></td>
+                <td class="center"><p-rating [ngModel]="jobs.priority" [readonly]="true" [cancel]="false" [stars]="5" iconOnClass="fa fa-square" iconOffClass="fa fa-square-o"></p-rating></td>
+                <td class="center">{{jobs.req.name}}</td>
+                <td class="center"><div class='edit'><p-button label="View/Edit" class='f-r' (onClick)="editJob(jobs)"></p-button></div></td>
+            </tr>
+       </ng-template>
+       </p-table>
+       <div class="d-flex" style="justify-content: center;">
+        <p-paginator  [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+        </p-paginator>
+        <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2"  [(ngModel)]="rowCount"></p-dropdown>
+       </div>
+    </div>
+</div>
+<p-dialog header="New Associated Job" [(visible)]="newJobBox" [modal]="true" [closable]="false">
+    <div class="job-modal">
+        <div>
+            <span>Name *</span><br>
+            <p-dropdown [options]="jobList" class='job-list' placeholder="Please Select a Job" optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [(ngModel)]="job.job.id" ></p-dropdown>
+        </div>
+        <div>
+            <span>Requirement *</span><br>
+            <p-dropdown class="req" [(ngModel)]="job.req" placeholder="Please Select a Requirement" [options]="reqOptions" optionLabel="name"></p-dropdown>
+        </div>
+        <div class='d-flex mt-3 w-100'>
+            <div>
+                <span>Priority</span><br><br>
+                <p-rating class='mt-1' [(ngModel)]="job.priority"  [cancel]="false" [stars]="5" iconOnClass="fa fa-square" iconOffClass="fa fa-square-o"></p-rating>
+            </div>
+            <div class='w-33'></div>
+            <div class='ml-5 ratio-time f-r'>
+                <span>Ratio of Time</span><br><br>
+                <h5>{{job.ratio}} %</h5>
+                <p-slider [(ngModel)]="job.ratio"></p-slider>
+            </div>
+        </div>
+        <div class='mt-3'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  name="comments" [(ngModel)]="job.comment" class='text-editor-height' [style]="{'height':'150px'}" >
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Flags</span><br>
+            <p-tree [value]='selectedFlagTree' selectionMode="single">
+                <ng-template pTemplate="default" let-flag>
+                    <div class="item">
+                        <div style='padding:5px;'>
+                             <p-checkbox *ngIf="flag.typeId !== 12" name="group2" value="flag" (onChange)="check($event)" [value]="flag" [inputId]="flag.id" [(ngModel)]="selectedFlagNode"></p-checkbox>{{flag.label}}
+                              <a *ngIf="checked(flag.id)" (click)="getFlagNote(flag)"><i *ngIf="(flag.typeId === 0)"  class="f-r pi pi-pencil ml-2" ></i></a>
+                             <span *ngIf="(flag.typeId === 0)">
+                                 <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note?.text}}</p>
+                                 <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tree>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelPopUp(job)"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job'><p-button label="Submit" (onClick)="saveTaskJob()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved || !isLoaded" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!detailsSaved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="View/Edit Associated Job" [(visible)]="editJobBox" [modal]="true" [closable]="false">
+    <div class="job-modal">
+        <div>
+            <span>Name *</span><br>
+            <p-dropdown [disabled]="!editMode" [options]="allJobList" class='job-list' [disabled]="true" placeholder="Please Select a Job"  optionLabel="name" optionValue="id" [filter]="true" filterBy="name" (onChange)="setJobName($event)"  [(ngModel)]="job.job.id" ></p-dropdown>
+        </div>
+        <div>
+            <span>Requirement *</span><br>
+            <p-dropdown [disabled]="!editMode" class="req" placeholder="'Please Select Requirement'" placeholder="Please Select a Requirement"  [(ngModel)]="job.req" [options]="reqOptions" optionLabel="name"></p-dropdown>
+        </div>
+        <div class='d-flex mt-3 w-100'>
+            <div>
+                <span>Priority</span><br><br>
+                <p-rating [disabled]="!editMode" class='mt-1' [(ngModel)]="job.priority"  [cancel]="false" [stars]="5" iconOnClass="fa fa-square" iconOffClass="fa fa-square-o"></p-rating>
+            </div>
+            <div class='w-33'></div>
+            <div class='ml-5 ratio-time f-r'>
+                <span>Ratio of Time</span><br><br>
+                <h5>{{job.ratio}} %</h5>
+                <p-slider [disabled]="!editMode" [(ngModel)]="job.ratio"></p-slider>
+            </div>
+        </div>
+        <div class='mt-3'>
+            <span>Comments</span><br>
+            <span class="p-float-label">
+                <p-editor  [readonly]="!editMode" name="comments" [(ngModel)]="job.comment" class='text-editor-height' [style]="{'height':'120px'}" >
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            <button type="button" class="ql-strike" aria-label="Strike"></button>
+                            <button type="button" class="ql-link" aria-label="Strike"></button>
+                            <button type="button" class="ql-list" aria-label="Ordered List" value="ordered"></button>
+                            <button type="button" class="ql-list" aria-label="Unordered List" value="bullet"></button>
+                        </span>
+                    </ng-template>
+                </p-editor>
+            </span>
+        </div>
+        <div class='mt-3'>
+            <span>Flags</span><br>
+            <p-tree [value]='selectedFlagTree' selectionMode="single">
+                <ng-template pTemplate="default" let-flag>
+                    <div class="item">
+                        <div style='padding:5px;'>
+                             <p-checkbox *ngIf="flag.typeId !== 12" name="group2" value="flag" (onChange)="check($event)" [disabled]="isFunctionBtnValid(functionList$ | async ,41)" [value]="flag" [inputId]="flag.id" [(ngModel)]="selectedFlagNode"></p-checkbox>{{flag.label}}
+                              <a *ngIf="checked(flag.id) && !isFunctionBtnValid(functionList$ | async ,41)" (click)="getFlagNote(flag)"><i *ngIf="(flag.typeId === 0)"  class="f-r pi pi-pencil ml-2" ></i></a>
+                             <span *ngIf="(flag.typeId === 0)">
+                                 <p *ngIf="flag.note.text?.length > 0"   [ngClass]="flag.note.text?.length > 0 ? 'note' : ''">General Note: {{flag.note?.text}}</p>
+                                 <p [innerHtml]="getSpecificNote(flag.id)"  [ngClass]="getSpecificNote(flag.id) ? 'note' : ''"></p></span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tree>
+        </div>
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="cancelPopUp(job)"></p-button></div>
+            <div *ngIf="!editMode"  [ngClass]="!isFunctionBtnValid(functionList$ | async ,41) ? 'edit ml-2' : 'disabled-btn ml-2'" class='edit ml-2'><p-button label="Edit" (onClick)="editJobAsc(41)"></p-button></div>
+            <div class='archive-job ml-2' *ngIf="editMode"><p-button label="Archive" (onClick)="showArchive = true"></p-button></div>
+            <div class='w-100'></div>
+            <div class='submit-job' *ngIf="editMode" ><p-button label="Submit" (onClick)="saveTaskJob()"></p-button></div>
+        </div>
+    </div>
+    <div class="overlay w-100" *ngIf="!detailsSaved || !isLoaded" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved" *ngIf="!detailsSaved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job-association ml-2'></div>
+            <div class='w-100'></div>
+            <div class='submit-job-association'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Archive Associated Job" [(visible)]="showArchive" [modal]="true">
+    <p>Are you sure you want to archive this associated job?</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel-job ml-2'><p-button label="Cancel" class='actions' (onClick)='showArchive = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit-job'><p-button label="Confirm" class='actions' (onClick)="archiveJob()"></p-button></div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!associatedJobsLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>
+<p-dialog header="Edit Flag Note" [(visible)]="editFlagNote" [modal]="true">
+    <div class="notes-modal">
+        <div class='name mt-3'>
+            <span>General Notes</span><br>
+            <input type="text"  [disabled]='true' [(ngModel)]="note.generalNotes"  class='search-bar w-100' pInputText />
+        </div>
+        <div class='mt-3  spec-notes'>
+            <span>Specific Notes *</span><br>
+            <span class="p-float-label">
+              <textarea class='comments w-100' id="float-input" [(ngModel)]="flagNote.specificNote" placeholder="Enter Notes here" rows="5" cols="30" pInputTextarea></textarea>
+            </span>
+        </div>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="editFlagNote = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveFlagNote()"></p-button></div>
+    </div>
+    <div class="overlay w-100" *ngIf="!notesSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>

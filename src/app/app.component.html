@@ -1,0 +1,11 @@
+
+<nav-menu></nav-menu>
+<div  class='d-flex  w-100' [ngClass]="(showSideMenu$ | async) ? 'side-padding' : 'main-padding'">
+    <div *ngIf='(showSideMenu$ | async)' class='mt-5 mr-5'>
+        <side-nav [menuList]='(menuList$ | async)'></side-nav>
+    </div>
+    <div class='w-100 p-top'>
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<app-error></app-error>

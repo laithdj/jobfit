@@ -1,0 +1,192 @@
+.main{
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+.heading {
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+:host ::ng-deep .generate .p-button {
+    color: #ffffff;
+    border: solid;
+    width: 170px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    border-color: #222e50;
+    border-width: thin;
+    height: 40px;
+}
+:host ::ng-deep .edit .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 140px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .p-inline-message.p-inline-message-info {
+    background: #cccccc5c;
+  }
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+.note {
+    background: #56ccf224;
+    border: solid #56CCF2;
+    border-width: 0px;
+    color: grey;
+    padding: 4px;
+}
+.notes-modal {
+    width:509px;
+}
+:host ::ng-deep .type .p-dropdown {
+    width: 200px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+:host ::ng-deep .provider .p-dropdown {
+    width: 400px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+.comments {
+    width:400px;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .submit-job .p-button {
+    
+    width: 140px;
+    height: 42px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .cancel-job .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.f-r{
+    float: right;
+}
+:host ::ng-deep .info .p-component {
+    width:100%;
+}
+:host ::ng-deep .info .p-inline-message {
+    justify-content: left;
+}
+.med-heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #20BCD3;
+}
+:host ::ng-deep .pi .pi-pencil{
+    font-size:0.10rem;
+}
+:host ::ng-deep .p-treenode-label{
+    width:100%
+}
+:host ::ng-deep .flag-tree .p-component {
+    width:40%;
+}
+:host ::ng-deep .spec-notes .p-component{ 
+    width:100%
+}
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .saved {
+    font-weight: bolder;
+    font-size: large;
+  }
+  ::ng-deep .assign .p-tree .p-tree-container .p-treenode .p-treenode-content .p-checkbox {
+    margin-top: 2px !important;
+}
+::ng-deep .assign  .p-treenode-content {
+    align-items: unset !important; 
+
+}
+::ng-deep .assign .p-tree-toggler {
+     align-items: unset !important; 
+}
+::ng-deep .assign .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:focus {
+
+    box-shadow: unset !important;
+}
+::ng-deep .assign .p-tree-toggler-icon {
+    margin-top: 3px !important;
+}
+:host ::ng-deep .disable-btn .p-button {
+    background-color: #E3E6EA;
+    color: gray;
+    border: unset;
+    font-size: 1rem;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+  }

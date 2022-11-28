@@ -1,0 +1,168 @@
+
+<div class='row' style="min-width: 1024px;">
+    <div class='col-9'>
+        <div class='row'>
+            <div class='col'>
+                <p-table [value]="(posturalBackTolerances$ | async) ? (posturalBackTolerances$ | async) : []" responsiveLayout="scroll" class="post-table">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Back</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalBackTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 1)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class='col'>
+                <p-table [value]="(posturalShoulderTolerances$ | async) ? (posturalShoulderTolerances$ | async) : []" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Shoulder</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalShoulderTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 2)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class='col'>
+                <p-table [value]="(posturalHandTolerances$ | async) ? (posturalHandTolerances$ | async) : []" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Hand/Fingers</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalHandTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 3)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col'>
+                <p-table [value]="(posturalNeckTolerances$ | async) ? (posturalNeckTolerances$ | async) : []" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Neck</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalNeckTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 4)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class='col'>
+                <p-table [value]="(posturalWristHandTolerances$ | async)" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Wrist/Hand</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalWristHandTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 5)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class='col'>
+                <p-table [value]="(posturalLegFeetTolerances$ | async) ? (posturalLegFeetTolerances$ | async) : []" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>Leg/Feet</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalLegFeetTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 6)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+    </div>
+    <div class='col-3'>
+        <div class='row'>
+            <div class='col'>
+                <p-table [value]="(posturalSecondBackTolerances$ | async) ? (posturalSecondBackTolerances$ | async) : []" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class='title-heading'>General</th>
+                            <th class='header'>N</th>
+                            <th class='header'>O</th>
+                            <th class='header'>F</th>
+                            <th class='header'>X</th>
+                            <th class='header'>NT</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-fa let-ri="rowIndex">
+                        <tr>
+                            <td style="width:10rem">{{fa.name}}</td>
+                            <td class='radio' *ngFor="let category of posturalOptions">
+                                <p-radioButton name="category" [disabled]='!editMode' [ngModel]="posturalGeneralTolerancesResult[ri]?.frequency?.char" (onClick)="valueChange(category, fa.id , 7)"  [value]="category.key"></p-radioButton>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

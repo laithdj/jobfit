@@ -1,0 +1,199 @@
+::ng-deep .p-menubar {
+    background: #222E50 !important;
+    height:72.9px !important;
+}
+
+::ng-deep .p-menubar-end {
+    margin-right: 15px;
+}
+::ng-deep .p-menubar ul {
+    margin-left: 228px !important;
+}
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text {
+    color: rgba(255, 255, 255, 0.6) ;
+    font-family: Roboto !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    font-size: 20px !important;
+    line-height: 140% !important;
+    /* identical to box height, or 17px */
+    text-align: center !important;
+    letter-spacing: -0.3px !important;   
+}
+
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link-active {
+color:white !important;
+border-bottom: 3px solid #56CCF2 !important;
+
+}
+::ng-deep .p-menubar ul {
+
+    padding-left: 83px !important;
+}
+::ng-deep .disabled-link {
+    color:#A6A6A6
+}
+
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link-active .p-menuitem-text {
+    color:white !important;
+    
+    }
+
+    .powered{
+        position: absolute;
+        width: 149px;
+        left: 17px;
+        top: 10px;
+    }
+.logo{
+    position: absolute;
+    width: 54.52px;
+    height: 26px;
+    left: 260px;
+    top: 24px;
+}
+.search-icon{
+    position: relative;
+    right: 7.5rem;
+    bottom: 6px;
+}
+.menu-bar {
+    position: fixed;
+    width: 100%;
+    z-index: 900;
+}
+.lang{
+    position: relative;
+    right: 3.5rem;
+    bottom: 6px;
+}
+.notifications-icon{
+    position: relative;
+    right: 6rem;
+    bottom: 6px;
+}
+.f-20{
+    font-size:20px;
+}
+.admin-icon{
+    position: relative;
+    right: 4rem;
+    top: 7px;
+    font-size: 1rem;
+    color: #20bcd3;
+}
+.profile-logo{
+    position: relative;
+    right: 2rem;
+    top: 14px;
+}
+
+.p-menubar .p-menuitem {
+    position: relative;
+}
+
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:not(.p-disabled):hover {
+    background: unset !important;
+}
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:not(.p-disabled):hover .p-menuitem-text {
+    color: #ffffff !important;
+}
+
+  
+::ng-deep .p-menubar a {
+    float: left !important;
+ /*   display: block !important;*/
+    color: #20bcd3  !important;
+    text-align: center !important;
+    padding: 14px 16px !important;
+    text-decoration: none !important;
+    font-size: 17px !important;
+    border-bottom: 3px solid transparent !important;
+  }
+  
+::ng-deep .p-menubar a:hover {
+    border-bottom: 3px solid #56CCF2 !important;
+  }
+  
+::ng-deep .p-menubar a.active {
+    border-bottom: 3px solid #56CCF2 !important;
+  }
+
+  ::ng-deep .disabled-link  a:hover {
+    border-bottom: 3px solid #A6A6A6 !important;
+  }
+  
+::ng-deep  .disabled-link  a.active {
+    border-bottom: 3px solid #A6A6A6 !important;
+  }
+  @media screen and (max-width: 1300px){ /* scale 150% */
+    ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text {
+        font-size: 15px !important;
+    }
+  }
+  @media screen and (min-width: 1100){ /* scale 150% */
+    ::ng-deep .p-menubar-button {
+        display: none !important;
+    }
+  }
+  @media screen and (max-width: 1100px){ /* scale 150% */
+    ::ng-deep .p-menubar-button {
+        display: flex !important;
+    }
+  }
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text {
+    position: relative !important;
+    top: 11px !important;
+}
+
+::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link  { 
+    height: 71px !important;
+}
+
+@media screen and (max-width: 1100px) {
+    .powered{
+        position: absolute;
+        width: 149px;
+        left: 100px;
+        top: 10px;
+    }
+  }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: block;
+    position: absolute;
+    right: -21px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
+    padding: 12px 16px;
+    width: 150px;
+  }
+  
+  .dropdown-show {
+    display: block;
+  }
+  :host ::ng-deep .cancel .p-button,  :host ::ng-deep .clear .p-button{ 
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+    width:240px;
+  }
+  :host ::ng-deep .submit .p-button {
+    width: 223px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+    font-size: 1rem;
+    height: 38px;
+  }
+  a {
+    text-decoration: none !important;
+}

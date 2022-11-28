@@ -1,0 +1,112 @@
+<div class='row'>
+    <div class='col'>
+        <p-table [value]="gripItems" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th style='width:5rem'>Required</th>
+                    <th class="center" style='width:5rem'>Value ({{customerSettings?.measurementType?.units}})</th>
+                    <th class="center" style='width:5rem'>Required</th>
+                    <th class="center" style='width:5rem'>Value ({{customerSettings?.measurementType?.units}})</th>
+                    <th class="center" style='width:5rem'>Required</th>
+                    <th class="center" style='width:5rem'>Value ({{customerSettings?.measurementType?.units}})</th>
+                    <th class="center" style='width:5rem'>Required</th>
+                    <th class="center" style='width:5rem'>Value ({{customerSettings?.measurementType?.units}})</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-mh let-ri="rowIndex">
+                <tr >
+                    <td style="width:200px">{{mh.name}}</td>
+                    <td>
+                        <p-checkbox 
+                            [(ngModel)]="gripResultsBoth[ri].isTested" 
+                            (onChange)="onActiveChange($event, mh.id, 6)" 
+                            [binary]="true" 
+                            [disabled]="!(editMode)">
+                        </p-checkbox>
+                        Both
+                    </td>
+                    <td class="center">
+                        <div class='d-flex'>
+                            <p-inputNumber 
+                                [(ngModel)]="gripResultsBoth[ri].value" 
+                                class='input-table' 
+                                mode="decimal" 
+                                [minFractionDigits]="1" 
+                                [maxFractionDigits]="1"  
+                                [disabled]="!editMode || !gripResultsBoth[ri].isTested"
+                                (onInput)="onInputChange($event, gripResultsBoth[ri].gripSideId, gripResultsBoth[ri].gripItemId)">
+                            </p-inputNumber>
+                        </div>
+                    </td>
+                    <td class="center">
+                        <p-checkbox 
+                            [(ngModel)]="gripResultsEither[ri].isTested" 
+                            (onChange)="onActiveChange($event, mh.id, 7)" 
+                            [binary]="true" 
+                            [disabled]="!(editMode)">
+                        </p-checkbox>
+                        Either
+                    </td>
+                    <td class="center">
+                        <div class='d-flex'>
+                            <p-inputNumber 
+                                [(ngModel)]="gripResultsEither[ri].value" 
+                                class='input-table' 
+                                mode="decimal" 
+                                [minFractionDigits]="1" 
+                                [maxFractionDigits]="1"  
+                                [disabled]="!editMode || !gripResultsEither[ri].isTested"
+                                (onInput)="onInputChange($event, gripResultsEither[ri].gripSideId, gripResultsEither[ri].gripItemId)">
+                            </p-inputNumber>
+                        </div>
+                    </td>
+                    <td class="center">
+                        <p-checkbox 
+                            [(ngModel)]="gripResultsLeft[ri].isTested" 
+                            (onChange)="onActiveChange($event, mh.id, 3)" 
+                            [binary]="true" 
+                            [disabled]="!(editMode)">
+                        </p-checkbox>
+                        Left
+                    </td>
+                    <td class="center">
+                        <div class='d-flex'>
+                            <p-inputNumber 
+                                [(ngModel)]="gripResultsLeft[ri].value" 
+                                class='input-table' 
+                                mode="decimal" 
+                                [minFractionDigits]="1" 
+                                [maxFractionDigits]="1" 
+                                [disabled]="!editMode || !gripResultsLeft[ri].isTested"
+                                (onInput)="onInputChange($event, gripResultsLeft[ri].gripSideId, gripResultsLeft[ri].gripItemId)">
+                            </p-inputNumber>
+                        </div>
+                    </td>
+                    <td class="center">
+                        <p-checkbox 
+                            [(ngModel)]="gripResultsRight[ri].isTested" 
+                            (onChange)="onActiveChange($event, mh.id, 4)" 
+                            [binary]="true" 
+                            [disabled]="!(editMode)">
+                        </p-checkbox>
+                        Right
+                    </td>
+                    <td class="center">
+                        <div class='d-flex'>
+                            <p-inputNumber 
+                                [(ngModel)]="gripResultsRight[ri].value" 
+                                class='input-table' 
+                                mode="decimal" 
+                                [minFractionDigits]="1" 
+                                [maxFractionDigits]="1"  
+                                [disabled]="!editMode || !gripResultsRight[ri].isTested"
+                                (onInput)="onInputChange($event, gripResultsRight[ri].gripSideId, gripResultsRight[ri].gripItemId)">
+                            </p-inputNumber>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

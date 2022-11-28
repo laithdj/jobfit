@@ -1,0 +1,656 @@
+    <div class="d-flex w-100">
+        <div class="heading mr-auto">Worker Details</div>
+        <div [ngClass]="authorisedFunctionList.Function[eFunctions.EditWorker] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'WORKERDETAILS.EDITRECORDBUTTON' | translate" (onClick)="editRecord()"></p-button></div>
+        <div [ngClass]="authorisedFunctionList.Function[eFunctions.DeleteWorker] ? 'edit mr-1' : 'disabled-btn mr-1'"><p-button [label]="'WORKERSLIST.DELETEBUTTONLABEL' | translate" (onClick)="showArchive()"></p-button></div>
+        <div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewReports] ? 'generate' : 'disable-generate'"><p-button [label]="'WORKERSLIST.GENERATEREPORTBUTTON' | translate" (onClick)="goToReport()"></p-button></div>
+    </div>
+
+    <div class="container mt-3" *ngIf="workerDetailsLoaded" >
+        <div class="row">
+            <div class=" col-8">
+            <div class='desc'>
+                <div class="row">
+                    <div class='col-7-custom'>
+                        <span class='heading-3'>{{worker?.employeeID ?? ""}}</span>
+                        <span class='heading-2'>{{worker?.fullName ?? ""}}</span>
+                        <div class='row'>
+                            <div class='col'>
+                                <span>{{'WORKER.GENDER' | translate}}</span><br>
+                                    <span class="worker-detail-value" *ngIf="authorisedFunctionList.Function[eFunctions.ViewWorkers] && worker?.isMale == false">
+                                        Female
+                                    </span>
+                                    <span class="worker-detail-value" *ngIf="authorisedFunctionList.Function[eFunctions.ViewWorkers] && worker?.isMale == true">
+                                        Male
+                                    </span>
+                            </div>
+                            <div class='col'>
+                                <span>{{'Gender' | translate}}</span><br>
+                                <span class="worker-detail-value">
+                                    {{genderDisplay ?? ""}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col'>
+                                <span>{{'WORKER.DOB' | translate}}</span><br>
+                                    <span>
+                                        <span class="worker-detail-value">{{workerDOB | date: 'dd-MMM-yyyy'}}</span>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col'>
+                                <span>{{'WORKER.EMAIL' | translate}}</span><br>
+                                    <span class="worker-detail-value">
+                                        {{worker?.emailAddress ?? ""}}
+                                    </span>
+                            </div>
+                            <div class='col'>
+                                <span>{{'WORKER.MOBILE' | translate}}</span><br>
+                                    <span class="worker-detail-value">
+                                        {{worker?.mobileNo ?? ""}}
+                                    </span>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col'>
+                                <span>{{'WORKER.HOMEPHONE' | translate}}</span><br>
+                                    <span class="worker-detail-value">
+                                        {{worker?.homePhone ?? ""}}
+                                    </span>
+                            </div>
+                            <div class='col'>
+                                <span>{{'WORKER.WORKPHONE' | translate}}</span><br>
+                                    <span class="worker-detail-value">
+                                        {{worker?.workPhone ?? ""}}
+                                    </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class='col'>
+                        <img src="../../../assets/img2.png" height='153px' width='163px;' >
+                    </div>
+                </div>
+              </div>
+
+              <div class='overview mt-2'>
+                <span class='heading-3'>{{'Latest Employment'}}</span><br>
+                <div class="employmentMenu" *ngIf="authorisedFunctionList.Function[eFunctions.ViewEmployments] || authorisedFunctionList.Function[eFunctions.EditWorker]">
+                    <p-table  *ngIf="latestEmployments.length>0" #dt [value]="latestEmployments"  [rows]="1" [paginator]="false" responsiveLayout="scroll" dataKey="id">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 15rem;" >Job Name</th>
+                                <th style="width: 8rem;text-align: center;"> JobFit Score</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-employees  let-expanded="expanded">
+                            <tr>
+                                <td>
+                                    <button type="button" pButton pRipple [pRowToggler]="employees" class="p-button-text p-button-rounded p-button-plain mr-1 expanded-button" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                    <span>{{employees?.job.name}}</span>
+                                </td>
+                                <td style="text-align: center;"><span>{{employees?.jobFitSummaryScore?.jobFitScore ? employees?.jobFitSummaryScore?.jobFitScore.name : 'None'}}</span></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-employees>
+                            <tr>
+                                <td colspan="2">
+                                    <div class='row'>
+                                        <div class='col-7'>
+                                            <span>Department: </span> {{employees?.departmentName}}<br>
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-4'>
+                                            <span>Start Date: </span>{{employees?.startDate | date: 'dd-MMM-yyyy' ?? ''}}<br>
+                                        </div>
+                                        <div class='col-4'>
+                                            <span>Stop Date: </span>{{employees?.stopDate | date: 'dd-MMM-yyyy' ?? ''}}<br>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                   </p-table>
+                </div>
+                <div *ngIf="latestEmployments.length==0 && (authorisedFunctionList.Function[eFunctions.ViewEmployments] || authorisedFunctionList.Function[eFunctions.EditWorker])">
+                    No latest employment to display
+                </div>
+                <div *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewEmployments] && !authorisedFunctionList.Function[eFunctions.EditWorker])">
+                    Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+                </div>
+              </div>
+              <div class='overview mt-2'>
+                  <span class='heading-3'>{{'Worker Information'}}</span>
+                  <div class="mt-2">
+                        <p-tabView>
+                            <p-tabPanel header="Home Details">
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                            <span class="worker-detail-value" >
+                                                {{worker?.homeAddress?.line1 ?? ""}}
+                                            </span>
+
+                                    </div>
+                                    <div class='col'>
+                                        <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                            <span class="worker-detail-value">
+                                                {{worker?.homeAddress?.postcode ?? ""}}
+                                            </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.homeAddress?.line2 ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.CITY' | translate}}</span><br>
+                                        <span class="worker-detail-value">{{worker?.homeAddress?.city ?? ""}}</span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.STATE' | translate}}</span><br>
+                                        <span class="worker-detail-value">{{worker?.homeAddress?.state ?? ""}}</span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                        <span class="worker-detail-value">{{worker?.homeAddress?.country ?? ""}}</span>
+                                    </div>
+                                </div>
+                            </p-tabPanel>
+                            <p-tabPanel header="Mail Details">
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.line1 ?? ""}}
+                                        </span>
+
+                                    </div>
+                                    <div class='col'>
+                                        <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.postcode ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.line2 ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.CITY' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.city ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.STATE' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.state ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.mailAddress?.country ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </p-tabPanel>
+                            <p-tabPanel header="Work Details">
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.workAddress?.line1 ?? ""}}
+                                        </span>
+                                    </div>
+                                    <div class='col'>
+                                        <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.workAddress?.postcode ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.workAddress?.line2 ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.CITY' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.workAddress?.city ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.STATE' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                            {{worker?.workAddress?.state ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                        <span class="worker-detail-value">
+                                           {{worker?.workAddress?.country ?? ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </p-tabPanel>
+                    </p-tabView>
+                </div>
+              </div>
+
+              <div class='gallery mt-2'>
+                <span class='heading-3'>{{'TASKDETAILS.GALLERYLABEL' | translate}}</span>
+                <div class='row' *ngIf="(authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                    <p-galleria #galleria [value]="gallery" [(activeIndex)]="activeIndex" [numVisible]="5" [containerStyle]="{'width':'100%', 'margin-top':'5px'}"  [showThumbnails]="showThumbnails"
+                    [showItemNavigators]="true" [showItemNavigatorsOnHover]="true" [circular]="true" [autoPlay]="true" [transitionInterval]="3000">
+                    <ng-template pTemplate="item" let-item>
+                      <div style="min-width: 250px; min-height: 250px; text-align: center;"><a [routerLink]="" (click)="downloadAttachment(item?.id, item?.contentType)"><img src="{{ 'data:image/jpeg;base64,' + item.image}}" /></a></div>
+                    </ng-template>
+                    <ng-template pTemplate="thumbnail" let-item>
+                        <div class="p-grid p-nogutter p-justify-center">
+                            <img [src]="item.thumbnailImageSrc" />
+                        </div>
+                    </ng-template>
+                 </p-galleria>
+                </div>
+                <div class="mt-3" *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewAttachments])">
+                    <p>Your current security setting does not give you access to this information.  Please check with your Administrator for access.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+                <div class='analysis'>
+                    <span class='heading-3'>{{'Worker vs body age'}}</span>
+                    <div class="coming-soon">
+                        <span class='heading-3'>Coming Soon</span>
+                        </div>
+                </div>
+                <div class='notes mt-2'>
+                    <span class='heading-3 mb-2'>{{'WORKERDETAILS.NOTESLABEL' | translate}}</span>
+                    <span *ngIf="(authorisedFunctionList.Function[eFunctions.ViewNotes])">
+                        <ul class='mt-2 notes-ul' *ngFor="let notes of workerNotes">
+                            <li>
+                                <div class="note-div">
+                                    <span class="mr-2">{{notes.entryDateField | date: 'dd-MMM-yyyy'}}</span>-
+                                    <span class="ml-2 notes-list" innerHtml={{notes.noteField}}></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </span>
+                    <span *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewNotes])">
+                        Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+                    </span>
+                </div>
+                <div class='site mt-2'>
+                    <span class='heading-3 mb-2'>{{'Flags'}}</span>
+                    <div *ngIf='selectedFlagTree.length > 0 && authorisedFunctionList.Function[eFunctions.ViewFlags]'>
+                        <p-tree [value]="selectedFlagTree"></p-tree>
+                    </div>
+                    <span *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewFlags])">
+                        Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+                    </span>
+                </div>
+                <div class='flags mt-2'>
+                    <span class='heading-3 mb-2'>{{'Groups'}}</span>
+                    <div *ngIf='selectedGroupTree.length > 0 && authorisedFunctionList.Function[eFunctions.ViewGroups]'>
+                        <p-tree [value]="selectedGroupTree"></p-tree>
+                    </div>
+                    <span *ngIf="(!authorisedFunctionList.Function[eFunctions.ViewGroups])">
+                        Your current security setting does not give you access to this information.  Please check with your Administrator for access.
+                    </span>
+                </div>
+          </div>
+        </div>
+    </div>
+    <p-dialog header="Edit Worker" [(visible)]="editWorkerBox" [closable]="true" [modal]="true">
+        <div class="new-worker-modal">
+            <div class="col-12">
+                <div class='section'>
+                    <div class="row">
+                        <div class='row'>
+                            <div class='col-12'>
+                                <b>{{'WORKER.WORKERDETAILSHEADER' | translate}}</b>
+                            </div>
+                        </div>
+                        <div class='col-10'>
+                            <div class='row'>
+                                <div class='col-4'>
+                                    <span>{{'WORKER.EMPLOYEEID' | translate}}</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.employeeID" pInputText class="w-75" />
+                                </div>
+                                <div class='col-3'>
+                                    <span>{{'WORKER.FIRSTNAME' | translate}} *</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.firstName" pInputText class="w-100" />
+                                </div>
+                                <div class='col-3'>
+                                    <span >{{'WORKER.LASTNAME' | translate}} *</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.lastName" pInputText  class="w-100"/>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-4'>
+                                    <span class='mr-2'>{{'WORKER.DATEOFBIRTH' | translate}} *</span><span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                                    <p-calendar placeholder="DD-MMM-YYYY" [inputStyle]="{'width':'145px'}" appendTo="body" dateFormat="dd-M-yy" class='mr-2' [(ngModel)]="dob" [showIcon]="true" (onSelect)="onDobChange(true)" (onInput)="onDobChange(true)" [monthNavigator]="true" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+
+                                </div>
+                                <div class='col-3'>
+                                    <span>{{'WORKER.GENDER' | translate}} *</span><br>
+                                    <p-dropdown optionLabel="name" optionValue="code" [options]="biologicalSexList" [(ngModel)]="sex" (onChange)="setBiologicalSexField($event)"  class='w-100'></p-dropdown>
+                                </div>
+                                <div class='col-3'>
+                                    <span>{{'Gender' | translate}}</span><br>
+                                    <p-dropdown optionLabel="name" optionValue="code" [options]="genders" [(ngModel)]="gender" (onChange)="setGenderField($event)"  class='w-100'></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-2'>
+                            <span>{{'WORKER.PERSONALPHOTOHEADER' | translate}}</span><br>
+                            <img src="../../../assets/img2.png"  class='personal-photo'>
+                        </div>
+                    </div>
+                </div>
+                <div class='section mt-2'>
+                    <div class="row">
+                        <div class='row'>
+                            <div class='col-12'>
+                                <b>{{'WORKER.EMPLOYMENTSHEADER' | translate}}</b>
+                            </div>
+                        </div>
+                        <div class='col-12'>
+                            <div class="row">
+                                <div class='col-4'>
+                                    <span>Job *</span><br>
+                                    <p-dropdown [options]="jobList" class='job-list' appendTo="body" optionLabel="name"  optionValue="id" [filter]="true" filterBy="name" (onChange)="setJob($event)" [(ngModel)]="employee.jobId" placeholder="Select a Job"></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <span>Department *</span><br>
+                                <div *ngIf="isLoading">
+                                    <p-progressSpinner></p-progressSpinner>
+                                </div>
+                                <p-tree *ngIf="!isLoading" [value]='selectedDeptTree' selectionMode="single">
+                                    <ng-template pTemplate="default" let-dept>
+                                        <p-checkbox *ngIf="dept.typeId == 8 && dept.selectable == true" [binary]="true"  (onChange)="selectedDeptChange($event , dept)" [value]="dept.partialSelected" [(ngModel)]="dept.partialSelected"></p-checkbox>
+                                        <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>
+                                        {{dept.label}}
+                                    </ng-template>
+                                </p-tree>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span>Roster</span><br>
+                                    <p-dropdown [options]="roster" class='roster' optionLabel="label" optionValue="id" [filter]="true" filterBy="label" placeholder="Select Roster"  [(ngModel)]="employee.rosterId" ></p-dropdown>
+                                </div>
+                                <div class="col">
+                                    <span>Type</span><br>
+                                    <p-dropdown [options]="employmentType" class='job-list' optionLabel="name" optionValue="id"  [filter]="true" filterBy="name"  [(ngModel)]="employee.employmentTypeId" ></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span class="mr-2">Start Date *</span> <span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" [(ngModel)]="employee.startDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="1950:2030"  [showIcon]="true"></p-calendar>
+                                </div>
+                                <div class="col">
+                                    <span class="mr-2">Stop Date</span><span class="sample-dob">e.g. 01-Jul-2000</span><br>
+                                    <p-calendar placeholder="DD-MMM-YYYY" dateFormat="dd-M-yy" appendTo="body" [(ngModel)]="employee.stopDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="1950:2030"  [showIcon]="true"></p-calendar>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span>JobFit Score</span><br>
+                                    <p-dropdown [options]="jobFitScores" placeholder="Select JobFit Score" (onChange)="setJobScore($event)" class='job-list' appendTo="body" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"  [(ngModel)]="employee.jobFitScoreId" ></p-dropdown>
+                                </div>
+                                <div class="col">
+                                    <span>Result</span><br>
+                                    <p-dropdown [options]="jobFitResults" placeholder="Select Result" class='job-list' optionLabel="result" optionValue="id" appendTo="body" [(ngModel)]="employee.jobFitResultId" [filter]="true" filterBy="result"   ></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='section mt-2'>
+                    <div class="row">
+                        <div class='row'>
+                            <div class='col-12'>
+                                <b>{{'WORKER.CONTACTDETAILSHEADER' | translate}}</b>
+                            </div>
+                        </div>
+                        <div class='col-12'>
+                            <div class='row'>
+                                <div class='col-3'>
+                                    <span>{{'WORKER.HOMEPHONE' | translate}}</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.homePhone" pInputText class="w-100" />
+                                </div>
+                                <div class='col-3'>
+                                    <span>{{'WORKER.WORKPHONE' | translate}}</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.workPhone" pInputText class="w-100" />
+                                </div>
+                                <div class='col-3'>
+                                    <span>{{'WORKER.MOBILEPHONE' | translate}}</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.mobileNo" pInputText  class="w-100"/>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-4'>
+                                    <span>{{'WORKER.EMAILADDRESS' | translate}}</span><br>
+                                    <input type="text" [(ngModel)]="selectedWorker.emailAddress" pInputText  class="w-100"/>
+                                </div>
+                                <div class='col-8'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='section mt-2'>
+                    <div class="row">
+                        <div class='col-12'>
+                            <div class='row'>
+                                <p-tabView>
+                                    <p-tabPanel header="Home Details">
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.line1" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.line2" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.CITY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.city" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.STATE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.state" pInputText  class="w-100"/>
+                                            </div>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.postcode" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.homeAddress.country" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                    </p-tabPanel>
+                                    <p-tabPanel header="Mail Details">
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span class='mr-2'>{{'WORKER.USEHOMEADDRESS' | translate}}</span>
+                                                <p-checkbox [binary]="true" [(ngModel)]="useHomeAddress" inputId="binary"></p-checkbox>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.line1: selectedWorker.mailAddress.line1" pInputText  class="w-100"  [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.line2: selectedWorker.mailAddress.line2" pInputText  class="w-100" [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.CITY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.city: selectedWorker.mailAddress.city" pInputText  class="w-100" [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.STATE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.state: selectedWorker.mailAddress.state" pInputText  class="w-100" [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.postcode: selectedWorker.mailAddress.postcode" pInputText  class="w-100" [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="useHomeAddress == true ? selectedWorker.homeAddress.country: selectedWorker.mailAddress.country" pInputText  class="w-100" [disabled]="useHomeAddress == true"/>
+                                            </div>
+                                        </div>
+                                    </p-tabPanel>
+                                    <p-tabPanel header="Work Details">
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE1' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.line1" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.LINE2' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.line2" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.CITY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.city" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.STATE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.state" pInputText  class="w-100"/>
+                                            </div>
+                                            <div class='col-4'>
+                                                <span>{{'WORKER.POSTCODE' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.postcode" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-8'>
+                                                <span>{{'WORKER.COUNTRY' | translate}}</span><br>
+                                                <input type="text" [(ngModel)]="selectedWorker.workAddress.country" pInputText  class="w-100"/>
+                                            </div>
+                                        </div>
+                                    </p-tabPanel>
+                                </p-tabView>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+            <div class='d-flex mt-5'>
+                <div class='cancel-worker' style="width:150px;"><p-button label="Cancel" (onClick)="editWorkerBox = false"></p-button>
+                </div>
+                <div class='w-100'></div>
+                <div class='new'><p-button label="Submit" (onClick)="saveWorker(selectedWorker)"></p-button>
+                </div>
+            </div>
+        </div>
+        <div class="overlay w-100" *ngIf="!detailsSaved" >
+            <div class='loader'>
+                <p-progressSpinner></p-progressSpinner>
+                <br />
+                <span class="saved"> Saving...</span>
+            </div>
+        </div>
+    </p-dialog>
+    <p-dialog header="Validation" [(visible)]="displayError" [style]="{width: '450px'}" [modal]="true">
+        <p>{{errorMessage}}</p>
+        <ng-template pTemplate="footer">
+            <div class='buttons-footer d-flex mt-5'>
+                <div class='cancel-worker ml-2'></div>
+                <div class='w-100'></div>
+                <div class='submit-worker'><p-button label="OK" (onClick)="displayError = false"></p-button></div>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <p-dialog header="Information" [(visible)]="displayInfo" [style]="{width: '450px'}" [modal]="true">
+        <p>{{infoMessage}}</p>
+        <ng-template pTemplate="footer">
+            <div class='buttons-footer d-flex mt-5'>
+                <div class='w-100'></div>
+                <div class='submit-worker'><p-button label="OK" (onClick)="navigateToWorkerList()"></p-button></div>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <p-dialog header="Archive Worker" [(visible)]="showArchiveWorker" [style]="{width: '450px'}" [modal]="true">
+        <p>Are you sure you want to archive this Worker?</p>
+        <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-worker ml-2'><p-button label="Cancel" (onClick)='showArchiveWorker = false'></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-worker'><p-button label="Confirm" (onClick)="archive()"></p-button></div>
+        </div>
+        <div class="overlay w-100" *ngIf="isArchiving" >
+            <div class='archive-loader'>
+                <p-progressSpinner></p-progressSpinner>
+                <br />
+                <span class="archived"> Archiving...</span>
+            </div>
+        </div>
+    </p-dialog>
+    <div id="myNav" class="overlay w-100" *ngIf="!workerDetailsLoaded" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+    </div>

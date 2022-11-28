@@ -1,0 +1,5 @@
+{
+    "ServiceUrl": "https://localhost:44330/",
+    "AuthUrl": "https://hubdev.azurewebsites.net",
+    "ApplicationName": "client2"
+}

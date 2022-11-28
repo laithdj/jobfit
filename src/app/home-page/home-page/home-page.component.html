@@ -1,0 +1,157 @@
+
+<div *ngIf="(isAuthenticated | async)" class='home-page mt-4'>
+<div class="logo">
+    <img *ngIf="useDefaultLogo" src="../../../assets/logo.png" class="img-logo" />
+    <img *ngIf="companyLogo && companyLogo.length > 0 && !useDefaultLogo" src="{{ 'data:image/jpeg;base64,' + companyLogo}}" class="img-logo" />
+   <!--<img *ngIf="companyLogo.length < 1" src="{{ 'data:image/jpeg;base64,' + defaultLogo}}" class="img-logo"  />  -->
+</div>
+<div class="heading" *ngIf="userLoaded">
+  <img src="../../../assets/wave.png"/>  Hello {{user.firstName}} Welcome to the JobFit System
+  <!--<img src="../../../assets/wave.png"/>  Hello Jenny Welcome to the JobFit System -->
+</div>
+<div class="quick-search row">
+    <div >
+        <i class="pi pi-search icon-custom"></i>
+        <p-autoComplete [(ngModel)]="selectedOption"  class="quick-search-input" placeholder="Which record would you like?" [delay]="300" [showEmptyMessage]="false" [suggestions]="filteredOptions" (completeMethod)="filterOption($event)" field="name" [minLength]="1">
+            <ng-template pTemplate="default" let-option>
+                <div>
+                    <div style='padding:5px;'>
+                        <i *ngIf="option.type === 'Providers'" class="fa fa-user-plus mr-3"></i>
+                        <i *ngIf="option.type === 'Workers'" class="fas fa-user-cog mr-3"></i>
+                        <i *ngIf="option.type === 'Tasks'" class="far fa-clipboard mr-3"></i>
+                        <i *ngIf="option.type === 'Jobs'" class="fas fa-clipboard-list mr-3"></i>
+                        {{option.name}}
+                    </div>
+                </div>
+            </ng-template>
+        </p-autoComplete>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="d-flex justify-content-center">
+        <p-button label="Go To" class="go-to" (onClick)="goTo()"></p-button>
+        <p-button label="Report" class="report ml-3" (onClick)="goToReport()"></p-button>
+    </div>
+</div>
+<!--
+<div class="heading margin-top-10" style="text-align:center">
+    COMING SOON
+</div>
+<div class="row mt-2 ml-3">
+    <div class="col padding">
+        <img src="../../../assets/Picture1.png" width="'100%'" height="250"/>
+    </div>
+    <div class="col padding">
+        <img src="../../../assets/Picture2.png" width="'100%'" height="250" />
+    </div>
+    <div class="col padding">
+        <img src="../../../assets/Picture3.png" width="'100%'" height="250" />
+    </div>
+    <div class="col padding">
+        <img src="../../../assets/Picture4.png"  width="'100%'" height="250"/>
+    </div>
+</div>
+-->
+<div class="middle mrg-5" style="text-align:center">
+    <h1 style="color:#20bcd3; font-size:27px">COMING SOON</h1>
+    <hr>
+  </div>
+<div class="row ">
+    <div class="col-8">
+        <!--
+        <div class='container actions' >
+            <div class='vector'>
+                <div class="parent-1">
+                    <div class="text">
+                        <span><a [routerLink]="['../tasks']">TASKS</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='vector-2'>
+                <div class="parent-1">
+                    <div class="text">
+                        <span><a [routerLink]="['../risks']">DO RISK SEARCH</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='main-vector'>
+                <div class="main-tile">
+                    <div class="main-text">
+                        <span class='jobfit-title'><a  [routerLink]="['../job-fit-criteria/worker-employment']">PERFORM JOBFIT</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='vector-3'>
+                <div class="parent-1">
+                    <div class="text">
+                        <span><a [routerLink]="['../reports/job']">JOB REPORT</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='vector-4'>
+                <div class="parent">
+                    <div class="text">
+                        <span><a [routerLink]="['../workers']">WORKERS</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='vector-5'>
+                <div class="parent">
+                    <div class="text">
+                        <span><a [routerLink]="['../reports/worker']">WORKER REPORT</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='vector-6'>
+                <div class="parent">
+                    <div class="text">
+                        <span><a [routerLink]="['../workers']">PEFA SCORE</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class='background-vector'>
+                <div class="background-tile">
+                    <div class="text">
+                    </div>
+                </div>
+            </div>
+            <div class='background-vector-2'>
+                <div class="background-tile">
+                    <div class="text">
+                    </div>
+                </div>
+            </div>
+            <div class='background-vector-3'>
+                <div class="background-tile">
+                    <div class="text">
+                    </div>
+                </div>
+            </div>
+            <div class='background-vector-4'>
+                <div class="background-tile">
+                    <div class="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        <img src="../../../assets/diamonds.jpg" width="'100%'" height="350" style="margin-left:2%" />
+    </div>
+    <div class="col-4">
+        <div >
+            <img src="../../../assets/Picture5.png" width="'100%'" height="360" style="margin-left:2%" />
+        </div>
+    </div>
+</div>
+
+</div>
+<p-dialog header="No Match" [(visible)]="error" [modal]="true">
+    <p>{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <div class='buttons-footer d-flex mt-5'>
+            <div class='cancel-job ml-2'></div>
+            <div class='w-100'></div>
+            <div class='ok'><p-button label="OK" (onClick)="error = false"></p-button></div>
+        </div>
+    </ng-template>
+</p-dialog>

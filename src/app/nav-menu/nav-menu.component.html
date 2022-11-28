@@ -1,0 +1,64 @@
+<div class="menu-bar">
+    <p-menubar [model]="items" >
+        <div>
+           <img src="../../assets/poweredby.png"  class="p-mr-2 powered" [routerLink]="['']">
+        </div>
+        <div>
+            <img src="../../assets/jf_logo.png"  class="p-mr-2 logo" [routerLink]="['']">
+        </div>
+        <div >
+            <!--
+                        <p-autoComplete [(ngModel)]="selectedOption" class="quick-search-input" [showEmptyMessage]="false" [suggestions]="filteredOptions" (completeMethod)="filterOption($event)" field="name" [minLength]="1">
+                <ng-template pTemplate="default" let-option>
+                    <div>
+                        <div style='padding:5px;'>
+                            <i *ngIf="option.type === 'Provider'" class="fas fa-user-plus mr-3"></i>
+                            <i *ngIf="option.type === 'Worker'" class="fas fa-user-cog mr-3"></i>
+                            <i *ngIf="option.type === 'Tasks'" class="far fa-clipboard mr-3"></i>
+                            <i *ngIf="option.type === 'Jobs'" class="fas fa-clipboard-list mr-3"></i>
+                            {{option.name}}
+                        </div>
+                    </div>
+                </ng-template>
+            </p-autoComplete>
+
+            <img src="../../assets/search.png"  class="search-icon">
+            <img src="../../assets/Bell.png"  class="notifications-icon">
+
+            <p-dropdown  placeholder="English" [options]="languages" optionLabel="name" [showClear]="true" class="lang" (onChange)='changeLang($event)'></p-dropdown>-->
+            <a href="#" onclick="return false;" (click)="showAdminPopUp = true" class="admin-icon"><li class="pi pi-cog f-20"></li></a>
+            <div class="dropdown">
+                <img src="../../assets/img2.png" height="35" width="35" class="p-mr-2 profile-logo" (click)="imageClick()">
+                <div class="dropdown-content" *ngIf='showDropdown'>
+                    <app-login-menu
+                    (clickOutside)="closeDropdown()"></app-login-menu>
+                    <a href="#" onclick="return false;" (click)="showAboutPopUp = true" class="dropdown-item">About</a>
+                </div>
+
+            </div>
+        </div>
+    </p-menubar>
+</div>
+<p-dialog header="Work In Progress" [(visible)]="showAdminPopUp" [style]="{width: '552px'}" [modal]="true">
+    <p>This feature is still under development.  We are redirecting you to another page.  Sorry, but you will need to login again.</p>
+    <div class='buttons-footer d-flex mt-5'>
+    <div class='cancel ml-2'><p-button label="Go Back, I changed my mind" class='actions' (onClick)='showAdminPopUp = false'></p-button></div>
+    <div class='w-100'></div>
+    <div class='submit'><p-button label="Cool thanks, Continue" class='actions' (onClick)="redirectToAdmin()"></p-button></div>
+    </div>
+</p-dialog>
+<p-dialog header="About" [(visible)]="showAboutPopUp" [style]="{width: '552px'}" [modal]="true">
+  <textarea style="height: 55px; width: 500px; border: none; background-color: transparent;font-size: 8pt; text-align: center;" disabled="disabled">{{aboutText}}</textarea>
+  <div class='submit' style="text-align: center;"><p-button label="Copy to Clipboard" class='actions' (onClick)="copyToClipboard()"></p-button></div>
+</p-dialog>
+<p-dialog header="Timeout" [(visible)]="showTimeoutPopUp"  [modal]="true" [closable]="false">
+    <p *ngIf="currentCountdownTimeInSeconds > 0">Are you still there? If not we will have to log you out in {{currentCountdownTimeInSeconds}} seconds.</p>
+    <p *ngIf="currentCountdownTimeInSeconds <= 0">Your session has expired.</p>
+    <div class='buttons-footer d-flex mt-5' style="justify-content: center;">
+      <div class='submit'>
+        <!--<a  [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout"><p-button label="Cool Thanks" class='actions' ></p-button></a> -->
+        <p-button *ngIf="currentCountdownTimeInSeconds > 0" label="I'm still here" class='actions' (onClick)="startSilentRenewToken()"></p-button>
+        <p-button *ngIf="currentCountdownTimeInSeconds <= 0" label="Log In" class='actions' (onClick)="reloadPage()"></p-button>
+      </div>
+    </div>
+</p-dialog>

@@ -1,0 +1,13 @@
+
+:host ::ng-deep  .input-table .p-inputnumber-input  {
+    width: 100%;
+}
+
+@media screen and (max-width: 1600px){
+    ::ng-deep .p-inputnumber-input {
+        width: 100px;
+    }
+}
+.center {
+    text-align: center !important;
+  }

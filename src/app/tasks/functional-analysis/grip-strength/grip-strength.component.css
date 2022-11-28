@@ -1,0 +1,6 @@
+:host ::ng-deep  .input-table .p-inputnumber-input  {
+    width: 100%;
+}
+.center {
+    text-align: center !important;
+  }

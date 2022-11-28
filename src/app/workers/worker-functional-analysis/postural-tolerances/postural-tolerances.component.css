@@ -1,0 +1,30 @@
+
+
+:host ::ng-deep  .p-datatable .p-datatable-thead  > tr > .title-heading  {
+    font-family: "BentonSans-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    line-height: 12px;
+    /* Space Cadet */
+    color: #20BCD3 !important;
+}
+
+:host ::ng-deep  .p-datatable .p-datatable-thead  > tr > .header  {
+    text-align: center;
+    padding: 0 !important;
+
+}
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > .radio {
+    text-align: center;
+
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+    border-color: #20BCD3;
+    background: #20BCD3;
+    border: 10px solid #20BCD3;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0 !important;
+}

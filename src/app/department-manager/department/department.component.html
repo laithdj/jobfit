@@ -1,0 +1,327 @@
+<p-breadcrumb [model]="(breadCrumb$ | async)" ></p-breadcrumb>
+<div class="heading">Department Manager</div>
+<div class="main-container">
+    <div class="tree-container bg-white">
+        <p-tree *ngIf="isDeptLoaded" [value]="deptList" selectionMode="single" [(selection)]="selectedDept" (onNodeSelect)="onTreeNodeSelect($event)" [style]="{height: 'calc(100vh - 240px);'}">
+            <ng-template pTemplate="default" let-dept>
+                <span *ngIf="dept.id > 0">
+                    <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>{{dept.label}}
+                </span>
+                <span *ngIf="dept.id == -1" class="unassigned-jobs">
+                    <i class="pi pi-envelope mr-2"></i>{{dept.label}}
+                </span>
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class="content-container bg-white">
+        <div *ngIf="isDeptLoaded && selectedDept.id == 0" class="select-msg">
+            <span>Please select a <i class="pi pi-briefcase"></i> department or a <i class="fas fa-clipboard-list"></i> job from the side menu.</span>
+        </div>
+        <p-tabView *ngIf="isDeptLoaded && selectedDept.id != 0" [activeIndex]="tabSelected" (onChange)="onTabSelect($event)">
+
+            <p-tabPanel header="Jobs" [disabled]="selectedDept.typeId !== DEPARTMENT_TYPE_ID">
+                <div class="heading-2">Job List (assigned to this Department)</div>
+                <div class="line"></div>
+                <div>
+                    <p-button *ngIf="selectedDept.id > 0 && selectedDept.typeId === DEPARTMENT_TYPE_ID" class="addTo-dept mr-2" label="Add Job/s To Department" (onClick)="onAdd('job', 'Add Job/s To Department')"></p-button>
+                    <p-button  class="refresh-grid" label="Refresh Grid" (onClick)="refreshGrid()"></p-button>
+                </div>
+                <div class='mt-2'>
+                    <p-table dataKey="id" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+                    [value]='tableItems' [(selection)]="selectedTableItem"
+                    [(first)]="first">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="table-checkbox-column"></th>
+                                <th class="table-name-column">Name</th>
+                                <th class="table-icon-column">Sites</th>
+                                <th class="table-icon-column">Dept</th>
+                                <th class="table-icon-column">Flags</th>
+                                <th class="table-icon-column">Groups</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-job let-expanded="expanded">
+                            <tr>
+                                <td class="table-checkbox-column"><button type="button" *ngIf="job.sites?.length > 0 || job.departments?.length > 0 || job.groups?.length > 0 || job.flags?.length > 0" pButton pRipple [pRowToggler]="job" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                                <td class="table-name-column"><a [routerLink]="" (click)="onRowClick('job', job)">{{job?.name}}</a></td>
+                                <td class="table-icon-column"><i *ngIf='job?.sites?.length > 0' class="pi pi-sitemap table-icon-column"></i></td>
+                                <td class="table-icon-column"><i *ngIf='job?.departments?.length > 0' class="pi pi-briefcase table-icon-column"></i></td>
+                                <td class="table-icon-column"><i *ngIf='job?.flags?.length > 0' class="pi pi-flag table-icon-column"></i></td>
+                                <td class="table-icon-column"><i *ngIf='job?.groups?.length > 0' class="pi pi-clone table-icon-column"></i></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-job>
+                            <tr>
+                                <td colspan="10">
+                                    <div class="p-p-3">
+                                        <div class='row mt-2 mb-2 text-wrap'  style="width: 800px;">
+                                                <div>
+                                                    <span *ngIf='job?.sites?.length > 0'>
+                                                        <span class='expand-title'>Sites:</span>
+                                                        <span *ngFor="let site of job?.sites; let i = index">
+                                                            {{site?.label}} <span *ngIf='job?.sites[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span *ngIf='job?.departments?.length > 0'>
+                                                        <span class='expand-title'>Departments:</span>
+                                                        <span *ngFor="let dept of job?.departments; let i = index">
+                                                            {{dept?.label}} <span *ngIf='job?.departments[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span *ngIf='job?.flags?.length > 0'>
+                                                        <span class='expand-title'>Flags:</span>
+                                                        <span *ngFor="let flag of job?.flags; let i = index">
+                                                            {{flag?.label}} <span *ngIf='job?.flags[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span *ngIf='job?.groups?.length > 0'>
+                                                        <span class='expand-title'>Groups:</span>
+                                                        <span *ngFor="let group of job?.groups; let i = index">
+                                                            {{group?.label}} <span *ngIf='job?.groups[i + 1]'>,</span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                   </p-table>
+                   <div class="d-flex" style="justify-content: center;" *ngIf="isJobsTabLoaded">
+                        <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+                        </p-paginator>
+                        <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Tasks" [disabled]="selectedDept.typeId == DEPARTMENT_TYPE_ID && selectedDept.id ==-1">
+                <div *ngIf="selectedDept.typeId == DEPARTMENT_TYPE_ID" class="heading-2">Task List (associated to Jobs in this Department)</div>
+                <div *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID" class="heading-2">Task List (associated to this Job)</div>
+                <div class="line"></div>
+                <div>
+                    <p-button *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID" class="addTo-btn mr-2" label="Add Task/s To Job" (onClick)="onAdd('task', 'Add Task/s To Job')"></p-button>
+                    <p-button  class="refresh-grid" label="Refresh Grid" (onClick)="refreshGrid()"></p-button>
+                </div>
+                <div class='mt-2'>
+                    <p-table dataKey="id" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+                    [value]='tableItems' [(selection)]="selectedTableItem"
+                    [(first)]="first">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="table-checkbox-column"></th>
+                                <th class="table-name-column">Name</th>
+                                <th class="table-freq-column" *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID">Frequency</th>
+                                <th class="table-icon-column">Flags</th>
+                                <th class="table-icon-column">Groups</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-task let-expanded="expanded">
+                            <tr>
+                                <td class="table-checkbox-column"><button type="button" *ngIf="task?.task?.flags?.length > 0 || task?.task?.groups?.length > 0" pButton pRipple [pRowToggler]="task" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                                <td class="table-name-column"><a [routerLink]="" (click)="onRowClick('task', task)">{{task?.task?.name}}</a></td>
+                                <td *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID" class="table-freq-column">{{task?.req?.name}}</td>
+                                <td class="table-icon-column"><i *ngIf='task?.task?.flags?.length > 0' class="pi pi-flag table-icon-column"></i></td>
+                                <td class="table-icon-column"><i *ngIf='task?.task?.groups?.length > 0' class="pi pi-clone table-icon-column"></i></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-task>
+                            <tr>
+                                <td colspan="10">
+                                    <div class="p-p-3">
+                                        <div class='row mt-2 mb-2 text-wrap'  style="width: 800px;">
+                                                <div>
+                                                    <span *ngIf='task?.task?.sites?.length > 0'>
+                                                        <span class='expand-title' >Sites:</span>
+                                                        <span *ngFor="let site of task?.task?.sites; let i = index">
+                                                            {{site?.label}} <span *ngIf='task?.task?.sites[i + 1]'>,</span>
+                                                        </span>
+                                                         <br>
+                                                    </span>
+                                                    <span  *ngIf='task?.task?.flags?.length > 0'>
+                                                        <span class='expand-title'>Flags:</span>
+                                                        <span *ngFor="let flag of task?.task?.flags; let i = index">
+                                                            {{flag?.label}} <span *ngIf='task?.task?.flags[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span class='expand-title' *ngIf='task?.task?.groups?.length > 0'>Groups:</span>
+                                                    <span *ngFor="let group of task?.task?.groups; let i = index">
+                                                        {{group?.label}} <span *ngIf='task?.task?.groups[i + 1]'>,</span>
+                                                    </span>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                   </p-table>
+                   <div class="d-flex" style="justify-content: center;" *ngIf="isTasksTabLoaded">
+                        <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+                        </p-paginator>
+                        <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Workers" [disabled]="selectedDept.typeId == DEPARTMENT_TYPE_ID && selectedDept.id ==-1">
+                <div *ngIf="selectedDept.typeId == DEPARTMENT_TYPE_ID" class="heading-2">Worker List (with active Pre/Employment in this Department)</div>
+                <div *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID" class="heading-2">Worker List (with active Pre/Employment in this Job)</div>
+                <div class="line"></div>
+                <div>
+                    <p-button *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID" class="addTo-btn mr-2" label="Add Worker/s To Job" (onClick)="onAdd('worker', 'Add Worker/s To Job')"></p-button>
+                    <p-button  class="refresh-grid" label="Refresh Grid" (onClick)="refreshGrid()"></p-button>
+                </div>
+                <div class='mt-2' *ngIf="selectedDept.typeId !== DEPARTMENT_TYPE_ID">
+                    <p-table dataKey="id" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+                    [value]='tableItems' [(selection)]="selectedTableItem"
+                    [(first)]="first">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="table-checkbox-column"></th>
+                                <th class="table-icon-column" *ngIf='selectedDept.typeId !== DEPARTMENT_TYPE_ID'></th>
+                                <th class="table-emp-column">Employee Id</th>
+                                <th class="table-name-column">Name</th>
+                                <th class="table-icon-column">Flags</th>
+                                <th class="table-icon-column">Groups</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-worker let-expanded="expanded">
+                            <tr>
+                                <td class="table-checkbox-column"><button type="button" *ngIf="worker?.worker?.flags?.length > 0 || worker?.worker?.groups?.length > 0" pButton pRipple [pRowToggler]="worker" class="p-button-text p-button-rounded p-button-plain table-checkbox-column" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                                <td class="table-icon-column">
+                                    <i *ngIf='worker?.employmentTypeId == 2' class="pi pi-folder-open table-icon-column" title="Pre-Employment"></i>
+                                    <i *ngIf='worker?.employmentTypeId != 2' class="pi pi-folder table-icon-column" title="Employment"></i>
+                                </td>
+                                <td class="table-emp-column">{{worker?.worker?.employeeID}}</td>
+                                <td class="table-name-column"><a [routerLink]="" (click)="onRowClick('worker', worker)">{{worker?.lastName}}, {{worker?.firstName}}</a></td>
+                                <td class="table-icon-column">
+                                    <i *ngIf='worker?.worker?.flags?.length > 0' class="pi pi-flag table-icon-column"></i>
+                                </td>
+                                <td class="table-icon-column">
+                                    <i *ngIf='worker?.worker?.groups?.length > 0' class="pi pi-clone table-icon-column"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-worker>
+                            <tr>
+                                <td colspan="10">
+                                    <div class="p-p-3">
+                                        <div class='row mt-2 mb-2 text-wrap'  style="width: 800px;">
+                                                <div>
+                                                    <span *ngIf='worker?.worker?.flags?.length > 0'>
+                                                        <span class='expand-title'>Flags:</span>
+                                                        <span *ngFor="let flag of worker?.worker?.flags; let i = index">
+                                                            {{flag?.label}} <span *ngIf='worker?.worker?.flags[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span *ngIf='worker?.worker?.groups?.length > 0'>
+                                                        <span class='expand-title'>Groups:</span>
+                                                        <span *ngFor="let group of worker?.worker?.groups; let i = index">
+                                                            {{group?.label}} <span *ngIf='worker?.worker?.groups[i + 1]'>,</span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                   </p-table>
+                   <div class="d-flex" style="justify-content: center;" *ngIf="isWorkersTabLoaded">
+                    <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+                    </p-paginator>
+                    <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+                </div>
+                </div>
+                <div class='mt-2' *ngIf="selectedDept.typeId == DEPARTMENT_TYPE_ID">
+                    <p-table dataKey="workerId" responsiveLayout="scroll" [rowHover]="true" [showCurrentPageReport]="false"
+                    [value]='tableItems' [(selection)]="selectedTableItem"
+                    [(first)]="first">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="table-checkbox-column"></th>
+                                <th class="table-emp-column">Employee Id</th>
+                                <th class="table-name-column">Name</th>
+                                <th class="table-icon-column">Flags</th>
+                                <th class="table-icon-column">Groups</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-worker let-expanded="expanded">
+                            <tr>
+                                <td class="table-checkbox-column"><button type="button" *ngIf="worker?.flags?.length > 0 || worker?.groups?.length > 0" pButton pRipple [pRowToggler]="worker" class="p-button-text p-button-rounded p-button-plain table-checkbox-column" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button></td>
+                                <td class="table-emp-column">{{worker?.employeeID}}</td>
+                                <td class="table-name-column"><a [routerLink]="" (click)="onRowClick('worker', worker)">{{worker?.lastName}}, {{worker?.firstName}}</a></td>
+                                <td class="table-icon-column">
+                                    <i *ngIf='worker?.flags?.length > 0' class="pi pi-flag table-icon-column"></i>
+                                </td>
+                                <td class="table-icon-column">
+                                    <i *ngIf='worker?.groups?.length > 0' class="pi pi-clone table-icon-column"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-worker>
+                            <tr>
+                                <td colspan="10">
+                                    <div class="p-p-3">
+                                        <div class='row mt-2 mb-2 text-wrap'  style="width: 800px;">
+                                                <div>
+                                                    <span *ngIf='worker?.flags?.length > 0'>
+                                                        <span class='expand-title'>Flags:</span>
+                                                        <span *ngFor="let flag of worker?.flags; let i = index">
+                                                            {{flag?.label}} <span *ngIf='worker?.flags[i + 1]'>,</span>
+                                                        </span>
+                                                        <br>
+                                                    </span>
+                                                    <span *ngIf='worker?.groups?.length > 0'>
+                                                        <span class='expand-title'>Groups:</span>
+                                                        <span *ngFor="let group of worker?.groups; let i = index">
+                                                            {{group?.label}} <span *ngIf='worker?.groups[i + 1]'>,</span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                   </p-table>
+                   <div class="d-flex" style="justify-content: center;" *ngIf="isWorkersTabLoaded">
+                    <p-paginator [rows]="rowCount" [first]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"  [totalRecords]="totalCount" (onPageChange)="onPageChange($event)">
+                    </p-paginator>
+                    <p-dropdown (onChange)="setRows($event)" [options]="rowOptions" class="mt-2 ml-2" [(ngModel)]="rowCount"></p-dropdown>
+                </div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>
+
+<app-modal-task
+    *ngIf="entityType === 'task'"
+    [(showModal)]="showModal"
+    [selectedDept]="selectedDept"
+    [modalHeader]="modalHeader"
+    (onSave)="refreshTableAfterSave()"
+></app-modal-task>
+<app-modal-job
+    *ngIf="entityType === 'job'"
+    [(showModal)]="showModal"
+    [selectedDept]="selectedDept"
+    [modalHeader]="modalHeader"
+    (onSaveJobs)="onSaveJobs($event)"
+></app-modal-job>
+<app-modal-worker
+    *ngIf="entityType === 'worker'"
+    [(showModal)]="showModal"
+    [selectedDept]="selectedDept"
+    [modalHeader]="modalHeader"
+    (onSave)="refreshTableAfterSave()"
+></app-modal-worker>
+<div id="myNav" class="overlay w-100" *ngIf="!isDeptLoaded || !isJobsTabLoaded || !isTasksTabLoaded || !isWorkersTabLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

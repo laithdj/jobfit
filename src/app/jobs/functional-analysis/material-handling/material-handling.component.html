@@ -1,0 +1,93 @@
+<div class='row'>
+    <div class='col'>
+        <p-table [value]="materialHandlingGroups" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Tested</th>
+                    <th style='width:5rem'>Occasional ({{customerSettings?.measurementType?.units}})</th>
+                    <th style='width:5rem'>Frequent ({{customerSettings?.measurementType?.units}})</th>
+                    <th style='width:5rem'>Continuous ({{customerSettings?.measurementType?.units}})</th>
+                    <th style='width:8rem'>Awkward load</th>
+                    <th style='width:8rem'>Forceful Push</th>
+                    <th style='width:8rem'>Forceful Pull</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-mh let-ri="rowIndex">
+                <tr>
+                    <td>
+                        <jobs-material-checkbox
+                        [type]="'enable'"
+                        (onChange)="onValueChange($event, 'enable')"
+                        [editMode]="false"
+                        [materialHandlingFreqId]="1"
+                        [materialHandlingItemId]="mh.id"
+                        [materialId]="mh.id"></jobs-material-checkbox>
+                        {{mh.name}}
+                    </td>
+                    <td>
+                        <div class='d-flex'>
+                            <jobs-material-result
+                             (materialHandlingOutput)="onValueChange($event)"
+                             [materialId]="mh.id"
+                             [editMode]="false"
+                             [materialHandlingFreqId]="1"
+                             [units]="customerSettings?.measurementType?.units"
+                             [materialHandlingItemId]="mh.id"></jobs-material-result>
+                        </div>
+                    </td>
+                    <td>
+                        <div class='d-flex'>
+                            <jobs-material-result
+                             [materialId]="mh.id"
+                             [disabled]="!enableRow"
+                             (materialHandlingOutput)="onValueChange($event)"
+                             [editMode]="false"
+                             [materialHandlingFreqId]="2"
+                             [units]="customerSettings?.measurementType?.units"
+                             [materialHandlingItemId]="mh.id"></jobs-material-result>
+                        </div>
+                    </td>
+                    <td>
+                        <div class='d-flex'>
+                            <jobs-material-result
+                             [materialId]="mh.id"
+                             [disabled]="!enableRow"
+                             (materialHandlingOutput)="onValueChange($event)"
+                             [editMode]="false"
+                             [materialHandlingFreqId]="3"
+                             [units]="customerSettings?.measurementType?.units"
+                             [materialHandlingItemId]="mh.id"></jobs-material-result>
+                        </div>
+                    </td>
+                    <td>
+                        <jobs-material-checkbox
+                        [type]="'awkwardLoad'"
+                        (onChange)="onValueChange($event, 'awkwardLoad')"
+                        [editMode]="false"
+                        [materialHandlingFreqId]="1"
+                        [materialHandlingItemId]="mh.id"
+                        [materialId]="mh.id"></jobs-material-checkbox>
+                    </td>
+                    <td>
+                        <jobs-material-checkbox
+                        [type]="'forceFullPush'"
+                        [editMode]="false"
+                        [materialHandlingFreqId]="2"
+                        [materialHandlingItemId]="mh.id"
+                        (onChange)="onValueChange($event, 'forceFullPush')"
+                        [materialId]="mh.id"></jobs-material-checkbox>
+                    </td>
+                    <td>
+                        <jobs-material-checkbox
+                        [type]="'forceFullPull'"
+                        [editMode]="false"
+                        [materialHandlingFreqId]="3"
+                        [materialHandlingItemId]="mh.id"
+                        (onChange)="onValueChange($event, 'forceFullPull')"
+                        [materialId]="mh.id"></jobs-material-checkbox>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

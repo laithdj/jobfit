@@ -1,0 +1,56 @@
+
+<div class="d-flex w-100">
+    <div class="heading mr-auto">Departments</div> 
+    <div [ngClass]="authorisedFunctionList.Function[eFunctions.ViewReports] ? 'generate' : 'disable-generate'"><p-button [label]="'Generate Report' | translate" (onClick)="goToReport()"></p-button></div>
+</div>
+<div class="w-100">
+    <div class='d-flex' *ngIf="deptLoaded">
+        <div [ngClass]="authorisedFunctionList.Function[eFunctions.EditDepartments] ? 'edit' : 'disable-btn'"  style="width:320px;height:40px"><p-button label="Assign Department/s"  (onClick)="assignDeptBtn()"></p-button></div>
+
+        <div class='w-100'></div>
+    </div>
+</div>
+
+<div class='main mt-3'>
+    <p-message severity="info" text="The items below represent Departments that this job is assigned to." styleClass="p-mr-2" class='info'></p-message>
+    <div class='flag-tree mt-2' style='padding-bottom:10px;padding-left:15px;padding-right:15px;' *ngIf="deptLoaded">
+        <p-tree [value]='selectedDeptTree' selectionMode="single">
+            <ng-template pTemplate="default" let-dept>
+                <div>
+                    <div style='padding:5px;' [class]="dept?.partialSelected == true ? 'selected-label':''">
+                        <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>
+                        {{dept.label}}
+                    </div>
+                </div>
+            </ng-template>
+        </p-tree>
+    </div>
+</div>
+
+<p-dialog header="Assign Department/s" [(visible)]="assignDept" [modal]="true">
+    <div class="notes-modal">
+        <p-tree [value]='deptTree' selectionMode="single">
+            <ng-template pTemplate="default" let-dept>
+                <p-checkbox *ngIf="dept.typeId == 8" [binary]="true"  (onChange)="selectedDeptChange($event , dept)" [value]="dept.partialSelected" [(ngModel)]="dept.partialSelected"></p-checkbox>
+                <i class="{{getIndexIcon(dept.typeId)}} mr-2"></i>{{dept.label}}
+            </ng-template>
+        </p-tree>
+    </div>
+    <div class='buttons-footer d-flex mt-5'>
+        <div class='cancel-job ml-2'><p-button label="Cancel" (onClick)="assignDept = false"></p-button></div>
+        <div class='w-100'></div>
+        <div class='submit-job'><p-button label="Submit" (onClick)="saveDeptTree()"></p-button></div>
+    </div>
+    <div id="myNav" class="overlay w-100" *ngIf="!deptSaved" >
+        <div class='loader'>
+            <p-progressSpinner></p-progressSpinner>
+            <br />
+            <span class="saved"> Saving...</span>
+        </div>
+    </div>
+</p-dialog>
+<div id="myNav" class="overlay w-100" *ngIf="!deptLoaded" >
+    <div class='loader'>
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

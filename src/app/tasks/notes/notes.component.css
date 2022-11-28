@@ -1,0 +1,246 @@
+.main{
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+.heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+:host ::ng-deep .generate .p-button {
+    color: #ffffff;
+    border: solid;
+    width: 170px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    border-color: #222e50;
+    border-width: thin;
+    height: 40px;
+}
+:host ::ng-deep .sample-dob {
+    font-size:12px;
+    color: gray;
+}
+:host ::ng-deep .archive-job .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 150px;
+    height:40px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+:host ::ng-deep .edit .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 150px;
+    height:40px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+
+.notes-modal {
+    width:700px;
+}
+:host ::ng-deep .type .p-dropdown {
+    width: 200px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+:host ::ng-deep .provider .p-dropdown {
+    width: 100%;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+.comments {
+    width:100%;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .submit-job .p-button {
+    width: 140px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+    font-size: 1rem;
+    height: 38px;
+}
+:host ::ng-deep .cancel-job .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+}
+:host ::ng-deep .submit-job .p-button {
+    width: 140px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid;
+    background: #20BCD3;
+    border-width: thin;
+    color: white;
+}
+
+
+.f-r{
+    float: right;
+}
+.expand-title{
+    color:#222E50;
+    font-weight: bold !important;
+  }
+:host ::ng-deep .cancel-note .p-button {
+width: 140px;
+height: 42px;
+color:white;
+background: #222E50 ;
+border-radius: 4px;
+}
+:host ::ng-deep .submit-note .p-button {
+width: 140px;
+height: 42px;
+background: #20BCD3;
+color:white;
+border-color: #20BCD3;
+border-radius: 4px;
+}
+:host ::ng-deep .p-calendar-w-btn .p-datepicker-trigger
+{
+    background: none !important;
+    border-color: lightgray;
+}
+:host ::ng-deep div.ql-tooltip.ql-editing{
+    left: 0px !important;
+}
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+    animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
+}
+@keyframes custom-progress-spinner-color {
+    100%,
+    0% {
+        stroke: #16697A;
+    }
+    40% {
+        stroke: #489FB5;
+    }
+    66% {
+        stroke: #82C0CC;
+    }
+    80%,
+    90% {
+        stroke: #FFA62B;
+    }
+  }
+  
+  @keyframes custom-progress-spinner-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    }
+  }
+
+  .overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  .comments-break{
+    white-space: nowrap;
+    width: 40rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .saved {
+    font-weight: bolder;
+    font-size: xx-large;
+}
+.center {
+    text-align: center !important;
+  }
+  :host ::ng-deep .disabled-btn .p-button {
+    width: 100px;
+    height:41px;
+    background-color: #E3E6EA;
+    color: gray;
+    border: unset;
+    font-size: 1rem;
+    margin-right:2px;
+ /*   background: #4bd9ee42;*/
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+  }
+  :host ::ng-deep .disable-btn .p-button {
+    background-color: #E3E6EA;
+    color: gray;
+    border: unset;
+    font-size: 1rem;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+  }

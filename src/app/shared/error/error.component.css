@@ -1,0 +1,11 @@
+:host ::ng-deep .close-btn .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+}
+:host ::ng-deep .pop-up .p-dialog{
+    width:300px;
+}

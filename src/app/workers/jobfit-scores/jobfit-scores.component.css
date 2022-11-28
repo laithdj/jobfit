@@ -1,0 +1,149 @@
+:host ::ng-deep .add-attachment .p-button {
+  color: #20BCD3;
+  border: unset;
+  font-size: 1rem;
+  background: #4bd9ee42;
+  width: 100px;
+  height:40px;
+  margin-right:5px;
+  font-family: "Roboto-Regular";
+  font-weight: 500;
+}
+:host ::ng-deep .generate .p-button {
+  color: #ffffff;
+  border: solid;
+  width: 170px;
+  font-size: 1rem;
+  background: #4bd9ee;
+  border-color: #222e50;
+  border-width: thin;
+  height: 40px;
+}
+.comments-break{
+  white-space: nowrap;
+  width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.table-center-column {
+  width:10rem !important;
+  text-align: center !important;
+}
+.table-button-column {
+  width:8rem !important;
+  text-align: center !important;
+}
+.table-score-column {
+  width:5rem !important;
+  text-align: center !important;
+}
+.table-text-column {
+  text-align: left !important;
+}
+.heading{
+  font-family: "BentonSans-Bold";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  color: #20BCD3;
+}
+:host ::ng-deep .table-text-column p {
+  margin-bottom: 0px !important;
+}
+:host ::ng-deep .graph .p-dropdown {
+    width: 200px;
+    height: 40px;
+    border: 1px solid #20BCD3;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+:host ::ng-deep .graph .p-inputtext {
+    font-family: "Inter-Regular";
+    font-weight: 500;
+    font-size: 1rem;
+}
+:host ::ng-deep .graph .p-multiselect {
+    width: 400px;
+    height: 40px;
+    border: 1px solid #20BCD3;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+:host ::ng-deep .graph .p-multiselect-label {
+    font-family: "Inter-Regular";
+    font-weight: 500;
+    font-size: 1rem;
+    color: #495057;
+}
+:host ::ng-deep .graph .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height: 40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 4px !important;
+    height: 45px !important;
+}
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .saved {
+    font-weight: bolder;
+    font-size: xx-large;
+  }

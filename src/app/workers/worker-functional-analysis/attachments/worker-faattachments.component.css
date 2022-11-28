@@ -1,0 +1,183 @@
+.main{
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+.heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    color: #20BCD3;
+}
+:host ::ng-deep .edit .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+a {
+    color: #0d6efd !important;
+    text-decoration: underline !important;
+}
+:host ::ng-deep .add-attachment .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 150px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+
+.notes-modal {
+    width:509px;
+}
+:host ::ng-deep .type .p-dropdown {
+    width: 200px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+:host ::ng-deep .provider .p-dropdown {
+    width: 400px;
+    height:40px;
+    border: 1px solid #20BCD3;
+
+}
+.comments {
+    width:400px;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .submit-job .p-button {
+    
+    width: 140px;
+    height: 42px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .cancel-job .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.f-r{
+    float: right;
+}
+:host ::ng-deep .add-attachment-btn .p-button{
+    width: 160px;
+    margin-right:20px;
+    height: 42px;
+    color:white;
+    margin-top: 5px;
+    background: #222E50 ;
+    border-radius: 4px;
+}
+.size-text{
+font-family: "BentonSans-Regular";
+font-style: normal;
+font-weight: normal;
+font-size: 100%;
+line-height: 147.2%;
+/* or 18px */
+letter-spacing: 0.1em;
+color: rgba(34, 46, 80, 0.6);
+}
+:host ::ng-deep .custom-galleria.p-galleria.fullscreen {
+    display: flex;
+    flex-direction: column;
+}
+:host ::ng-deep .custom-galleria.p-galleria.fullscreen .p-galleria-content {
+    flex-grow: 1;
+    justify-content: center;
+}
+:host ::ng-deep .custom-galleria.p-galleria .p-galleria-content {
+    position: relative;
+}
+:host ::ng-deep .custom-galleria.p-galleria .p-galleria-thumbnail-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+:host ::ng-deep .custom-galleria.p-galleria .p-galleria-thumbnail-items-container {
+    width: 100%;
+}
+:host ::ng-deep .custom-galleria.p-galleria .custom-galleria-footer {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .9);
+    color: #fff;
+}
+:host ::ng-deep .custom-galleria.p-galleria .custom-galleria-footer > button {
+    background-color: transparent;
+    color: #fff;
+    border: 0 none;
+    border-radius: 0;
+    margin: 0.2rem 0;
+}
+:host ::ng-deep .custom-galleria.p-galleria .custom-galleria-footer > button.fullscreen-button {
+    margin-left: auto;
+}
+:host ::ng-deep .custom-galleria.p-galleria .custom-galleria-footer > button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+:host ::ng-deep .custom-galleria.p-galleria .title-container > span {
+    font-size: 0.9rem;
+    padding-left: 0.829rem;
+}
+:host ::ng-deep .custom-galleria.p-galleria .title-container > span.title {
+    font-weight: bold;
+}
+:host ::ng-deep .comments-list p{
+    white-space: nowrap; 
+    width: 200px; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+  :host ::ng-deep .save .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 120px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .cancel .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+  }
+:host ::ng-deep .p-fileupload .p-button,
+:host ::ng-deep .actions .p-button {
+    color: #20BCD3;
+    border: unset;
+    font-size: 1rem;
+    background: #4bd9ee42;
+    width: 100px;
+    height:40px;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}

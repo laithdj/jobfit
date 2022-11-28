@@ -1,0 +1,248 @@
+:host ::ng-deep .edit .p-button {
+    width: 100px;
+    height:40px;
+    color: #20BCD3;
+    border: unset;
+    font-size: 1rem;
+    margin-right:2px;
+    background: #4bd9ee42;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+  }
+  :host ::ng-deep .disabled-btn .p-button {
+    width: 100px;
+    height:40px;
+    background-color: #E3E6EA;
+    color: gray;
+    border: unset;
+    font-size: 1rem;
+    margin-right:2px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+  }
+  :host ::ng-deep .employ .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 85px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .disable-jobfit .p-button {
+  border: unset;
+  width: 85px;
+  height:40px;
+  font-size: 1rem;
+  background-color: #E3E6EA;
+  color: gray;
+  font-family: "Roboto-Regular";
+  font-weight: 500;
+}
+:host ::ng-deep .p-datatable-responsive-scroll>.p-datatable-wrapper{
+  overflow-x: hidden !important;
+}
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+ height: 45px !important;
+}
+:host ::ng-deep .sample-dob {
+  font-size:12px;
+  color: gray;
+}
+.table-name-column {
+  min-width: 12rem !important;
+  padding-left: 4px !important;
+  text-align: left !important;
+}
+.table-expand-column {
+  width:2.5rem !important;
+  text-align: center !important;
+}
+.table-date-column {
+  width:10rem !important;
+  text-align: center !important;
+}
+.table-icon-column {
+  width:5rem !important;
+  text-align: center !important;
+}
+a {
+  color: #0d6efd !important;
+  text-decoration: underline !important;
+} 
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+.saveloader {
+  margin-left:40%;
+  margin-top:15%;
+}
+:host ::ng-deep .add-employment .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 190px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .disable-add-employment .p-button {
+  border: unset;
+  width: 190px;
+  height:40px;
+  font-size: 1rem;
+  background-color: #E3E6EA;
+  color: gray;
+  font-family: "Roboto-Regular";
+  font-weight: 500;
+}
+.heading{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+
+:host ::ng-deep .job-list  .p-component {
+    width:100%
+}
+:host ::ng-deep .dates  .p-component {
+    width:100%
+}
+:host ::ng-deep .generate .p-button {
+  color: #ffffff;
+  border: solid;
+  width: 170px;
+  font-size: 1rem;
+  background: #4bd9ee;
+  border-color: #222e50;
+  border-width: thin;
+  height: 40px;
+}
+:host ::ng-deep .disable-generate .p-button {
+  color: #ffffff;
+  border: solid;
+  width: 170px;
+  font-size: 1rem;
+  background: #E3E6EA;
+  border-color: #222e50;
+  border-width: thin;
+  height: 40px;
+}
+:host ::ng-deep .submit-job .p-button {
+    
+    width: 140px;
+    height: 40px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .cancel-job .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+    height: 40px;
+}
+:host ::ng-deep .archive-job .p-button {
+    width: 140px;
+    height: 42px;
+    color:#222E50;
+    background: white;
+    border-radius: 4px;
+}
+
+:host ::ng-deep .cancel-employment .p-button {
+    width: 140px;
+    height: 42px;
+    color:white;
+    background: #222E50 ;
+    border-radius: 4px;
+  }
+  :host ::ng-deep .submit-employment .p-button {
+    width: 140px;
+    height: 42px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .p-calendar-w-btn .p-datepicker-trigger
+{
+    background: none !important;
+    border-color: lightgray;
+}
+:host ::ng-deep .p-checkbox-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    display: none;
+  }
+:host ::ng-deep .p-progress-spinner {
+width: 80px!important;
+}
+:host ::ng-deep .roster .p-dropdown {
+width: 300px;
+}
+:host ::ng-deep div.ql-tooltip.ql-editing{
+    left: 0px !important;
+}
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .saved {
+    font-weight: bolder;
+    font-size: large;
+  }

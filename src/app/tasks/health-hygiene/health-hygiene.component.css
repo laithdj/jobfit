@@ -1,0 +1,384 @@
+.heading {
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: #20BCD3;
+}
+:host ::ng-deep .generate .p-button {
+    color: #ffffff;
+    border: solid;
+    width: 170px;
+    font-size: 1rem;
+    background: #4bd9ee;
+    border-color: #222e50;
+    border-width: thin;
+    height: 40px;
+}
+:host ::ng-deep .items .p-component {
+    width:20rem;
+}
+:host ::ng-deep .provider .p-component {
+    width:100%;
+}
+:host ::ng-deep .sample-dob {
+    font-size:12px;
+    color: gray;
+}
+.heading-sm{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    color: #222e50;
+}
+:host ::ng-deep .p-inline-message.p-inline-message-info {
+    background: #cccccc5c;
+  }
+.heading-md{
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    color: #222e50;
+}
+.loader {
+    margin-left:50%;
+    margin-top:15%;
+  }
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-color: #20BCD3;
+    color: #20BCD3;
+}
+:host ::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
+    color: #20BCD3;
+}
+
+:host ::ng-deep .accordion .p-component {
+    font-family: "BentonSans-Regular";
+    font-size: 100%;
+}
+::ng-deep .p-sidebar-mask.p-component-overlay {
+    background: unset;
+    height:1px;
+}
+:host ::ng-deep .info .p-button {
+    color: #ffffff;
+    background: #20BCD3;
+    border: 1px solid #20BCD3;
+}
+:host ::ng-deep .info .p-component {
+    width:100%;
+}
+:host ::ng-deep .info .p-inline-message {
+    justify-content: left;
+}
+:host ::ng-deep .submit .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 100px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+:host ::ng-deep .addNew .p-button {
+    color: #ffffff;
+    border: unset;
+    width: 250px;
+    height:40px;
+    font-size: 1rem;
+    background: #20BCD3;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+
+:host ::ng-deep .actions .p-button {
+    color: #20BCD3;
+    border: unset;
+    font-size: 1rem;
+    background: #4bd9ee42;
+    width: 90px;
+    height:40px;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.hh-modal {
+    width:750px;
+    margin: 3px;
+}
+.expand-title-name {
+    font-family: "BentonSans-Bold";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100%;
+    color: #20BCD3;
+}
+
+.p-field-radiobutton{
+    display: flex;
+    align-items: center;
+}
+:host ::ng-deep .cancel .p-button {
+    color: #20BCD3;
+    border: solid;
+    font-size: 1rem;
+    margin-right:2px;
+    background: white;
+    border-width: thin;
+  }
+:host ::ng-deep .cancel-health-hygiene .p-button {
+    width: 140px;
+    height: 42px;
+    color:white;
+    background: #222E50 ;
+    border-radius: 4px;
+    }
+    :host ::ng-deep .submit-health-hygiene .p-button {
+    width: 140px;
+    height: 42px;
+    background: #20BCD3;
+    color:white;
+    border-color: #20BCD3;
+    border-radius: 4px;
+}
+:host ::ng-deep .p-calendar-w-btn .p-datepicker-trigger
+{
+    background: none !important;
+    border-color: lightgray;
+}
+.main{
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+
+.text-right{
+    display:flex;
+    justify-content: flex-end;
+    margin-left: 55px;
+}
+
+.top-row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.text-left{
+    display: flex;
+    align-self: flex-start;
+}
+.provider-text-right{
+    display:flex;
+    justify-content: flex-end;
+    margin-left: 86px;
+}
+
+:host ::ng-deep .schedule-btn .p-button {
+    color: #20BCD3;
+    border: unset;
+    font-size: 1rem;
+    background: #4bd9ee42;
+    width: 160px;
+    height:40px;
+    margin-right:5px;
+    font-family: "Roboto-Regular";
+    font-weight: 500;
+}
+.comments-text-right{
+    display:flex;
+    justify-content: flex-end;
+    margin-left: 69px;
+}
+
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+    }
+  }
+  .f-r{
+    float: right;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 43px;
+    height: 17px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+    input:checked + .slider {
+        background-color: #20BCD3;
+    }
+    
+    input:focus + .slider {
+        box-shadow: 0 0 1px #20BCD3;
+    }
+  
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+  
+  /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    .toggle{
+        margin-top:12px;
+        margin-right:5px;
+    }
+    .nas-panel{
+        background: #FFFFFF;
+        border-radius: 8px;
+        margin-top:10px;
+    }
+    .hh-label {
+        font-weight: bold;
+    }
+    .saved {
+        font-weight: bolder;
+        font-size: xx-large;
+    }
+    .center {
+        text-align: center !important;
+      }
+    ::ng-deep .assign .p-tree .p-tree-container .p-treenode .p-treenode-content .p-checkbox {
+        margin-top: 2px !important;
+    }
+    ::ng-deep .assign  .p-treenode-content {
+        align-items: unset !important; 
+    
+    }
+    ::ng-deep .assign .p-tree-toggler {
+         align-items: unset !important; 
+    }
+    ::ng-deep .assign .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:focus {
+    
+        box-shadow: unset !important;
+    }
+    ::ng-deep .assign .p-tree-toggler-icon {
+        margin-top: 3px !important;
+    }
+    :host ::ng-deep .disabled-btn .p-button {
+        width: 100px;
+        height:41px;
+        background-color: #E3E6EA;
+        color: gray;
+        border: unset;
+        font-size: 1rem;
+        margin-right:2px;
+     /*   background: #4bd9ee42;*/
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+      }
+      :host ::ng-deep .submit-job .p-button {
+        width: 140px;
+        background: #20BCD3;
+        color:white;
+        border-color: #20BCD3;
+        border-radius: 4px;
+        font-size: 1rem;
+        height: 38px;
+    }
+    :host ::ng-deep .edit .p-button {
+        color: #ffffff;
+        border: unset;
+        width: 150px;
+        height:40px;
+        font-size: 1rem;
+        background: #4bd9ee;
+        margin-right:5px;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+    }
+    :host ::ng-deep .disable-btn .p-button {
+        background-color: #E3E6EA;
+        color: gray;
+        border: unset;
+        font-size: 1rem;
+        font-family: "Roboto-Regular";
+        font-weight: 500;
+      }
